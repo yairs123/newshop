@@ -1,0 +1,36 @@
+{
+  "index": "products",
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "default": {
+          "type": "standard"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": { "type": "long" },
+      "title": {
+        "type": "text",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
+      },
+      "description": { "type": "text" },
+      "price": { "type": "double" },
+      "currency": { "type": "keyword" },
+      "ratingCompany": { "type": "keyword" },
+      "ratingNumber": { "type": "keyword" },
+      "ratingGrade": { "type": "keyword" },
+      "country": { "type": "keyword" },
+      "year": { "type": "integer" },
+      "material": { "type": "keyword" },
+      "categoryId": { "type": "long" },
+      "status": { "type": "keyword" },
+      "sellerId": { "type": "long" },
+      "createdAt": { "type": "date" }
+    }
+  }
+}

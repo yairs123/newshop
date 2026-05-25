@@ -27,13 +27,37 @@ services:
       RABBITMQ_DEFAULT_PASS: coinmq123
 
   elasticsearch:
-    image: elasticsearch:8.13
+    image: elasticsearch:8.13.0
     environment:
       discovery.type: single-node
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       xpack.security.enabled: "false"
     ports:
       - "9200:9200"
+
+  backend:
+    image: coinmarket-backend
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/coin_marketplace
+      DB_USERNAME: coinuser
+      DB_PASSWORD: coinpass123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MQ_HOST: rabbitmq
+      MQ_PORT: 5672
+      MQ_USERNAME: coinmq
+      MQ_PASSWORD: coinmq123
+      ES_URIS: http://elasticsearch:9200
+      JWT_SECRET: dev-secret-key-must-be-at-least-256-bits-long-for-hs256
+      UPLOAD_DIR: /app/uploads
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - elasticsearch
 
 volumes:
   pgdata:
