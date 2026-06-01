@@ -8,12 +8,14 @@ import com.coinmarket.order.dto.OrderCreateBatchRequest;
 import com.coinmarket.order.dto.OrderCreateRequest;
 import com.coinmarket.order.dto.OrderResponse;
 import com.coinmarket.order.service.OrderService;
+import com.coinmarket.payment.dto.PaymentResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -39,11 +41,14 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/pay")
-    public ApiResponse<OrderResponse> payOrder(
+    public ApiResponse<PaymentResponse> payOrder(
             @PathVariable Long id,
+            @RequestBody(required = false) Map<String, String> body,
             @CurrentUser UserPrincipal principal) {
-        orderService.markAsPaid(id, principal.getId());
-        return ApiResponse.success(orderService.getOrder(id));
+        String returnUrl = body != null ? body.get("returnUrl") : null;
+        String cancelUrl = body != null ? body.get("cancelUrl") : null;
+        PaymentResponse result = orderService.processPayment(id, principal.getId(), returnUrl, cancelUrl);
+        return ApiResponse.success(result);
     }
 
     @GetMapping("/{id}")

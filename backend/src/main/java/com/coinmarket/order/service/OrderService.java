@@ -12,6 +12,9 @@ import com.coinmarket.order.entity.OrderItem;
 import com.coinmarket.order.entity.OrderLog;
 import com.coinmarket.order.repository.OrderLogRepository;
 import com.coinmarket.order.repository.OrderRepository;
+import com.coinmarket.payment.dto.PaymentRequest;
+import com.coinmarket.payment.dto.PaymentResponse;
+import com.coinmarket.payment.service.PaymentService;
 import com.coinmarket.product.entity.Product;
 import com.coinmarket.product.repository.ProductRepository;
 import com.coinmarket.user.entity.User;
@@ -40,6 +43,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
+    private final PaymentService paymentService;
 
     @Transactional
     public OrderResponse createOrder(Long buyerId, OrderCreateRequest request) {
@@ -176,6 +180,35 @@ public class OrderService {
     }
 
     @Transactional
+    public PaymentResponse processPayment(Long orderId, Long userId, String returnUrl, String cancelUrl) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException("订单不存在"));
+
+        if (!order.getBuyerId().equals(userId)) {
+            throw new BusinessException("无权操作此订单");
+        }
+        if (!"PENDING_PAYMENT".equals(order.getStatus())) {
+            throw new BusinessException("当前状态不允许支付");
+        }
+
+        String method = order.getPaymentMethod();
+        if (method == null) {
+            throw new BusinessException("订单未指定支付方式");
+        }
+
+        PaymentRequest paymentRequest = PaymentRequest.builder()
+                .orderNo(order.getOrderNo())
+                .amount(order.getTotalAmount())
+                .currency(order.getCurrency())
+                .returnUrl(returnUrl)
+                .cancelUrl(cancelUrl)
+                .description("Order " + order.getOrderNo())
+                .build();
+
+        return paymentService.createPayment(userId, method, paymentRequest);
+    }
+
+    @Transactional
     public void markAsPaid(Long orderId, Long userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException("订单不存在"));
@@ -228,10 +261,11 @@ public class OrderService {
     public void forceCompleteOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException("订单不存在"));
+        String prevStatus = order.getStatus();
         order.setStatus("COMPLETED");
         order.setCompletedAt(LocalDateTime.now());
         orderRepository.save(order);
-        saveOrderLog(orderId, order.getStatus(), "COMPLETED", "管理员", "管理员强制完成");
+        saveOrderLog(orderId, prevStatus, "COMPLETED", "管理员", "管理员强制完成");
     }
 
     public OrderResponse getOrder(Long orderId) {
@@ -317,6 +351,8 @@ public class OrderService {
                 .buyerNote(order.getBuyerNote())
                 .paidAt(order.getPaidAt())
                 .completedAt(order.getCompletedAt())
+                .trackingNumber(order.getTrackingNumber())
+                .trackingCompany(order.getTrackingCompany())
                 .items(order.getItems().stream()
                         .map(i -> OrderItemResponse.builder()
                                 .id(i.getId())

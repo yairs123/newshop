@@ -26,7 +26,10 @@ public class OrderResponse {
     private String buyerNote;
     private LocalDateTime paidAt;
     private LocalDateTime completedAt;
+    private String trackingNumber;
+    private String trackingCompany;
     private List<OrderItemResponse> items;
     private List<OrderLogResponse> logs;
+    private List<OrderEditLogResponse> editLogs;
     private LocalDateTime createdAt;
 }

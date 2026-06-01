@@ -3,6 +3,7 @@ package com.coinmarket.admin.controller;
 import com.coinmarket.admin.service.AdminOrderService;
 import com.coinmarket.common.dto.ApiResponse;
 import com.coinmarket.common.dto.PageResponse;
+import com.coinmarket.order.dto.AdminOrderUpdateRequest;
 import com.coinmarket.order.dto.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -31,9 +32,38 @@ public class AdminOrderController {
         return ApiResponse.success(adminOrderService.getOrder(id));
     }
 
+    @PostMapping("/{id}/mark-paid")
+    public ApiResponse<Void> markPaid(@PathVariable Long id) {
+        adminOrderService.markPaid(id);
+        return ApiResponse.success(null);
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ApiResponse<Void> cancelOrder(@PathVariable Long id) {
+        adminOrderService.cancelOrder(id);
+        return ApiResponse.success(null);
+    }
+
     @PostMapping("/{id}/complete")
     public ApiResponse<Void> forceComplete(@PathVariable Long id) {
         adminOrderService.forceComplete(id);
+        return ApiResponse.success(null);
+    }
+
+    @PostMapping("/{id}/ship")
+    public ApiResponse<Void> shipOrder(
+            @PathVariable Long id,
+            @RequestParam String trackingNumber,
+            @RequestParam String trackingCompany) {
+        adminOrderService.shipOrder(id, trackingNumber, trackingCompany);
+        return ApiResponse.success(null);
+    }
+
+    @PutMapping("/{id}")
+    public ApiResponse<Void> updateOrder(
+            @PathVariable Long id,
+            @RequestBody AdminOrderUpdateRequest request) {
+        adminOrderService.updateOrder(id, request);
         return ApiResponse.success(null);
     }
 }
