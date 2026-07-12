@@ -4,6 +4,8 @@ import com.coinmarket.admin.dto.AuditLogResponse;
 import com.coinmarket.admin.service.AuditService;
 import com.coinmarket.common.dto.ApiResponse;
 import com.coinmarket.common.dto.PageResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,11 +22,13 @@ import java.time.LocalTime;
 @RequestMapping("/api/admin/audit-logs")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "审计日志", description = "管理员审计日志查询接口，包括实体变更历史和操作日志查询")
 public class AuditLogController {
 
     private final AuditService auditService;
 
     @GetMapping("/entity/{entityType}/{entityId}")
+    @Operation(summary = "获取实体变更历史", description = "根据实体类型和实体ID查询该实体的变更历史记录")
     public ApiResponse<PageResponse<AuditLogResponse>> getEntityHistory(
             @PathVariable String entityType,
             @PathVariable Long entityId,
@@ -36,6 +40,7 @@ public class AuditLogController {
     }
 
     @GetMapping
+    @Operation(summary = "查询审计日志", description = "多条件查询审计日志，支持按实体类型、操作类型、操作人、日期范围过滤")
     public ApiResponse<PageResponse<AuditLogResponse>> queryLogs(
             @RequestParam(required = false) String entityType,
             @RequestParam(required = false) String operation,

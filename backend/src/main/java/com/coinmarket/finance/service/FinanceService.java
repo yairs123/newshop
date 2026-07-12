@@ -3,14 +3,10 @@ package com.coinmarket.finance.service;
 import com.coinmarket.admin.repository.InventoryBatchRepository;
 import com.coinmarket.admin.service.AuditService;
 import com.coinmarket.common.exception.BusinessException;
-import com.coinmarket.finance.dto.FinanceDashboardResponse;
-import com.coinmarket.finance.dto.ProfitReportResponse;
-import com.coinmarket.finance.dto.PurchaseReportResponse;
-import com.coinmarket.finance.dto.ReimbursementRequest;
-import com.coinmarket.finance.dto.ReimbursementResponse;
-import com.coinmarket.finance.dto.SalesRevenueResponse;
+import com.coinmarket.finance.dto.*;
+import com.coinmarket.finance.entity.BankAccount;
 import com.coinmarket.finance.entity.Reimbursement;
-import com.coinmarket.finance.repository.ReimbursementRepository;
+import com.coinmarket.finance.repository.*;
 import com.coinmarket.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,6 +28,9 @@ public class FinanceService {
     private final AuditService auditService;
     private final OrderRepository orderRepository;
     private final InventoryBatchRepository inventoryBatchRepository;
+    private final BankAccountRepository bankAccountRepository;
+    private final OtherExpenseRepository otherExpenseRepository;
+    private final PersonnelExpenseRepository personnelExpenseRepository;
 
     @Transactional
     public ReimbursementResponse createReimbursement(ReimbursementRequest request, Long submitterId) {
@@ -112,21 +111,13 @@ public class FinanceService {
     }
 
     public Page<ReimbursementResponse> listReimbursements(String status, Long submitterId, Pageable pageable) {
+        if (status != null && submitterId != null) {
+            return reimbursementRepository.findByStatusAndSubmitterIdOrderByCreatedAtDesc(status, submitterId, pageable)
+                    .map(ReimbursementResponse::from);
+        }
         if (status != null) {
-            return reimbursementRepository.findByStatusOrderByCreatedAtDesc(status)
-                    .stream()
-                    .map(ReimbursementResponse::from)
-                    .collect(java.util.stream.Collectors.collectingAndThen(
-                            java.util.stream.Collectors.toList(),
-                            list -> {
-                                int start = (int) pageable.getOffset();
-                                int end = Math.min(start + pageable.getPageSize(), list.size());
-                                var subList = list.subList(start, end);
-                                return new org.springframework.data.domain.PageImpl<>(subList, pageable, list.size())
-                                        .map(r -> ReimbursementResponse.from(
-                                                reimbursementRepository.findById(r.getId()).orElseThrow()));
-                            }
-                    ));
+            return reimbursementRepository.findByStatusOrderByCreatedAtDesc(status, pageable)
+                    .map(ReimbursementResponse::from);
         }
         if (submitterId != null) {
             return reimbursementRepository.findBySubmitterIdOrderByCreatedAtDesc(submitterId, pageable)
@@ -134,6 +125,88 @@ public class FinanceService {
         }
         return reimbursementRepository.findAllByOrderByCreatedAtDesc(pageable)
                 .map(ReimbursementResponse::from);
+    }
+
+    // ========== 财务总览 ==========
+
+    @Transactional(readOnly = true)
+    public FinanceOverviewResponse getOverview() {
+        LocalDate now = LocalDate.now();
+        LocalDate yearStart = now.with(java.time.temporal.TemporalAdjusters.firstDayOfYear());
+        LocalDate yearEnd = now.plusDays(1);
+
+        BigDecimal totalIncome = orderRepository.sumCompletedSalesBetween(
+                yearStart.atStartOfDay(), yearEnd.atStartOfDay());
+        List<Object[]> salesRows = orderRepository.monthlySalesBetween(
+                yearStart.atStartOfDay(), yearEnd.atStartOfDay());
+
+        BigDecimal purchaseCost = inventoryBatchRepository.sumPurchaseCostBetween(yearStart, now);
+        List<Object[]> purchaseRows = inventoryBatchRepository.monthlyPurchaseBetween(yearStart, now);
+
+        BigDecimal otherExpenses = otherExpenseRepository.sumByDateBetween(yearStart, now);
+        BigDecimal personnelCost = personnelExpenseRepository.sumByPayDateBetween(yearStart, now);
+        BigDecimal reimbursed = reimbursementRepository.sumPaidAmountBetween(
+                yearStart.atStartOfDay(), yearEnd.atStartOfDay());
+
+        BigDecimal totalExpenses = purchaseCost.add(otherExpenses).add(personnelCost).add(reimbursed);
+        BigDecimal netProfit = totalIncome.subtract(totalExpenses);
+        BigDecimal profitMargin = totalIncome.compareTo(BigDecimal.ZERO) > 0
+                ? netProfit.multiply(BigDecimal.valueOf(100)).divide(totalIncome, 2, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
+
+        BigDecimal totalBankBalance = bankAccountRepository.findByIsActiveTrueOrderBySortOrder().stream()
+                .map(BankAccount::getCurrentBalance)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // 月度趋势
+        Set<String> allMonths = new TreeSet<>();
+        Map<String, BigDecimal> incomeByMonth = new HashMap<>();
+        for (Object[] r : salesRows) { String m = (String) r[0]; allMonths.add(m); incomeByMonth.put(m, (BigDecimal) r[1]); }
+        Map<String, BigDecimal> costByMonth = new HashMap<>();
+        for (Object[] r : purchaseRows) { String m = (String) r[0]; allMonths.add(m); costByMonth.put(m, (BigDecimal) r[1]); }
+
+        BigDecimal monthlyOtherExp = allMonths.isEmpty() ? otherExpenses
+                : otherExpenses.divide(BigDecimal.valueOf(allMonths.size()), 2, RoundingMode.HALF_UP);
+        BigDecimal monthlyPersonnel = allMonths.isEmpty() ? personnelCost
+                : personnelCost.divide(BigDecimal.valueOf(allMonths.size()), 2, RoundingMode.HALF_UP);
+
+        List<FinanceOverviewResponse.MonthlyTrend> monthlyTrend = allMonths.stream().map(m -> {
+            BigDecimal inc = incomeByMonth.getOrDefault(m, BigDecimal.ZERO);
+            BigDecimal cost = costByMonth.getOrDefault(m, BigDecimal.ZERO);
+            BigDecimal totalExp = cost.add(monthlyOtherExp).add(monthlyPersonnel);
+            return new FinanceOverviewResponse.MonthlyTrend(m, inc, totalExp, inc.subtract(totalExp));
+        }).toList();
+
+        // 费用构成
+        List<FinanceOverviewResponse.ExpenseBreakdown> expenseBreakdown = new ArrayList<>();
+        double totalExpD = totalExpenses.doubleValue();
+        if (totalExpD > 0) {
+            expenseBreakdown.add(new FinanceOverviewResponse.ExpenseBreakdown(
+                    "进货成本", purchaseCost, purchaseCost.doubleValue() / totalExpD * 100));
+            expenseBreakdown.add(new FinanceOverviewResponse.ExpenseBreakdown(
+                    "人员开支", personnelCost, personnelCost.doubleValue() / totalExpD * 100));
+            expenseBreakdown.add(new FinanceOverviewResponse.ExpenseBreakdown(
+                    "其他费用", otherExpenses, otherExpenses.doubleValue() / totalExpD * 100));
+            expenseBreakdown.add(new FinanceOverviewResponse.ExpenseBreakdown(
+                    "报销支出", reimbursed, reimbursed.doubleValue() / totalExpD * 100));
+        }
+
+        List<FinanceOverviewResponse.BankBalanceInfo> bankBreakdown = bankAccountRepository
+                .findByIsActiveTrueOrderBySortOrder().stream()
+                .map(b -> new FinanceOverviewResponse.BankBalanceInfo(
+                        b.getBankName(), b.getCurrentBalance(), b.getCurrency()))
+                .toList();
+
+        return FinanceOverviewResponse.builder()
+                .totalIncome(totalIncome)
+                .totalExpenses(totalExpenses)
+                .netProfit(netProfit)
+                .profitMargin(profitMargin)
+                .totalBankBalance(totalBankBalance)
+                .monthlyTrend(monthlyTrend)
+                .expenseBreakdown(expenseBreakdown)
+                .bankBreakdown(bankBreakdown)
+                .build();
     }
 
     /** Financial dashboard: aggregate purchase costs, sales revenue, net profit */
@@ -151,8 +224,9 @@ public class FinanceService {
                 ? netProfit.divide(totalRevenue, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))
                 : BigDecimal.ZERO;
 
-        long pendingCount = reimbursementRepository.findByStatusOrderByCreatedAtDesc("PENDING").size();
-        long paidCount = reimbursementRepository.findByStatusOrderByCreatedAtDesc("PAID").size();
+        long pendingCount = reimbursementRepository.countByStatus("PENDING");
+        long paidCount = reimbursementRepository.countByStatus("PAID");
+        long totalReimbursements = reimbursementRepository.count();
 
         return FinanceDashboardResponse.builder()
                 .totalPurchaseCost(totalCost)
@@ -160,7 +234,7 @@ public class FinanceService {
                 .netProfit(netProfit)
                 .profitMargin(profitMargin.setScale(2, RoundingMode.HALF_UP))
                 .pendingReimbursements(pendingCount)
-                .totalReimbursements(paidCount)
+                .totalReimbursements(totalReimbursements)
                 .build();
     }
 

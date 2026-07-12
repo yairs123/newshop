@@ -44,7 +44,20 @@
           <el-input v-model="form.title" />
         </el-form-item>
         <el-form-item :label="$t('ads.imageUrl')">
-          <el-input v-model="form.imageUrl" placeholder="https://..." />
+          <div class="upload-row">
+            <el-input v-model="form.imageUrl" placeholder="https://... or upload" />
+            <el-upload
+              :action="uploadUrl"
+              :show-file-list="false"
+              :on-success="handleUploadSuccess"
+              :before-upload="beforeUpload"
+              :headers="uploadHeaders"
+            >
+              <el-button type="primary" :loading="uploading">
+                {{ uploading ? '上传中...' : '上传' }}
+              </el-button>
+            </el-upload>
+          </div>
           <el-image v-if="form.imageUrl" :src="form.imageUrl" style="width:120px;height:80px;margin-top:8px" fit="cover" />
         </el-form-item>
         <el-form-item :label="$t('ads.linkUrl')">
@@ -65,12 +78,12 @@
         <el-row :gutter="16">
           <el-col :span="12">
             <el-form-item :label="$t('ads.startDate')">
-              <el-date-picker v-model="form.startDate" type="date" value-format="YYYY-MM-DD" style="width:100%" />
+              <el-date-picker v-model="form.startDate" type="date" value-format="YYYY-MM-DD" style="width:100%" :disabled-date="disabledStartDate" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('ads.endDate')">
-              <el-date-picker v-model="form.endDate" type="date" value-format="YYYY-MM-DD" style="width:100%" />
+              <el-date-picker v-model="form.endDate" type="date" value-format="YYYY-MM-DD" style="width:100%" :disabled-date="disabledEndDate" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -85,6 +98,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import { api } from '../api'
 
 const ads = ref([])
@@ -92,6 +106,42 @@ const loading = ref(false)
 const dialogVisible = ref(false)
 const editing = ref(false)
 const form = ref({ title: '', imageUrl: '', linkUrl: '', sortOrder: 0, isActive: true, startDate: null, endDate: null })
+const uploadUrl = '/api/files/upload/general'
+const uploading = ref(false)
+const uploadHeaders = { Authorization: 'Bearer ' + localStorage.getItem('token') }
+
+// 日期选择器限制：结束日期不能早于开始日期
+function disabledStartDate(time) {
+  if (form.value.endDate) {
+    return time.getTime() > new Date(form.value.endDate).getTime()
+  }
+  return false
+}
+function disabledEndDate(time) {
+  if (form.value.startDate) {
+    return time.getTime() < new Date(form.value.startDate).getTime()
+  }
+  return false
+}
+
+function beforeUpload(file) {
+  uploading.value = true
+  const isImage = file.type.startsWith('image/')
+  if (!isImage) { ElMessage.error('只能上传图片文件'); return false }
+  const isLt10M = file.size / 1024 / 1024 < 10
+  if (!isLt10M) { ElMessage.error('图片大小不能超过 10MB'); return false }
+  return true
+}
+
+function handleUploadSuccess(res) {
+  uploading.value = false
+  if (res.success && res.data?.url) {
+    form.value.imageUrl = res.data.url
+    ElMessage.success('上传成功')
+  } else {
+    ElMessage.error('上传失败')
+  }
+}
 
 async function fetch() {
   loading.value = true
@@ -142,3 +192,11 @@ async function remove(row) {
 
 onMounted(fetch)
 </script>
+
+<style scoped>
+.upload-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+</style>

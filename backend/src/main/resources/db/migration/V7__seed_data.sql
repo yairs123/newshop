@@ -1,15 +1,12 @@
 -- Seed data for development and testing
--- Password hashes (all passwords = "123"):
---   admin123 -> $2b$04$M8/OHKbU9E0o5bai1dLYI.OcRWOdRtKOc6VoA6e2ypv.v47yDPTs2
---   seller123 -> $2b$04$J9ACehKm7ZwZQH/OE/hTb.XBNUsP5wpeQ.ToUDnmx8wQYjdGkG7gi
---   buyer123 -> $2b$04$9wmgHQPzLGfFsUVvTzrJ9O0uxLoj5LiQ1E19EQSVi.EiDhQzaFN3a
+-- All passwords = "123" (bcrypt hash: $2a$04$sxgDeY0CJjwgIg.gxY8fQeTAGhXQwAmA8hZSJqQ2cC5kcf1o53IfO)
 
 -- Test Users
 INSERT INTO coin_users.users (id, username, email, phone, display_name, password_hash, preferred_language, enabled)
 VALUES
-    (1, 'admin', 'admin@coinmarket.com', '+1-555-0100', 'Admin', '$2b$04$M8/OHKbU9E0o5bai1dLYI.OcRWOdRtKOc6VoA6e2ypv.v47yDPTs2', 'en', TRUE),
-    (2, 'seller', 'seller@coinmarket.com', '+1-555-0101', 'Coin Seller', '$2b$04$J9ACehKm7ZwZQH/OE/hTb.XBNUsP5wpeQ.ToUDnmx8wQYjdGkG7gi', 'en', TRUE),
-    (3, 'buyer', 'buyer@coinmarket.com', '+1-555-0102', 'Coin Collector', '$2b$04$9wmgHQPzLGfFsUVvTzrJ9O0uxLoj5LiQ1E19EQSVi.EiDhQzaFN3a', 'en', TRUE)
+    (1, 'admin', 'admin@coinmarket.com', '+1-555-0100', 'Admin', '$2a$04$sxgDeY0CJjwgIg.gxY8fQeTAGhXQwAmA8hZSJqQ2cC5kcf1o53IfO', 'en', TRUE),
+    (2, 'seller', 'seller@coinmarket.com', '+1-555-0101', 'Coin Seller', '$2a$04$sxgDeY0CJjwgIg.gxY8fQeTAGhXQwAmA8hZSJqQ2cC5kcf1o53IfO', 'en', TRUE),
+    (3, 'buyer', 'buyer@coinmarket.com', '+1-555-0102', 'Coin Collector', '$2a$04$sxgDeY0CJjwgIg.gxY8fQeTAGhXQwAmA8hZSJqQ2cC5kcf1o53IfO', 'en', TRUE)
 ON CONFLICT (username) DO NOTHING;
 
 -- Role assignments

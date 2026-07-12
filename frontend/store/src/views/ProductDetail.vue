@@ -181,7 +181,7 @@ function buyNow() {
 function formatPrice(p) { return Number(p).toLocaleString() }
 </script>
 
-<style>
+<style scoped>
 .product-detail { background: #f9fafb; min-height: 100vh; }
 .detail-container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
 

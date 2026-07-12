@@ -1,0 +1,70 @@
+<h2>🖨️ 调整方案：总览 + 独立子页（支持打印）</h2>
+<p class="subtitle">混合 A+B 方案，每个模块可独立打印</p>
+
+<div style="display:flex; gap:24px; margin-top:16px; flex-wrap:wrap">
+
+<div class="mockup" style="flex:1; min-width:300px">
+  <div class="mockup-header">📊 财务总览页 — 大屏图表</div>
+  <div class="mockup-body" style="padding:16px">
+    <div style="display:flex; gap:8px; margin-bottom:12px">
+      <div style="flex:1; background:#e5e7eb; border-radius:8px; padding:12px; text-align:center">
+        <div style="font-size:11px; color:#6b7280">总收入</div>
+        <div style="font-size:20px; font-weight:700; color:#10b981">$128,450</div>
+      </div>
+      <div style="flex:1; background:#e5e7eb; border-radius:8px; padding:12px; text-align:center">
+        <div style="font-size:11px; color:#6b7280">总支出</div>
+        <div style="font-size:20px; font-weight:700; color:#f59e0b">$89,200</div>
+      </div>
+      <div style="flex:1; background:#e5e7eb; border-radius:8px; padding:12px; text-align:center">
+        <div style="font-size:11px; color:#6b7280">净利润</div>
+        <div style="font-size:20px; font-weight:700; color:#10b981">$39,250</div>
+      </div>
+      <div style="flex:1; background:#e5e7eb; border-radius:8px; padding:12px; text-align:center">
+        <div style="font-size:11px; color:#6b7280">银行总余额</div>
+        <div style="font-size:20px; font-weight:700; color:#3b82f6">$215,000</div>
+      </div>
+    </div>
+    <!-- Chart area -->
+    <div style="background:#f3f4f6; border-radius:8px; padding:16px; text-align:center; height:120px; display:flex; align-items:center; justify-content:center">
+      <div style="display:flex; gap:16px; align-items:end; height:80px">
+        <div style="width:30px; background:#10b981; height:60px; border-radius:4px 4px 0 0"></div>
+        <div style="width:30px; background:#f59e0b; height:40px; border-radius:4px 4px 0 0"></div>
+        <div style="width:30px; background:#3b82f6; height:70px; border-radius:4px 4px 0 0"></div>
+        <div style="width:30px; background:#ef4444; height:35px; border-radius:4px 4px 0 0"></div>
+        <div style="width:30px; background:#8b5cf6; height:55px; border-radius:4px 4px 0 0"></div>
+        <div style="width:30px; background:#10b981; height:45px; border-radius:4px 4px 0 0"></div>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; justify-content:center; margin-top:8px; font-size:11px; color:#6b7280">
+      <span>1月</span><span>2月</span><span>3月</span><span>4月</span><span>5月</span><span>6月</span>
+    </div>
+  </div>
+</div>
+
+<div class="mockup" style="flex:1; min-width:280px">
+  <div class="mockup-header">📑 导航菜单（可独立打印的子页面）</div>
+  <div class="mockup-body" style="padding:12px">
+    <div style="display:flex; flex-direction:column; gap:6px">
+      <div style="padding:8px 12px; background:#eff6ff; border-radius:6px; font-size:14px; font-weight:500">💰 银行账户管理</div>
+      <div style="padding:8px 12px; background:#f0fdf4; border-radius:6px; font-size:14px; font-weight:500">📥 收款 / 销售收入</div>
+      <div style="padding:8px 12px; background:#fffbeb; border-radius:6px; font-size:14px; font-weight:500">📤 进货支出</div>
+      <div style="padding:8px 12px; background:#fef2f2; border-radius:6px; font-size:14px; font-weight:500">👥 人员开支</div>
+      <div style="padding:8px 12px; background:#f5f3ff; border-radius:6px; font-size:14px; font-weight:500">🧾 报销管理</div>
+      <div style="padding:8px 12px; background:#fce7f3; border-radius:6px; font-size:14px; font-weight:500">📋 其他费用</div>
+      <div style="padding:8px 12px; background:#ecfdf5; border-radius:6px; font-size:14px; font-weight:500">📈 利润报表</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="section">
+  <h3>打印功能设计</h3>
+  <p>每个子页面右上角加一个 <span style="background:#e5e7eb; padding:2px 8px; border-radius:4px; font-size:13px">🖨️ 打印 / PDF导出</span> 按钮，点击后：</p>
+  <ul>
+    <li>隐藏侧边栏、导航栏，只保留报表内容</li>
+    <li>图表转为清晰可打印的静态图片</li>
+    <li>表格铺满整页宽度</li>
+    <li>自动分页，带页码和打印日期水印</li>
+  </ul>
+</div>

@@ -37,18 +37,18 @@ public class InventoryService {
      */
     @Transactional
     public ProductResponse createEntry(InventoryEntryRequest request, Long operatorId, String operatorName) {
-        String barcode = generateBarcode(request);
+        String barcode = determineBarcode(request);
 
         // Check if product with this barcode already exists
         Product product = productRepository.findByBarcode(barcode).orElse(null);
 
         if (product == null) {
-            // Create new product
+            // Create new inventory product
             product = Product.builder()
-                    .sellerId(0L) // admin-owned inventory
+                    .sellerId(1L) // admin-owned inventory
                     .title(request.getTitle() != null ? request.getTitle() : barcode)
                     .description(request.getDescription())
-                    .price(null)  // no sale price yet
+                    .price(java.math.BigDecimal.ZERO)  // no sale price yet
                     .currency(request.getCurrency() != null ? request.getCurrency() : "USD")
                     .stock(request.getQuantity() != null ? request.getQuantity() : 1)
                     .status("INVENTORY")
@@ -66,7 +66,6 @@ public class InventoryService {
                     .saleQty(0)
                     .build();
 
-            // Set rating info if provided
             if (request.getRatingCompany() != null) {
                 product.setRatingCompany(request.getRatingCompany());
                 product.setRatingNumber(request.getRatingNumber());
@@ -76,16 +75,17 @@ public class InventoryService {
             product = productRepository.save(product);
             auditService.logCreate("PRODUCT", product.getId(), operatorId, operatorName);
         } else {
-            // Update existing inventory — increment stock
             int qty = request.getQuantity() != null ? request.getQuantity() : 1;
             product.setStock(product.getStock() + qty);
+            if (request.getTitle() != null && !request.getTitle().isBlank()) {
+                product.setTitle(request.getTitle());
+            }
             if (request.getPurchasePrice() != null) product.setPurchasePrice(request.getPurchasePrice());
             if (request.getSupplier() != null) product.setSupplier(request.getSupplier());
             if (request.getInvoiceNo() != null) product.setSourceInvoice(request.getInvoiceNo());
             productRepository.save(product);
         }
 
-        // Create inventory batch record
         InventoryBatch batch = InventoryBatch.builder()
                 .productId(product.getId())
                 .quantity(request.getQuantity() != null ? request.getQuantity() : 1)
@@ -125,9 +125,43 @@ public class InventoryService {
         return body + luhnCheckDigit(body);
     }
 
-    public Page<InventoryEntryResponse> listEntries(Pageable pageable) {
-        Page<InventoryBatch> batches = inventoryBatchRepository.findAllByOrderByBatchDateDesc(pageable);
-        return batches.map(this::toInventoryEntryResponse);
+    private String determineBarcode(InventoryEntryRequest request) {
+        if (request.getBarcode() != null && !request.getBarcode().isBlank()) {
+            return request.getBarcode().trim();
+        }
+        return generateBarcode(request);
+    }
+
+    public Page<InventoryEntryResponse> listEntries(String query, Pageable pageable) {
+        if (query == null || query.isBlank()) {
+            return inventoryBatchRepository.findAllByOrderByBatchDateDesc(pageable)
+                    .map(this::toInventoryEntryResponse);
+        }
+
+        List<Long> productIds = findInventoryProductIds(query);
+        if (!productIds.isEmpty()) {
+            return inventoryBatchRepository.findByProductIdInOrderByBatchDateDesc(productIds, pageable)
+                    .map(this::toInventoryEntryResponse);
+        }
+
+        return inventoryBatchRepository
+                .findBySupplierContainingIgnoreCaseOrInvoiceNoContainingIgnoreCaseOrderByBatchDateDesc(query, query, pageable)
+                .map(this::toInventoryEntryResponse);
+    }
+
+    private List<Long> findInventoryProductIds(String query) {
+        Specification<Product> spec = (root, queryObj, cb) -> {
+            String pattern = "%" + query.toLowerCase() + "%";
+            return cb.and(
+                    cb.equal(root.get("status"), "INVENTORY"),
+                    cb.or(
+                            cb.like(cb.lower(root.get("title")), pattern),
+                            cb.like(cb.lower(root.get("barcode")), pattern),
+                            cb.like(cb.lower(root.get("country")), pattern)
+                    )
+            );
+        };
+        return productRepository.findAll(spec).stream().map(Product::getId).toList();
     }
 
     public List<InventoryEntryResponse> listByDateRange(java.time.LocalDate dateFrom, java.time.LocalDate dateTo) {
@@ -145,7 +179,7 @@ public class InventoryService {
     }
 
     public List<ProductResponse> listForListing() {
-        return productRepository.findByStatus("INVENTORY")
+        return productRepository.findByStatusOrderByCreatedAtDesc("INVENTORY")
                 .stream().map(this::toProductResponse).toList();
     }
 
@@ -179,6 +213,48 @@ public class InventoryService {
         auditService.log("PRODUCT", productId, "STATUS_CHANGE", "status", "INVENTORY", "ACTIVE",
                 operatorId, operatorName, "Listed for sale at " + price);
         return toProductResponse(product);
+    }
+
+    @Transactional
+    public ProductResponse stockOut(Long productId, int quantity, String reason, Long operatorId, String operatorName) {
+        if (quantity <= 0) {
+            throw new BusinessException("出库数量必须大于0");
+        }
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException("商品不存在"));
+        if (product.getStock() == null || product.getStock() < quantity) {
+            throw new BusinessException("出库数量不能超过当前库存");
+        }
+        product.setStock(product.getStock() - quantity);
+        product = productRepository.save(product);
+
+        InventoryBatch batch = InventoryBatch.builder()
+                .productId(product.getId())
+                .quantity(-quantity)
+                .purchasePrice(product.getPurchasePrice() != null ? product.getPurchasePrice() : java.math.BigDecimal.ZERO)
+                .currency(product.getPurchaseCurrency() != null ? product.getPurchaseCurrency() : "USD")
+                .supplier(product.getSupplier())
+                .invoiceNo(product.getSourceInvoice())
+                .batchDate(java.time.LocalDate.now())
+                .notes(reason != null ? reason : "库存出库")
+                .operatorId(operatorId)
+                .build();
+        inventoryBatchRepository.save(batch);
+        auditService.log("INVENTORY_BATCH", batch.getId(), "STOCK_OUT", "quantity", String.valueOf(quantity), "-",
+                operatorId, operatorName, "Outbound stock: " + (reason != null ? reason : "库存出库"));
+        return toProductResponse(product);
+    }
+
+    @Transactional
+    public InventoryEntryResponse updateBatch(Long batchId, InventoryEntryRequest request) {
+        InventoryBatch batch = inventoryBatchRepository.findById(batchId)
+                .orElseThrow(() -> new BusinessException("批次不存在"));
+        if (request.getPurchasePrice() != null) batch.setPurchasePrice(request.getPurchasePrice());
+        if (request.getCurrency() != null) batch.setCurrency(request.getCurrency());
+        if (request.getSupplier() != null) batch.setSupplier(request.getSupplier());
+        if (request.getInvoiceNo() != null) batch.setInvoiceNo(request.getInvoiceNo());
+        inventoryBatchRepository.save(batch);
+        return toInventoryEntryResponse(batch);
     }
 
     private String resolveLabel(String codeValue) {
@@ -232,6 +308,9 @@ public class InventoryService {
                 .barcode(product.map(Product::getBarcode).orElse(null))
                 .title(product.map(Product::getTitle).orElse(null))
                 .country(product.map(Product::getCountry).orElse(null))
+                .category(product.map(p -> p.getCategoryId() != null ? p.getCategoryId().toString() : null).orElse(null))
+                .grade(product.map(Product::getRatingGrade).orElse(null))
+                .denomination(product.map(Product::getDenomination).orElse(null))
                 .quantity(batch.getQuantity())
                 .purchasePrice(batch.getPurchasePrice())
                 .currency(batch.getCurrency())

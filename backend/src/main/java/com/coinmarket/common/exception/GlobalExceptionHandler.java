@@ -3,6 +3,7 @@ package com.coinmarket.common.exception;
 import com.coinmarket.common.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<Void> handleBusinessException(BusinessException e) {
+    public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e) {
         log.warn("Business exception: {}", e.getMessage());
-        return ApiResponse.error(e.getCode(), e.getMessage());
+        HttpStatus status = resolveHttpStatus(e.getCode());
+        return ResponseEntity.status(status)
+                .body(ApiResponse.error(e.getCode(), e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -40,5 +42,13 @@ public class GlobalExceptionHandler {
     public ApiResponse<Void> handleUnknownException(Exception e) {
         log.error("Unexpected error", e);
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error");
+    }
+
+    private HttpStatus resolveHttpStatus(int code) {
+        try {
+            return HttpStatus.valueOf(code);
+        } catch (IllegalArgumentException e) {
+            return HttpStatus.BAD_REQUEST;
+        }
     }
 }

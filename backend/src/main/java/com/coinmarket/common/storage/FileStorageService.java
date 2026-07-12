@@ -24,4 +24,10 @@ public interface FileStorageService {
      * List all stored files for a given barcode directory.
      */
     List<String> listByBarcode(String barcode);
+
+    /**
+     * Load file bytes for a given relative path.
+     * @return file bytes, or null if not found
+     */
+    byte[] load(String path);
 }

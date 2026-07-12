@@ -102,7 +102,11 @@ public class SellerService {
             response.setRejectReason(a.getRejectReason());
         });
         response.setHasProfile(profile.isPresent());
-        profile.ifPresent(p -> response.setLocked(p.isLocked()));
+        profile.ifPresent(p -> {
+            response.setLocked(p.isLocked());
+            response.setShopName(p.getShopName());
+            response.setShopDescription(p.getShopDescription());
+        });
         return response;
     }
 
@@ -111,12 +115,55 @@ public class SellerService {
         long pendingOrders = orderRepository.countBySellerIdAndStatus(userId, "PENDING_PAYMENT");
         BigDecimal monthlySales = orderRepository.sumCompletedSalesSince(userId,
                 LocalDateTime.now().minusDays(30));
-        double averageRating = 0;
+        long lowStockCount = productRepository.countLowStockBySellerId(userId, 3);
+        long toShipCount = orderRepository.countBySellerIdAndStatus(userId, "PAID");
+
+        // Recent 5 orders
+        var recentOrders = orderRepository.findTop5BySellerIdOrderByCreatedAtDesc(userId)
+                .stream().map(o -> SellerDashboardResponse.RecentOrderItem.builder()
+                        .id(o.getId())
+                        .orderNo(o.getOrderNo())
+                        .status(o.getStatus())
+                        .totalAmount(o.getTotalAmount())
+                        .currency(o.getCurrency())
+                        .createdAt(o.getCreatedAt() != null ? o.getCreatedAt().toString() : "")
+                        .build())
+                .toList();
+
+        // Weekly sales (last 7 days)
+        List<BigDecimal> weeklySales = new java.util.ArrayList<>();
+        for (int i = 6; i >= 0; i--) {
+            LocalDateTime dayStart = LocalDateTime.now().minusDays(i).withHour(0).withMinute(0).withSecond(0);
+            LocalDateTime dayEnd = dayStart.plusDays(1);
+            BigDecimal daySales = orderRepository.sumSalesBySellerBetween(userId, dayStart, dayEnd);
+            weeklySales.add(daySales != null ? daySales : BigDecimal.ZERO);
+        }
+
         return SellerDashboardResponse.builder()
                 .productCount(productCount)
                 .pendingOrders(pendingOrders)
                 .monthlySales(monthlySales != null ? monthlySales : BigDecimal.ZERO)
-                .averageRating(averageRating)
+                .averageRating(0)
+                .lowStockCount(lowStockCount)
+                .toShipCount(toShipCount)
+                .recentOrders(recentOrders)
+                .weeklySales(weeklySales)
                 .build();
+    }
+
+    @Transactional
+    public void updateProfile(Long userId, String shopName, String shopDescription) {
+        SellerProfile profile = profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new BusinessException("卖家资料不存在"));
+        if (profile.isLocked()) {
+            throw new BusinessException("资料已锁定，无法修改");
+        }
+        if (shopName != null && !shopName.isBlank()) {
+            profile.setShopName(shopName);
+        }
+        if (shopDescription != null) {
+            profile.setShopDescription(shopDescription);
+        }
+        profileRepository.save(profile);
     }
 }

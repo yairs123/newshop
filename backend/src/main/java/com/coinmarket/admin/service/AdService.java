@@ -31,6 +31,7 @@ public class AdService {
 
     @Transactional
     public AdResponse create(AdRequest request) {
+        validateDates(request);
         Ad entity = new Ad();
         applyRequest(entity, request);
         entity.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
@@ -41,6 +42,7 @@ public class AdService {
     public AdResponse update(Long id, AdRequest request) {
         Ad entity = adRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("广告不存在"));
+        validateDates(request);
         applyRequest(entity, request);
         return AdResponse.from(adRepository.save(entity));
     }
@@ -72,6 +74,13 @@ public class AdService {
                 })
                 .map(AdResponse::from)
                 .toList();
+    }
+
+    private void validateDates(AdRequest request) {
+        if (request.getStartDate() != null && request.getEndDate() != null
+                && request.getEndDate().isBefore(request.getStartDate())) {
+            throw new BusinessException("结束日期不能早于开始日期");
+        }
     }
 
     private void applyRequest(Ad entity, AdRequest request) {

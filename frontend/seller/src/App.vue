@@ -34,6 +34,14 @@
             <el-icon><List /></el-icon>
             <span>{{ $t('seller.menu.orders') }}</span>
           </el-menu-item>
+          <el-menu-item index="/inventory">
+            <el-icon><Download /></el-icon>
+            <span>快捷入库</span>
+          </el-menu-item>
+          <el-menu-item index="/print-labels">
+            <el-icon><Printer /></el-icon>
+            <span>打印条码</span>
+          </el-menu-item>
           <el-menu-item index="/profile">
             <el-icon><User /></el-icon>
             <span>{{ $t('seller.menu.profile') }}</span>
@@ -49,6 +57,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { Download, Printer } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 

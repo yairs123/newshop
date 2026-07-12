@@ -1,40 +1,546 @@
 <template>
   <div class="order-detail" v-loading="loading">
-    <div class="detail-container" style="max-width: 900px; margin: 0 auto; padding: 24px;">
+    <div class="detail-container">
       <el-breadcrumb separator="/" style="margin-bottom: 16px;">
         <el-breadcrumb-item :to="{ path: '/' }">{{ $t('nav.home') }}</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/orders' }">{{ $t('account.orders') }}</el-breadcrumb-item>
-        <el-breadcrumb-item>{{ $t('order.orderNo') }}{{ order?.orderNo ? ': ' + order.orderNo : '' }}</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/orders' }">{{ $t('nav.myOrders') }}</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="order">#{{ order.orderNo }}</el-breadcrumb-item>
       </el-breadcrumb>
-      <h2>Order Detail</h2>
-      <el-card v-if="order">
-      <el-descriptions :column="2" border>
-        <el-descriptions-item label="Order No">{{ order.orderNo }}</el-descriptions-item>
-        <el-descriptions-item label="Status">
-          <el-tag :type="order.status === 'COMPLETED' ? 'success' : 'warning'">{{ order.status }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="Total">${{ order.totalAmount }}</el-descriptions-item>
-        <el-descriptions-item label="Created">{{ order.createdAt }}</el-descriptions-item>
-      </el-descriptions>
-      </el-card>
+
+      <div v-if="!loading && !order" style="text-align: center; padding: 60px 0;">
+        <el-empty :description="$t('order.notFound')" />
+        <el-button type="primary" style="margin-top: 16px;" @click="$router.push('/orders')">
+          {{ $t('order.backToOrders') }}
+        </el-button>
+      </div>
+
+      <template v-if="order">
+        <!-- Header Card -->
+        <el-card shadow="never" class="detail-card header-card">
+          <div class="header-row">
+            <div class="header-left">
+              <h2 class="order-title">{{ $t('order.orderTitle') }} #{{ order.orderNo }}</h2>
+              <p class="order-date">{{ $t('order.placedOn') }} {{ formatDate(order.createdAt) }}</p>
+            </div>
+            <div class="header-right">
+              <el-tag :type="statusType(order.status)" size="large" effect="dark" class="status-tag">
+                {{ statusLabel(order.status) }}
+              </el-tag>
+              <div class="action-buttons" v-if="order.status === 'PENDING_PAYMENT'">
+                <el-button type="warning" :loading="paying" @click="handlePay" size="large">
+                  {{ $t('checkout.payNow') }}
+                </el-button>
+                <el-button type="danger" plain :loading="cancelling" @click="handleCancel" size="large">
+                  {{ $t('common.cancel') }}
+                </el-button>
+              </div>
+              <el-button type="primary" plain size="large" @click="$router.push('/orders/' + order.id + '/invoice')" class="invoice-btn">
+                {{ $t('account.invoice') }}
+              </el-button>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- Order Items Card -->
+        <el-card shadow="never" class="detail-card">
+          <h3 class="section-title">{{ $t('order.items') }}</h3>
+          <el-table :data="order.items || []" style="width: 100%;" stripe>
+            <el-table-column :label="$t('cart.colProduct')" min-width="200">
+              <template #default="{ row }">
+                <span class="product-title">{{ row.productTitle }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('cart.colQuantity')" width="100" align="center">
+              <template #default="{ row }">{{ row.quantity }}</template>
+            </el-table-column>
+            <el-table-column :label="$t('cart.colPrice')" width="130" align="right">
+              <template #default="{ row }">{{ formatPrice(row.unitPrice) }}</template>
+            </el-table-column>
+            <el-table-column :label="$t('order.subtotal')" width="130" align="right">
+              <template #default="{ row }">
+                <span class="subtotal-price">{{ formatPrice(row.subtotal) }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="order-total-line">
+            <span class="total-label">{{ $t('checkout.orderTotal') }}</span>
+            <span class="total-amount">{{ formatPrice(order.totalAmount) }}</span>
+          </div>
+        </el-card>
+
+        <!-- Payment Info Card -->
+        <el-card shadow="never" class="detail-card" v-if="order.paymentMethod">
+          <h3 class="section-title">{{ $t('order.payment') }}</h3>
+          <div class="info-grid">
+            <div class="info-row">
+              <span class="info-label">{{ $t('checkout.paymentMethod') }}</span>
+              <span class="info-value">{{ order.paymentMethod }}</span>
+            </div>
+            <div class="info-row" v-if="order.paidAt">
+              <span class="info-label">{{ $t('order.paidAt') }}</span>
+              <span class="info-value">{{ formatDate(order.paidAt) }}</span>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- Shipping Card -->
+        <el-card shadow="never" class="detail-card" v-if="order.shippingAddress">
+          <h3 class="section-title">{{ $t('order.shipping') }}</h3>
+          <div class="info-grid">
+            <div class="info-row">
+              <span class="info-label">{{ $t('checkout.shippingAddress') }}</span>
+              <span class="info-value">{{ order.shippingAddress }}</span>
+            </div>
+            <div class="info-row" v-if="order.shippingMethod">
+              <span class="info-label">{{ $t('checkout.shippingMethod') }}</span>
+              <span class="info-value">{{ order.shippingMethod }}</span>
+            </div>
+            <div class="info-row" v-if="order.trackingNumber">
+              <span class="info-label">{{ $t('account.trackingNumber') }}</span>
+              <span class="info-value">
+                {{ order.trackingNumber }}
+                <el-tag size="small" type="warning" style="margin-left: 8px;" v-if="order.trackingCompany">
+                  {{ order.trackingCompany }}
+                </el-tag>
+              </span>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- Buyer Note Card -->
+        <el-card shadow="never" class="detail-card" v-if="order.buyerNote">
+          <h3 class="section-title">{{ $t('checkout.buyerNote') }}</h3>
+          <p class="buyer-note">{{ order.buyerNote }}</p>
+        </el-card>
+
+        <!-- Order Timeline Card -->
+        <el-card shadow="never" class="detail-card" v-if="order.logs && order.logs.length">
+          <h3 class="section-title">{{ $t('order.history') }}</h3>
+          <div class="timeline">
+            <div
+              v-for="(log, index) in sortedLogs"
+              :key="index"
+              class="timeline-item"
+              :class="{ 'timeline-item-last': index === sortedLogs.length - 1 }"
+            >
+              <div class="timeline-dot-wrapper">
+                <div class="timeline-dot" :class="'dot-' + statusType(log.toStatus)"></div>
+                <div class="timeline-line" v-if="index < sortedLogs.length - 1"></div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-header">
+                  <span class="timeline-status">{{ statusLabel(log.toStatus) }}</span>
+                  <span class="timeline-time">{{ formatDate(log.createdAt) }}</span>
+                </div>
+                <div class="timeline-meta" v-if="log.operator || log.note">
+                  <span v-if="log.operator" class="timeline-operator">{{ $t('order.by') }} {{ log.operator }}</span>
+                  <span v-if="log.note" class="timeline-note">{{ log.note }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </el-card>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const route = useRoute()
+const router = useRouter()
+const { t, locale } = useI18n()
+
 const order = ref(null)
 const loading = ref(true)
+const paying = ref(false)
+const cancelling = ref(false)
 
-onMounted(async () => {
-  try {
-    const res = await api.get(`/orders/${route.params.id}`)
-    order.value = res.data
-  } catch (e) {}
-  loading.value = false
+const statusTypeMap = {
+  PENDING_PAYMENT: 'danger',
+  PAID: 'success',
+  SHIPPED: 'warning',
+  COMPLETED: 'success',
+  CANCELLED: 'info',
+}
+
+const sortedLogs = computed(() => {
+  if (!order.value || !order.value.logs) return []
+  const logs = [...order.value.logs]
+  logs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+  return logs
 })
+
+function statusType(status) {
+  return statusTypeMap[status] || 'info'
+}
+
+function statusLabel(status) {
+  return t('order.' + status)
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return dateStr
+  return d.toLocaleDateString(locale.value, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+function formatPrice(price) {
+  if (price == null) return '$0.00'
+  return '$' + Number(price).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
+
+async function fetchOrder() {
+  loading.value = true
+  try {
+    const res = await api.get('/orders/' + route.params.id)
+    order.value = res.data
+  } catch (e) {
+    order.value = null
+  }
+  loading.value = false
+}
+
+async function handlePay() {
+  paying.value = true
+  try {
+    const id = route.params.id
+    const returnUrl = window.location.origin + '/payment/return?orderId=' + id
+    const cancelUrl = window.location.origin + '/orders/' + id
+    const res = await api.post('/orders/' + id + '/pay', {
+      returnUrl,
+      cancelUrl,
+    })
+    if (res.data && res.data.paymentUrl) {
+      window.location.href = res.data.paymentUrl
+    } else {
+      ElMessage.success(t('account.paymentInitiated'))
+      await fetchOrder()
+    }
+  } catch (e) {
+    // Error message handled by API interceptor
+  }
+  paying.value = false
+}
+
+async function handleCancel() {
+  try {
+    await ElMessageBox.confirm(
+      t('account.confirmCancel'),
+      t('account.confirmCancelTitle'),
+      {
+        confirmButtonText: t('account.confirmYesCancel'),
+        cancelButtonText: t('account.confirmKeepOrder'),
+        type: 'warning',
+      }
+    )
+  } catch (e) {
+    return
+  }
+  cancelling.value = true
+  try {
+    await api.post('/orders/' + route.params.id + '/cancel')
+    ElMessage.success(t('account.orderCancelled'))
+    await fetchOrder()
+  } catch (e) {
+    // Error message handled by API interceptor
+  }
+  cancelling.value = false
+}
+
+onMounted(fetchOrder)
 </script>
+
+<style scoped>
+.detail-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.detail-card {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: 1px solid #ebeef5;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Header Card */
+.header-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.order-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin: 0 0 4px 0;
+}
+
+.order-date {
+  font-size: 13px;
+  color: #86868b;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.status-tag {
+  font-size: 14px;
+  padding: 6px 14px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Items Table */
+.product-title {
+  font-weight: 500;
+  color: #1d1d1f;
+}
+
+.subtotal-price {
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.order-total-line {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px 0 0;
+  margin-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.total-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.total-amount {
+  font-size: 22px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+/* Info Grid */
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.info-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #86868b;
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #1d1d1f;
+  word-break: break-word;
+}
+
+/* Buyer Note */
+.buyer-note {
+  font-size: 14px;
+  color: #6b7280;
+  background: #f9fafb;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Timeline */
+.timeline {
+  padding: 4px 0;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  position: relative;
+}
+
+.timeline-item + .timeline-item {
+  margin-top: 0;
+}
+
+.timeline-dot-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  border: 2px solid #bfbfbf;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.timeline-dot.dot-danger {
+  background: #fef0f0;
+  border-color: #f56c6c;
+}
+
+.timeline-dot.dot-success {
+  background: #f0f9eb;
+  border-color: #67c23a;
+}
+
+.timeline-dot.dot-warning {
+  background: #fdf6ec;
+  border-color: #e6a23c;
+}
+
+.timeline-dot.dot-info {
+  background: #f4f4f5;
+  border-color: #909399;
+}
+
+.timeline-line {
+  width: 2px;
+  flex: 1;
+  background: #e8e8e8;
+  min-height: 24px;
+}
+
+.timeline-item-last .timeline-line {
+  display: none;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-bottom: 20px;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.timeline-status {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.timeline-time {
+  font-size: 12px;
+  color: #86868b;
+  white-space: nowrap;
+}
+
+.timeline-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.timeline-operator {
+  font-size: 12px;
+  color: #86868b;
+}
+
+.timeline-note {
+  font-size: 12px;
+  color: #909399;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .detail-container {
+    padding: 12px;
+  }
+
+  .header-row {
+    flex-direction: column;
+  }
+
+  .header-right {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .action-buttons {
+    width: 100%;
+  }
+
+  .action-buttons .el-button {
+    flex: 1;
+  }
+
+  .info-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .info-label {
+    min-width: auto;
+  }
+
+  .order-total-line {
+    padding-right: 0;
+  }
+}
+</style>

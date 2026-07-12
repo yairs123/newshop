@@ -4,6 +4,7 @@ import com.coinmarket.admin.entity.InventoryBatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -11,9 +12,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, Long> {
+public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, Long>, JpaSpecificationExecutor<InventoryBatch> {
     List<InventoryBatch> findByProductIdOrderByBatchDateDesc(Long productId);
     Page<InventoryBatch> findAllByOrderByBatchDateDesc(Pageable pageable);
+    Page<InventoryBatch> findByProductIdInOrderByBatchDateDesc(List<Long> productIds, Pageable pageable);
+    Page<InventoryBatch> findBySupplierContainingIgnoreCaseOrInvoiceNoContainingIgnoreCaseOrderByBatchDateDesc(String supplier, String invoiceNo, Pageable pageable);
 
     // Calculate average purchase price for a product
     default BigDecimal averagePurchasePrice(Long productId) {

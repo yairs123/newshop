@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-@ConditionalOnProperty(name = "app.file.storage-type", havingValue = "local", matchIfMissing = true)
+@ConditionalOnProperty(name = "app.storage.type", havingValue = "local", matchIfMissing = true)
 public class LocalFileStorageService implements FileStorageService {
 
     @Value("${app.file.upload-dir:./uploads}")
@@ -89,6 +89,17 @@ public class LocalFileStorageService implements FileStorageService {
 
     public Path loadAsPath(String relativePath) {
         return rootPath.resolve(relativePath).normalize();
+    }
+
+    @Override
+    public byte[] load(String path) {
+        try {
+            Path file = loadAsPath(path);
+            return Files.readAllBytes(file);
+        } catch (IOException e) {
+            log.warn("Failed to load file: {}", path, e);
+            return null;
+        }
     }
 
     public Resource loadAsResource(String relativePath) {

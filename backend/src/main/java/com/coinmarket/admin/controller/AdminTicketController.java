@@ -4,6 +4,8 @@ import com.coinmarket.admin.service.AdminTicketService;
 import com.coinmarket.common.dto.ApiResponse;
 import com.coinmarket.user.dto.SupportTicketResponse;
 import com.coinmarket.user.entity.SupportTicket;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +18,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/admin/tickets")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "工单管理", description = "管理员工单管理接口，包括工单查询、回复和状态更新")
 public class AdminTicketController {
 
     private final AdminTicketService adminTicketService;
 
     @GetMapping
+    @Operation(summary = "获取工单列表", description = "查询所有工单，可按状态过滤")
     public ApiResponse<List<SupportTicketResponse>> listTickets(
             @RequestParam(required = false) String status) {
         List<SupportTicket> tickets = adminTicketService.listTickets(status);
@@ -30,11 +34,13 @@ public class AdminTicketController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "获取工单详情", description = "根据ID获取工单详细信息")
     public ApiResponse<SupportTicketResponse> getTicket(@PathVariable Long id) {
         return ApiResponse.success(SupportTicketResponse.fromEntity(adminTicketService.getTicket(id)));
     }
 
     @PostMapping("/{id}/reply")
+    @Operation(summary = "回复工单", description = "回复客户提交的工单")
     public ApiResponse<SupportTicketResponse> reply(
             @PathVariable Long id,
             @RequestBody Map<String, String> body) {
@@ -46,6 +52,7 @@ public class AdminTicketController {
     }
 
     @PutMapping("/{id}/status")
+    @Operation(summary = "更新工单状态", description = "更新工单处理状态")
     public ApiResponse<SupportTicketResponse> updateStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> body) {

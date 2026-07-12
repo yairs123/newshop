@@ -14,7 +14,7 @@
         </span>
         <div class="sort-area">
           <span class="sort-label">{{ $t('shop.sortLabel') }}</span>
-          <el-select v-model="sort" size="small" style="width:160px" @change="search">
+          <el-select v-model="sort" size="small" style="width:160px" @change="changeSort">
             <el-option :label="$t('shop.sortNewest')" value="createdAt,desc" />
             <el-option :label="$t('shop.sortPriceLow')" value="price,asc" />
             <el-option :label="$t('shop.sortPriceHigh')" value="price,desc" />
@@ -22,49 +22,47 @@
         </div>
       </div>
 
-      <!-- Filter Bar: Categories + Rating + Price -->
-      <div class="filter-bar">
+      <!-- Filter Bar (sticky) -->
+      <div class="filter-bar sticky-filter">
         <div class="filter-row">
           <span class="filter-label">{{ $t('shop.categories') }}</span>
           <div class="filter-chips">
-            <button
-              :class="['chip', { active: !filters.categoryId }]"
-              @click="filters.categoryId = null; search()"
-            >{{ $t('shop.allCategories') }}</button>
-            <button
+            <UiFilterChip :active="!filters.categoryId" @click="selectCategory(null)">
+              {{ $t('shop.allCategories') }}
+            </UiFilterChip>
+            <UiFilterChip
               v-for="cat in categories"
               :key="cat.id"
-              :class="['chip', { active: filters.categoryId === cat.id }]"
-              @click="filters.categoryId = cat.id; search()"
+              :active="filters.categoryId === cat.id"
+              :count="categoryCounts[cat.id] || 0"
+              @click="selectCategory(cat.id)"
             >
               {{ $t('categories.' + cat.slug) }}
-              <span class="chip-count">{{ categoryCounts[cat.id] || 0 }}</span>
-            </button>
+            </UiFilterChip>
           </div>
         </div>
         <div class="filter-row">
           <span class="filter-label">{{ $t('shop.ratingCompany') }}</span>
           <div class="filter-chips">
-            <button
-              :class="['chip', { active: !filters.ratingCompany }]"
-              @click="filters.ratingCompany = null; search()"
-            >{{ $t('common.all') }}</button>
-            <button
+            <UiFilterChip :active="!filters.ratingCompany" @click="selectRatingCompany(null)">
+              {{ $t('common.all') }}
+            </UiFilterChip>
+            <UiFilterChip
               v-for="r in ['NGC','PCGS','PMG']"
               :key="r"
-              :class="['chip', { active: filters.ratingCompany === r }]"
-              @click="filters.ratingCompany = r; search()"
+              :active="filters.ratingCompany === r"
+              :count="ratingCounts[r] || 0"
+              @click="selectRatingCompany(r)"
             >
               {{ r }}
-              <span class="chip-count">{{ ratingCounts[r] || 0 }}</span>
-            </button>
+            </UiFilterChip>
           </div>
           <div class="filter-price">
             <span class="filter-label">{{ $t('shop.priceRange') }}</span>
             <el-input v-model="filters.minPrice" :placeholder="$t('shop.min')" size="small" class="price-input" />
             <span class="price-sep">—</span>
             <el-input v-model="filters.maxPrice" :placeholder="$t('shop.max')" size="small" class="price-input" />
-            <el-button size="small" type="primary" @click="search">{{ $t('shop.apply') }}</el-button>
+            <el-button size="small" type="primary" @click="applyFilters">{{ $t('shop.apply') }}</el-button>
           </div>
         </div>
       </div>
@@ -76,7 +74,7 @@
           <ul class="country-list">
             <li
               :class="['country-option', { active: !filters.country }]"
-              @click="filters.country = null; search()"
+              @click="selectCountry(null)"
             >
               <span class="co-dot" :class="{ filled: !filters.country }"></span>
               <span>{{ $t('common.all') }}</span>
@@ -86,7 +84,7 @@
               v-for="c in availableCountries"
               :key="c"
               :class="['country-option', { active: filters.country === c }]"
-              @click="filters.country = c; search()"
+              @click="selectCountry(c)"
             >
               <span class="co-dot" :class="{ filled: filters.country === c }"></span>
               <span>{{ $t('countries.' + c) }}</span>
@@ -98,122 +96,80 @@
         <main class="shop-main">
           <!-- Product Grid -->
           <div class="product-grid" v-loading="loading">
-            <div
-              class="product-card"
+            <UiProductCard
               v-for="p in products"
               :key="p.id"
-              @click="$router.push(`/products/${p.id}`)"
-            >
-              <div class="card-image">
-                <div class="image-placeholder">
-                  <span>{{ p.title.charAt(0) }}</span>
-                </div>
-                <div class="card-badge" v-if="p.ratingGrade">
-                  {{ p.ratingCompany }} {{ p.ratingGrade }}
-                </div>
-                <button class="favorite-btn" :class="{ active: favoritesStore.isFavorite(p.id) }" @click.stop="favoritesStore.toggle(p)">
-                  <el-icon :size="18">
-                    <StarFilled v-if="favoritesStore.isFavorite(p.id)" />
-                    <Star v-else />
-                  </el-icon>
-                </button>
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">{{ p.title }}</h4>
-                <div class="card-meta">
-                  <span v-if="p.country">{{ $t('countries.' + p.country) }}</span>
-                  <span v-if="p.year">{{ p.year }}</span>
-                  <span v-if="p.material">{{ p.material }}</span>
-                </div>
-                <div class="card-footer">
-                  <span class="card-price">{{ formatPrice(p.price) }} {{ p.currency || 'USD' }}</span>
-                  <div class="card-actions">
-                    <el-button v-if="p.stock > 0" size="small" type="primary" :icon="ShoppingCart" @click.stop="addToCart(p)">{{ $t('product.addToCart') }}</el-button>
-                    <el-tag v-if="p.stock > 0" size="small" type="success" effect="plain">{{ $t('home.inStock') }}</el-tag>
-                    <el-tag v-else size="small" type="danger" effect="plain">{{ $t('home.sold') }}</el-tag>
-                  </div>
-                </div>
-              </div>
-            </div>
+              :product="p"
+              :isFavorite="favoritesStore.isFavorite(p.id)"
+              @add-to-cart="addToCart"
+              @toggle-favorite="handleFavorite"
+              @open-product="goToProduct"
+            />
           </div>
 
           <!-- Empty -->
-          <div class="empty-state" v-if="!loading && products.length === 0">
-            <el-icon :size="48"><Search /></el-icon>
-            <p>{{ $t('shop.noProducts') }}</p>
-          </div>
+          <UiEmptyState v-if="!loading && products.length === 0" :message="$t('shop.noProducts')" />
 
           <!-- Pagination -->
-          <div class="pagination-wrap" v-if="total > 0">
-            <span class="page-info">{{ from }}-{{ to }} / {{ total }}</span>
-            <div class="pagination-btns">
-              <button class="page-btn" :disabled="page <= 1" @click="page--; loadProducts()">{{ $t('shop.prev') }}</button>
-              <button
-                v-for="p in pageNumbers"
-                :key="p"
-                :class="['page-btn', { active: p === page }]"
-                @click="page = p; loadProducts()"
-              >{{ p === '...' ? '...' : p }}</button>
-              <button class="page-btn" :disabled="page >= totalPages" @click="page++; loadProducts()">{{ $t('shop.next') }}</button>
-            </div>
-          </div>
+          <UiPagination
+            :page="page"
+            :total="total"
+            :size="size"
+            @update:page="onPageChange"
+          />
         </main>
       </div>
     </div>
+
+    <!-- Back to top button -->
+    <transition name="fade">
+      <button v-if="showBackToTop" class="back-to-top" @click="scrollToTop" aria-label="Back to top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+      </button>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch, inject } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, watch, inject } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCartStore } from '../store/cart'
 import { useFavoritesStore } from '../store/favorites'
-import { api } from '../api'
-import { Star, StarFilled, ShoppingCart } from '@element-plus/icons-vue'
+import UiProductCard from '../components/ui/UiProductCard.vue'
+import UiPagination from '../components/ui/UiPagination.vue'
+import UiEmptyState from '../components/ui/UiEmptyState.vue'
+import UiFilterChip from '../components/ui/UiFilterChip.vue'
+import { useProductSearch } from '../composables/useProductSearch'
 
 const route = useRoute()
 const router = useRouter()
 const cartStore = useCartStore()
 const favoritesStore = useFavoritesStore()
 const openCartDrawer = inject('openCartDrawer')
-const products = ref([])
-const categories = ref([])
-const total = ref(0)
-const page = ref(1)
-const size = ref(40)
-const loading = ref(false)
-const sort = ref('createdAt,desc')
 
-const filters = reactive({
+const {
+  products,
+  categories,
+  total,
+  loading,
+  page,
+  size,
+  sort,
+  filters,
+  loadCategories,
+  loadProducts,
+  search,
+  setSort
+} = useProductSearch({
+  page: route.query.page ? Number(route.query.page) : 1,
+  size: 40,
   keyword: route.query.keyword || '',
-  categoryId: route.query.categoryId ? Number(route.query.categoryId) : null,
-  ratingCompany: null,
-  country: null,
-  minPrice: null,
-  maxPrice: null,
+  categoryId: route.query.categoryId ? Number(route.query.categoryId) : null
 })
 
-const totalPages = computed(() => Math.max(1, Math.ceil(total.value / size.value)))
 const from = computed(() => total.value === 0 ? 0 : (page.value - 1) * size.value + 1)
 const to = computed(() => Math.min(page.value * size.value, total.value))
 
-const pageNumbers = computed(() => {
-  const tp = totalPages.value
-  const cp = page.value
-  const pages = []
-  if (tp <= 10) {
-    for (let i = 1; i <= tp; i++) pages.push(i)
-    return pages
-  }
-  pages.push(1)
-  if (cp > 3) pages.push('...')
-  for (let i = Math.max(2, cp - 1); i <= Math.min(tp - 1, cp + 1); i++) pages.push(i)
-  if (cp < tp - 2) pages.push('...')
-  pages.push(tp)
-  return pages
-})
-
-// Computed filter counts from current products
 const categoryCounts = computed(() => {
   const counts = {}
   products.value.forEach(p => {
@@ -247,45 +203,25 @@ onMounted(async () => {
   await Promise.all([loadCategories(), loadProducts()])
 })
 
-// Watch route query changes (e.g., keyword from header search)
 watch(() => route.query, () => {
   filters.keyword = route.query.keyword || ''
   filters.categoryId = route.query.categoryId ? Number(route.query.categoryId) : null
-  page.value = 1
+  filters.ratingCompany = route.query.ratingCompany || null
+  filters.country = route.query.country || null
+  filters.minPrice = route.query.minPrice ? Number(route.query.minPrice) : null
+  filters.maxPrice = route.query.maxPrice ? Number(route.query.maxPrice) : null
+  sort.value = route.query.sort || 'createdAt,desc'
+  page.value = route.query.page ? Number(route.query.page) : 1
   loadProducts()
 })
 
-async function loadCategories() {
-  try {
-    const res = await api.get('/products/categories')
-    categories.value = res.data || []
-  } catch (e) {}
+function handleSearch() {
+  search()
 }
 
-async function loadProducts() {
-  loading.value = true
-  const params = { page: page.value - 1, size: size.value }
-  if (filters.keyword) params.keyword = filters.keyword
-  if (filters.categoryId) params.categoryId = filters.categoryId
-  if (filters.ratingCompany) params.ratingCompany = filters.ratingCompany
-  if (filters.country) params.country = filters.country
-  if (filters.minPrice) params.minPrice = filters.minPrice
-  if (filters.maxPrice) params.maxPrice = filters.maxPrice
-  if (sort.value) {
-    const [field, dir] = sort.value.split(',')
-    params.sort = `${field},${dir}`
-  }
-  try {
-    const res = await api.get('/products', { params })
-    products.value = res.data?.content || []
-    total.value = res.data?.totalElements || 0
-  } catch (e) {}
-  loading.value = false
-}
-
-function search() {
-  page.value = 1
-  loadProducts()
+function changeSort(value) {
+  setSort(value)
+  updateRouteQuery()
 }
 
 function addToCart(product) {
@@ -293,10 +229,77 @@ function addToCart(product) {
   if (openCartDrawer) openCartDrawer()
 }
 
-function formatPrice(p) { return Number(p).toLocaleString() }
+function handleFavorite(product) {
+  favoritesStore.toggle(product)
+}
+
+function goToProduct(productId) {
+  router.push(`/products/${productId}`)
+}
+
+function updateRouteQuery() {
+  const query = {}
+  if (filters.keyword) query.keyword = filters.keyword
+  if (filters.categoryId) query.categoryId = String(filters.categoryId)
+  if (filters.ratingCompany) query.ratingCompany = filters.ratingCompany
+  if (filters.country) query.country = filters.country
+  if (filters.minPrice) query.minPrice = String(filters.minPrice)
+  if (filters.maxPrice) query.maxPrice = String(filters.maxPrice)
+  if (sort.value) query.sort = sort.value
+  query.page = String(page.value)
+  router.replace({ query })
+}
+
+function applyFilters() {
+  page.value = 1
+  updateRouteQuery()
+}
+
+function selectCategory(categoryId) {
+  filters.categoryId = categoryId
+  page.value = 1
+  updateRouteQuery()
+}
+
+function selectRatingCompany(ratingCompany) {
+  filters.ratingCompany = ratingCompany
+  page.value = 1
+  updateRouteQuery()
+}
+
+function selectCountry(country) {
+  filters.country = country
+  page.value = 1
+  updateRouteQuery()
+}
+
+// === UX: Back to top + sticky filter ===
+const showBackToTop = ref(false)
+let scrollHandler = null
+
+onMounted(function() {
+  scrollHandler = function() {
+    showBackToTop.value = window.scrollY > 400
+  }
+  window.addEventListener('scroll', scrollHandler, { passive: true })
+})
+
+onUnmounted(function() {
+  if (scrollHandler) window.removeEventListener('scroll', scrollHandler)
+})
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function onPageChange(newPage) {
+  page.value = newPage
+  loadProducts()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 </script>
 
-<style>
+<style scoped>
 .shop-page { background: #f9fafb; min-height: 100vh; }
 .shop-inner { max-width: 1280px; margin: 0 auto; padding: 24px 24px 40px; }
 
@@ -453,7 +456,33 @@ function formatPrice(p) { return Number(p).toLocaleString() }
   .filter-row { flex-direction: column; align-items: flex-start; }
   .filter-price { margin-left: 0; width: 100%; }
 }
-@media (max-width: 480px) {
+.back-to-top {
+	  position: fixed;
+	  bottom: 32px;
+	  right: 24px;
+	  width: 44px;
+	  height: 44px;
+	  border-radius: 50%;
+	  background: #f59e0b;
+	  color: #fff;
+	  border: none;
+	  box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+	  cursor: pointer;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  z-index: 999;
+	  transition: all 0.2s;
+	}
+	.back-to-top:hover {
+	  background: #d97706;
+	  transform: translateY(-2px);
+	  box-shadow: 0 6px 20px rgba(245,158,11,0.4);
+	}
+	.fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
+	.fade-enter-from, .fade-leave-to { opacity: 0; }
+	
+	@media (max-width: 480px) {
   .product-grid { grid-template-columns: 1fr; }
 }
 </style>

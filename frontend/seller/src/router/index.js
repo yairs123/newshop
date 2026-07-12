@@ -30,6 +30,16 @@ const routes = [
     path: '/profile',
     component: () => import('../views/Profile.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/inventory',
+    component: () => import('../views/QuickInventory.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/print-labels',
+    component: () => import('../views/PrintLabels.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

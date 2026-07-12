@@ -16,9 +16,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findBySellerIdOrderByCreatedAtDesc(Long sellerId);
     List<Order> findByBuyerIdAndStatusInOrderByCreatedAtDesc(Long buyerId, List<String> statuses);
     long countBySellerIdAndStatus(Long sellerId, String status);
+    List<Order> findTop5BySellerIdOrderByCreatedAtDesc(Long sellerId);
 
-    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.sellerId = :sellerId AND o.status = 'COMPLETED' AND o.createdAt >= :since")
+    @Query("SELECT COALESCE(SUM(o.totalAmount), 0) FROM Order o WHERE o.sellerId = :sellerId AND o.status = 'COMPLETED' AND o.completedAt >= :since")
     BigDecimal sumCompletedSalesSince(@Param("sellerId") Long sellerId, @Param("since") LocalDateTime since);
+
+    @Query(value = "SELECT COALESCE(SUM(o.total_amount), 0) FROM coin_order.orders o WHERE o.seller_id = :sellerId AND o.status = 'COMPLETED' AND o.completed_at >= :from AND o.completed_at < :to", nativeQuery = true)
+    BigDecimal sumSalesBySellerBetween(@Param("sellerId") Long sellerId, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
     @Query("SELECT DISTINCT oi.productId, oi.productTitle, oi.unitPrice, oi.order.id " +
            "FROM OrderItem oi WHERE oi.order.buyerId = :buyerId AND oi.order.status = 'COMPLETED'")

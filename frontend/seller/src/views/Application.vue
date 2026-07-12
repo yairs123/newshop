@@ -29,13 +29,15 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { api } from '../api'
 
+const router = useRouter()
 const formRef = ref(null)
 const hasApplied = ref(false)
 const status = ref('')
 
-const form = reactive({ shopName: '', shopDescription: '' })
+const form = reactive({ shopName: '', shopDescription: '', idDocumentUrl: '' })
 const rules = { shopName: [{ required: true, message: 'Required', trigger: 'blur' }] }
 
 const statusIcon = computed(() => status.value === 'APPROVED' ? 'success' : status.value === 'REJECTED' ? 'error' : 'info')
@@ -59,9 +61,17 @@ function reapply() {
 async function loadStatus() {
   try {
     const res = await api.get('/seller/status')
-    if (res.data && res.data.hasApplied) {
-      hasApplied.value = true
-      status.value = res.data.status
+    const data = res.data
+    if (data) {
+      if (data.hasProfile) {
+        // Already a seller with a profile — go to dashboard
+        router.push('/dashboard')
+        return
+      }
+      if (data.hasApplied) {
+        hasApplied.value = true
+        status.value = data.status
+      }
     }
   } catch (e) {}
 }

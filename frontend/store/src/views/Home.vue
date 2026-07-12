@@ -186,7 +186,7 @@ onMounted(async () => {
 function formatPrice(p) { return Number(p).toLocaleString() }
 </script>
 
-<style>
+<style scoped>
 /* Hero */
 .hero {
   background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e40af 100%);

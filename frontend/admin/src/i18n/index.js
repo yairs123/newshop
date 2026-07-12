@@ -3,10 +3,10 @@ import { createI18n } from 'vue-i18n'
 const messages = {
   en: {
     admin: {
-      title: 'Admin Panel',
+      title: 'Admin Panel', loginSubtitle: 'Management Dashboard', username: 'Username', password: 'Password',
       menu: { dashboard: 'Dashboard', products: 'Products', orders: 'Orders', users: 'Users', sellers: 'Sellers', tickets: 'Tickets' },
       menuGroup: { products: 'Product Mgmt', orders: 'Order Mgmt', users: 'User Mgmt', content: 'Content Mgmt', finance: 'Finance', tools: 'Tools' },
-      menuSub: { productList: 'Products', inventory: 'Inventory Entry', printLabels: 'Print Labels', importImages: 'Import Images', history: 'History', orderList: 'Orders', buyerMgmt: 'Buyers', sellerMgmt: 'Sellers', ads: 'Ads', news: 'News', financeDashboard: 'Dashboard', salesRevenue: 'Sales Revenue', purchaseReport: 'Purchase Report', profitReport: 'Profit Report', barcodeCodes: 'Barcode Codes', auditLogs: 'Audit Logs' }
+      menuSub: { productList: 'Products', inventory: '商品入库', listForSale: 'List for Sale', printLabels: 'Print Labels', importImages: 'Import Images', history: 'History', orderList: 'Orders', buyerMgmt: 'Buyers', sellerMgmt: 'Sellers', ads: 'Ads', news: 'News', financeDashboard: 'Dashboard', salesRevenue: 'Sales Revenue', purchaseReport: 'Purchase Report', profitReport: 'Profit Report', barcodeCodes: 'Barcode Codes', auditLogs: 'Audit Logs' }
     },
     tickets: {
       title: 'Ticket Management',
@@ -19,7 +19,7 @@ const messages = {
       sendReply: 'Send Reply'
     },
     dashboard: {
-      title: 'Dashboard',
+      title: 'Dashboard', quickActions: 'Quick Actions',
       totalProducts: 'Total Products',
       totalOrders: 'Total Orders',
       totalUsers: 'Total Users',
@@ -41,9 +41,13 @@ const messages = {
       id: 'ID',
       orderNo: 'Order No',
       status: 'Status',
+      statuses: { PENDING_PAYMENT: 'Pending Payment', PAID: 'Paid', SHIPPED: 'Shipped', COMPLETED: 'Completed', CANCELLED: 'Cancelled' },
       amount: 'Amount',
       buyer: 'Buyer',
       seller: 'Seller',
+      detail: 'Detail',
+      createdAt: 'Created At',
+      invoice: 'Invoice',
       forceComplete: 'Force Complete',
       forceCompleteTip: 'Force complete this order'
     },
@@ -77,14 +81,38 @@ const messages = {
       purchaseReport: { title: 'Purchase Report', totalCost: 'Total Cost', batchCount: 'Batch Count', avgCostPerBatch: 'Avg Cost / Batch', month: 'Month', cost: 'Cost' },
       profitReport: { title: 'Profit Report', totalRevenue: 'Total Revenue', totalCost: 'Total Cost', netProfit: 'Net Profit', profitMargin: 'Profit Margin', month: 'Month', revenue: 'Revenue', cost: 'Cost', profit: 'Profit', margin: 'Margin (%)' }
     },
-    common: { logout: 'Logout', submit: 'Submit', cancel: 'Cancel', search: 'Search', yes: 'Yes', no: 'No', noData: 'No Data', startDate: 'Start Date', endDate: 'End Date' }
+    inventory: {
+      title: 'Inventory Entry', quickEntry: 'New Entry', barcode: 'Barcode', scanner: 'Scan Barcode',
+      country: 'Country', category: 'Category', grade: 'Grade', variety: 'Variety/Denom',
+      yearEra: 'Year/Era', material: 'Material', title: 'Title', rating: 'Rating',
+      purchaseInfo: 'Purchase Info', purchasePrice: 'Purchase Price', currency: 'Currency',
+      quantity: 'Quantity', date: 'Date', supplier: 'Supplier', sourceInvoice: 'Invoice No',
+      description: 'Description', search: 'Search barcode/title/supplier',
+      existingProductFound: 'Existing product found, inventory will be added to stock.',
+      newProduct: 'New Product', barcodePreview: 'Barcode Preview',
+      generateBarcode: 'Generate Barcode', lookupBarcode: 'Lookup',
+      batchDate: 'Batch Date', createdAt: 'Created At', detail: 'Detail',
+      newEntry: 'New Entry', existingProduct: 'Existing Product',
+      saveEntry: 'Save', saving: 'Saving...',
+      defaults: 'Defaults: Qty=1, Currency=USD, Date=today',
+      noData: 'No inventory records yet.',
+      loadExisting: 'Load Existing',
+      scanOrInput: 'Scan or type barcode'
+    },
+    listForSale: {
+      title: 'List for Sale', hint: 'Set sale price to make inventory available in store',
+      search: 'Search products...', noData: 'No inventory products to list yet.',
+      list: 'List', listConfirm: 'List for Sale', salePrice: 'Sale Price',
+      confirmList: 'Confirm Listing', listing: 'Listing...'
+    },
+    common: { login: 'Login', logout: 'Logout', actions: 'Actions', all: 'All', confirm: 'Confirm', success: 'Success', submit: 'Submit', cancel: 'Cancel', search: 'Search', yes: 'Yes', no: 'No', noData: 'No Data', startDate: 'Start Date', endDate: 'End Date' }
   },
   'zh-CN': {
     admin: {
-      title: '管理后台',
+      title: '管理后台', loginSubtitle: '管理后台', username: '用户名', password: '密码',
       menu: { dashboard: '控制台', products: '商品管理', orders: '订单管理', users: '用户管理', sellers: '卖家管理', tickets: '工单管理' },
       menuGroup: { products: '商品管理', orders: '订单管理', users: '用户管理', content: '内容管理', finance: '财务管理', tools: '工具' },
-      menuSub: { productList: '商品列表', inventory: '入库', printLabels: '打印标签', importImages: '导入图片', history: '历史查询', orderList: '订单列表', buyerMgmt: '买家管理', sellerMgmt: '卖家管理', ads: '广告管理', news: '新闻管理', financeDashboard: '财务概览', salesRevenue: '销售收入', purchaseReport: '采购入库', profitReport: '利润报表', barcodeCodes: '编码维护', auditLogs: '操作日志' }
+      menuSub: { productList: '商品列表', inventory: '商品入库', listForSale: '商品上架', printLabels: '打印标签', importImages: '导入图片', history: '历史查询', orderList: '订单列表', buyerMgmt: '买家管理', sellerMgmt: '卖家管理', ads: '广告管理', news: '新闻管理', financeDashboard: '财务概览', salesRevenue: '销售收入', purchaseReport: '采购入库', profitReport: '利润报表', barcodeCodes: '编码维护', auditLogs: '操作日志' }
     },
     tickets: {
       title: '工单管理',
@@ -97,7 +125,7 @@ const messages = {
       sendReply: '发送回复'
     },
     dashboard: {
-      title: '控制台',
+      title: '控制台', quickActions: '快捷操作',
       totalProducts: '商品总数',
       totalOrders: '订单总数',
       totalUsers: '用户总数',
@@ -119,9 +147,13 @@ const messages = {
       id: 'ID',
       orderNo: '订单号',
       status: '状态',
+      statuses: { PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已发货', COMPLETED: '已完成', CANCELLED: '已取消' },
       amount: '金额',
       buyer: '买家',
       seller: '卖家',
+      detail: '详情',
+      createdAt: '创建时间',
+      invoice: '账单',
       forceComplete: '强制完成',
       forceCompleteTip: '强制完成此订单'
     },
@@ -155,14 +187,38 @@ const messages = {
       purchaseReport: { title: '采购入库', totalCost: '总成本', batchCount: '批次数量', avgCostPerBatch: '平均成本/批', month: '月份', cost: '成本' },
       profitReport: { title: '利润报表', totalRevenue: '总收入', totalCost: '总成本', netProfit: '净利润', profitMargin: '利润率', month: '月份', revenue: '收入', cost: '成本', profit: '利润', margin: '利润率(%)' }
     },
-    common: { logout: '退出登录', submit: '提交', cancel: '取消', search: '搜索', yes: '是', no: '否', noData: '暂无数据', startDate: '开始日期', endDate: '结束日期' }
+    inventory: {
+      title: '入库', quickEntry: '新增入库', barcode: '条码', scanner: '扫码输入',
+      country: '国家', category: '类别', grade: '评分', variety: '品种/面值',
+      yearEra: '年份/朝代', material: '材质', title: '标题', rating: '评级',
+      purchaseInfo: '采购信息', purchasePrice: '采购价', currency: '货币',
+      quantity: '数量', date: '日期', supplier: '供应商', sourceInvoice: '发票号',
+      description: '描述', search: '搜索条码/标题/供应商',
+      existingProductFound: '已发现现有商品，入库后会追加库存数量。',
+      newProduct: '新商品', barcodePreview: '条码预览',
+      generateBarcode: '生成条码', lookupBarcode: '查找',
+      batchDate: '批次日期', createdAt: '创建时间', detail: '详情',
+      newEntry: '新增入库', existingProduct: '已有商品',
+      saveEntry: '保存', saving: '保存中...',
+      defaults: '默认：数量=1, 货币=USD, 日期=今天',
+      noData: '暂无入库记录。',
+      loadExisting: '加载现有商品',
+      scanOrInput: '扫码或输入条码'
+    },
+    listForSale: {
+      title: '商品上架', hint: '设置售价让库存商品在商城可售',
+      search: '搜索商品...', noData: '暂无库存商品可上架。',
+      list: '上架', listConfirm: '商品上架', salePrice: '售价',
+      confirmList: '确认上架', listing: '上架中...'
+    },
+    common: { login: '登录', logout: '退出登录', actions: '操作', all: '全部', confirm: '确认', success: '操作成功', submit: '提交', cancel: '取消', search: '搜索', yes: '是', no: '否', noData: '暂无数据', startDate: '开始日期', endDate: '结束日期' }
   },
   'zh-TW': {
     admin: {
       title: '管理後台',
       menu: { dashboard: '控制台', products: '商品管理', orders: '訂單管理', users: '用戶管理', sellers: '賣家管理', tickets: '工單管理' },
       menuGroup: { products: '商品管理', orders: '訂單管理', users: '用戶管理', content: '內容管理', finance: '財務管理', tools: '工具' },
-      menuSub: { productList: '商品列表', inventory: '入庫', printLabels: '打印標籤', importImages: '導入圖片', history: '歷史查詢', orderList: '訂單列表', buyerMgmt: '買家管理', sellerMgmt: '賣家管理', ads: '廣告管理', news: '新聞管理', financeDashboard: '財務概覽', salesRevenue: '銷售收入', purchaseReport: '採購入庫', profitReport: '利潤報表', barcodeCodes: '編碼維護', auditLogs: '操作日誌' }
+      menuSub: { productList: '商品列表', inventory: '商品入庫', listForSale: '商品上架', printLabels: '打印標籤', importImages: '導入圖片', history: '歷史查詢', orderList: '訂單列表', buyerMgmt: '買家管理', sellerMgmt: '賣家管理', ads: '廣告管理', news: '新聞管理', financeDashboard: '財務概覽', salesRevenue: '銷售收入', purchaseReport: '採購入庫', profitReport: '利潤報表', barcodeCodes: '編碼維護', auditLogs: '操作日誌' }
     },
     tickets: {
       title: '工單管理',
@@ -196,6 +252,30 @@ const messages = {
       purchaseReport: { title: '採購入庫', totalCost: '總成本', batchCount: '批次數量', avgCostPerBatch: '平均成本/批', month: '月份', cost: '成本' },
       profitReport: { title: '利潤報表', totalRevenue: '總收入', totalCost: '總成本', netProfit: '淨利潤', profitMargin: '利潤率', month: '月份', revenue: '收入', cost: '成本', profit: '利潤', margin: '利潤率(%)' }
     },
+    inventory: {
+      title: '入庫', quickEntry: '新增入庫', barcode: '條碼', scanner: '掃碼輸入',
+      country: '國家', category: '類別', grade: '評分', variety: '品種/面值',
+      yearEra: '年份/朝代', material: '材質', title: '標題', rating: '評級',
+      purchaseInfo: '採購信息', purchasePrice: '採購價', currency: '貨幣',
+      quantity: '數量', date: '日期', supplier: '供應商', sourceInvoice: '發票號',
+      description: '描述', search: '搜索條碼/標題/供應商',
+      existingProductFound: '已發現現有商品，入庫後會追加庫存數量。',
+      newProduct: '新商品', barcodePreview: '條碼預覽',
+      generateBarcode: '生成條碼', lookupBarcode: '查找',
+      batchDate: '批次日期', createdAt: '創建時間', detail: '詳情',
+      newEntry: '新增入庫', existingProduct: '已有商品',
+      saveEntry: '保存', saving: '保存中...',
+      defaults: '默認：數量=1, 貨幣=USD, 日期=今天',
+      noData: '暫無入庫記錄。',
+      loadExisting: '載入現有商品',
+      scanOrInput: '掃碼或輸入條碼'
+    },
+    listForSale: {
+      title: '商品上架', hint: '設置售價讓庫存商品在商城可售',
+      search: '搜索商品...', noData: '暫無庫存商品可上架。',
+      list: '上架', listConfirm: '商品上架', salePrice: '售價',
+      confirmList: '確認上架', listing: '上架中...'
+    },
     common: { logout: '退出登錄', submit: '提交', cancel: '取消', search: '搜索', yes: '是', no: '否', noData: '暫無數據', startDate: '開始日期', endDate: '結束日期' }
   },
   ja: {
@@ -203,7 +283,7 @@ const messages = {
       title: '管理パネル',
       menu: { dashboard: 'ダッシュボード', products: '商品管理', orders: '注文管理', users: 'ユーザー管理', sellers: '売り手管理', tickets: 'チケット管理' },
       menuGroup: { products: '商品管理', orders: '注文管理', users: 'ユーザー管理', content: 'コンテンツ管理', finance: '財務管理', tools: 'ツール' },
-      menuSub: { productList: '商品一覧', inventory: '入庫', printLabels: 'ラベル印刷', importImages: '画像取込', history: '履歴検索', orderList: '注文一覧', buyerMgmt: '買い手管理', sellerMgmt: '売り手管理', ads: '広告管理', news: 'ニュース管理', financeDashboard: '財務概要', salesRevenue: '売上高', purchaseReport: '仕入報告', profitReport: '利益報告', barcodeCodes: 'コード管理', auditLogs: '操作ログ' }
+      menuSub: { productList: '商品一覧', inventory: '商品入庫', listForSale: '商品出品', printLabels: 'ラベル印刷', importImages: '画像取込', history: '履歴検索', orderList: '注文一覧', buyerMgmt: '買い手管理', sellerMgmt: '売り手管理', ads: '広告管理', news: 'ニュース管理', financeDashboard: '財務概要', salesRevenue: '売上高', purchaseReport: '仕入報告', profitReport: '利益報告', barcodeCodes: 'コード管理', auditLogs: '操作ログ' }
     },
     tickets: {
       title: 'チケット管理',
@@ -237,6 +317,30 @@ const messages = {
       purchaseReport: { title: '仕入報告', totalCost: '総仕入額', batchCount: 'バッチ数', avgCostPerBatch: '平均仕入/バッチ', month: '月', cost: '仕入額' },
       profitReport: { title: '利益報告', totalRevenue: '総売上', totalCost: '総仕入', netProfit: '純利益', profitMargin: '利益率', month: '月', revenue: '売上', cost: '仕入', profit: '利益', margin: '利益率(%)' }
     },
+    inventory: {
+      title: '入庫', quickEntry: '新規入庫', barcode: 'バーコード', scanner: 'スキャン入力',
+      country: '国', category: 'カテゴリ', grade: 'グレード', variety: '種類/額面',
+      yearEra: '年号/時代', material: '素材', title: 'タイトル', rating: '格付け',
+      purchaseInfo: '仕入情報', purchasePrice: '仕入価格', currency: '通貨',
+      quantity: '数量', date: '日付', supplier: '仕入先', sourceInvoice: '請求書番号',
+      description: '説明', search: 'バーコード/タイトル/仕入先を検索',
+      existingProductFound: '既存の商品が見つかりました。入庫後に在庫数が追加されます。',
+      newProduct: '新商品', barcodePreview: 'バーコードプレビュー',
+      generateBarcode: 'バーコード生成', lookupBarcode: '検索',
+      batchDate: 'バッチ日付', createdAt: '作成日時', detail: '詳細',
+      newEntry: '新規入庫', existingProduct: '既存商品',
+      saveEntry: '保存', saving: '保存中...',
+      defaults: 'デフォルト: 数量=1, 通貨=USD, 日付=今日',
+      noData: '入庫記録がありません。',
+      loadExisting: '既存商品を読み込む',
+      scanOrInput: 'スキャンまたはバーコード入力'
+    },
+    listForSale: {
+      title: '商品出品', hint: '販売価格を設定して在庫商品をストアで販売可能に',
+      search: '商品を検索...', noData: '出品可能な在庫商品はありません。',
+      list: '出品', listConfirm: '商品出品', salePrice: '販売価格',
+      confirmList: '出品確定', listing: '出品中...'
+    },
     common: { logout: 'ログアウト', submit: '送信', cancel: 'キャンセル', search: '検索', yes: 'はい', no: 'いいえ', noData: 'データなし', startDate: '開始日', endDate: '終了日' }
   },
   ko: {
@@ -244,7 +348,7 @@ const messages = {
       title: '관리 패널',
       menu: { dashboard: '대시보드', products: '상품 관리', orders: '주문 관리', users: '사용자 관리', sellers: '판매자 관리', tickets: '티켓 관리' },
       menuGroup: { products: '상품 관리', orders: '주문 관리', users: '사용자 관리', content: '콘텐츠 관리', finance: '재무 관리', tools: '도구' },
-      menuSub: { productList: '상품 목록', inventory: '입고', printLabels: '라벨 인쇄', importImages: '이미지 가져오기', history: '이력 조회', orderList: '주문 목록', buyerMgmt: '구매자 관리', sellerMgmt: '판매자 관리', ads: '광고 관리', news: '뉴스 관리', financeDashboard: '재무 개요', salesRevenue: '매출 수익', purchaseReport: '구매 입고', profitReport: '이익 보고서', barcodeCodes: '바코드 관리', auditLogs: '작업 로그' }
+      menuSub: { productList: '상품 목록', inventory: '상품입고', listForSale: '상품 판매등록', printLabels: '라벨 인쇄', importImages: '이미지 가져오기', history: '이력 조회', orderList: '주문 목록', buyerMgmt: '구매자 관리', sellerMgmt: '판매자 관리', ads: '광고 관리', news: '뉴스 관리', financeDashboard: '재무 개요', salesRevenue: '매출 수익', purchaseReport: '구매 입고', profitReport: '이익 보고서', barcodeCodes: '바코드 관리', auditLogs: '작업 로그' }
     },
     tickets: {
       title: '티켓 관리',
@@ -277,6 +381,30 @@ const messages = {
       salesRevenue: { title: '매출 수익', totalRevenue: '총 매출', orderCount: '주문 수', avgOrderValue: '평균 주문 금액', month: '월', revenue: '매출' },
       purchaseReport: { title: '구매 입고', totalCost: '총 비용', batchCount: '배치 수', avgCostPerBatch: '평균 비용/배치', month: '월', cost: '비용' },
       profitReport: { title: '이익 보고서', totalRevenue: '총 매출', totalCost: '총 비용', netProfit: '순이익', profitMargin: '이익률', month: '월', revenue: '매출', cost: '비용', profit: '이익', margin: '이익률(%)' }
+    },
+    inventory: {
+      title: '입고', quickEntry: '신규 입고', barcode: '바코드', scanner: '스캔 입력',
+      country: '국가', category: '카테고리', grade: '등급', variety: '종류/액면가',
+      yearEra: '연도/시대', material: '재질', title: '제목', rating: '평점',
+      purchaseInfo: '구매 정보', purchasePrice: '구매 가격', currency: '통화',
+      quantity: '수량', date: '날짜', supplier: '공급업체', sourceInvoice: '송장 번호',
+      description: '설명', search: '바코드/제목/공급업체 검색',
+      existingProductFound: '기존 상품이 발견되었습니다. 입고 후 재고가 추가됩니다.',
+      newProduct: '신규 상품', barcodePreview: '바코드 미리보기',
+      generateBarcode: '바코드 생성', lookupBarcode: '검색',
+      batchDate: '배치 날짜', createdAt: '생성 시간', detail: '상세',
+      newEntry: '신규 입고', existingProduct: '기존 상품',
+      saveEntry: '저장', saving: '저장 중...',
+      defaults: '기본값: 수량=1, 통화=USD, 날짜=오늘',
+      noData: '입고 기록이 없습니다.',
+      loadExisting: '기존 상품 불러오기',
+      scanOrInput: '스캔 또는 바코드 입력'
+    },
+    listForSale: {
+      title: '상품 판매등록', hint: '판매 가격을 설정하여 재고 상품을 스토어에서 판매 가능하게',
+      search: '상품 검색...', noData: '판매등록 가능한 재고 상품이 없습니다.',
+      list: '판매등록', listConfirm: '판매등록', salePrice: '판매 가격',
+      confirmList: '등록 확인', listing: '등록 중...'
     },
     common: { logout: '로그아웃', submit: '제출', cancel: '취소', search: '검색', yes: '예', no: '아니오', noData: '데이터 없음', startDate: '시작 날짜', endDate: '종료 날짜' }
   }

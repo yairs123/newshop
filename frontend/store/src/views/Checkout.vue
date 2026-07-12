@@ -55,7 +55,7 @@
           <div class="form-row form-row-split">
             <el-input v-model="form.city" :placeholder="$t('common.city')" size="large" />
             <el-input v-model="form.zipCode" :placeholder="$t('common.zipCode')" size="large" @input="onZipInput" />
-            <small v-if="zipLoading" class="zip-loading">検索中...</small>
+            <small v-if="zipLoading" class="zip-loading">{{ $t('checkout.searchingZip') }}</small>
           </div>
           <div class="form-row">
             <el-select v-model="form.country" :placeholder="$t('common.country')" size="large" style="width:100%">
@@ -78,7 +78,7 @@
                 <span v-if="item.year">{{ item.year }}</span>
               </div>
             </div>
-            <div class="oi-qty">×{{ item.quantity }}</div>
+            <div class="oi-qty">{{ $t('cart.colQuantity') }}: {{ item.quantity }}</div>
             <div class="oi-price">{{ formatPrice(item.price * item.quantity) }}</div>
           </div>
         </div>
@@ -156,6 +156,7 @@
           size="large"
           class="place-order-btn"
           :loading="submitting"
+          :disabled="cartStore.items.length === 0"
           @click="placeOrder"
         >
           {{ $t('checkout.placeOrder') }}
@@ -176,7 +177,7 @@ import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const cartStore = useCartStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const loading = ref(true)
 const submitting = ref(false)
 const savedAddresses = ref([])
@@ -278,13 +279,13 @@ function onZipInput() {
 
 async function placeOrder() {
   if (!form.fullName || !form.address) {
-    ElMessage.warning(t('checkout.shippingAddress') + ' ' + t('common.fullName'))
+    ElMessage.warning(t('checkout.fillRequiredFields'))
     return
   }
   submitting.value = true
-  const fullAddress = `${form.fullName}, ${form.phone}, ${form.address}, ${form.city} ${form.zipCode}, ${form.country}`
+  const fullAddress = `${form.fullName}, ${form.phone ? form.phone + ', ' : ''}${form.address}, ${form.city} ${form.zipCode}, ${form.country}`
   try {
-    // Create one combined order with all cart items
+    // Create order with all cart items
     const items = cartStore.items.map(i => ({
       productId: i.id,
       quantity: i.quantity,
@@ -298,17 +299,36 @@ async function placeOrder() {
     })
     const order = orderRes.data
 
-    // Process payment
-    await api.post(`/orders/${order.id}/pay`)
-
+    // Clear local cart
     cartStore.clear()
-    ElMessage.success(t('checkout.orderPlaced'))
-    router.push('/orders')
-  } catch (e) { /* handled by interceptor */ }
+
+    // Process payment with return/cancel URLs
+    const returnUrl = window.location.origin + '/payment/return?orderId=' + order.id
+    const cancelUrl = window.location.origin + '/orders/' + order.id
+    const payRes = await api.post('/orders/' + order.id + '/pay', {
+      returnUrl,
+      cancelUrl,
+    })
+
+    if (payRes.data && payRes.data.paymentUrl) {
+      // Redirect to external payment gateway
+      window.location.href = payRes.data.paymentUrl
+    } else {
+      // Payment completed inline
+      ElMessage.success(t('checkout.orderPlaced'))
+      router.push('/orders')
+    }
+  } catch (e) {
+    // Error message handled by API interceptor
+  }
   submitting.value = false
 }
 
-function formatPrice(p) { return '$' + Number(p).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
+function formatPrice(p) {
+  const loc = locale.value || 'en'
+  const prefix = loc.startsWith('zh') || loc === 'ja' ? '¥' : '$'
+  return prefix + Number(p).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
 </script>
 
 <style>

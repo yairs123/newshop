@@ -3,21 +3,86 @@
     <el-breadcrumb separator="/" style="margin-bottom: 16px;">
       <el-breadcrumb-item>Products</el-breadcrumb-item>
     </el-breadcrumb>
-    <div style="margin-bottom: 16px;">
-      <el-button type="primary" @click="resetForm(); showForm = true">发布商品</el-button>
+    <div class="action-bar">
+      <div class="action-left">
+        <el-button type="primary" @click="resetForm(); showForm = true">发布商品</el-button>
+        <el-button :disabled="selectedIds.length === 0" @click="batchStatus('ACTIVE')">批量上架</el-button>
+        <el-button :disabled="selectedIds.length === 0" @click="batchStatus('INACTIVE')">批量下架</el-button>
+        <el-button @click="$router.push('/inventory')">📥 快捷入库</el-button>
+        <el-button @click="$router.push('/print-labels')">🏷️ 打印条码</el-button>
+      </div>
+      <div class="action-right">
+        <span v-if="selectedIds.length" class="selected-count">已选 {{ selectedIds.length }} 项</span>
+      </div>
     </div>
-    <el-table v-loading="loading" :data="products" border stripe>
-      <el-table-column prop="title" label="商品名称" min-width="200" />
-      <el-table-column prop="barcode" label="条码" width="140" />
-      <el-table-column prop="price" label="价格" width="120" />
-      <el-table-column prop="stock" label="库存" width="80" />
-      <el-table-column prop="status" label="状态" width="100" />
-      <el-table-column prop="createdAt" label="发布时间" width="160" />
-      <el-table-column label="操作" width="200">
+
+    <!-- 利润汇总卡片 -->
+    <el-row :gutter="16" class="profit-summary">
+      <el-col :span="8">
+        <el-card shadow="hover" class="profit-card">
+          <div class="profit-body">
+            <span class="profit-label">总投资</span>
+            <span class="profit-value">${{ totalInvestment }}</span>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="hover" class="profit-card">
+          <div class="profit-body">
+            <span class="profit-label">总售价</span>
+            <span class="profit-value">${{ totalValue }}</span>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="hover" class="profit-card" :style="{ borderLeft: '4px solid ' + (profitPercent >= 0 ? '#67c23a' : '#f56c6c') }">
+          <div class="profit-body">
+            <span class="profit-label">预期利润</span>
+            <span class="profit-value" :style="{ color: profitPercent >= 0 ? '#67c23a' : '#f56c6c' }">${{ totalProfit }} ({{ profitPercent }}%)</span>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-table v-loading="loading" :data="products" border stripe @selection-change="onSelectionChange">
+      <el-table-column type="selection" width="40" />
+      <el-table-column prop="title" label="商品名称" min-width="180" show-overflow-tooltip />
+      <el-table-column prop="barcode" label="条码" width="130" />
+      <el-table-column label="售价" width="100" align="right">
+        <template #default="{ row }"><span class="price-cell">{{ row.currency || 'USD' }} {{ row.price?.toLocaleString() }}</span></template>
+      </el-table-column>
+      <el-table-column label="采购价" width="100" align="right">
         <template #default="{ row }">
-          <el-button size="small" @click="edit(row)">编辑</el-button>
-          <el-button size="small" @click="uploadImage(row)">上传图片</el-button>
-          <el-button size="small" type="danger" @click="remove(row)">下架</el-button>
+          <span v-if="row.purchasePrice" class="cost-cell">{{ row.purchaseCurrency || 'USD' }} {{ row.purchasePrice.toLocaleString() }}</span>
+          <span v-else style="color:#999">—</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="利润" width="100" align="right">
+        <template #default="{ row }">
+          <span v-if="row.purchasePrice" :style="{ color: profitColor(row) }" class="profit-cell">
+            {{ row.currency || 'USD' }} {{ (row.price - row.purchasePrice).toLocaleString(undefined, {minimumFractionDigits:2}) }}
+          </span>
+          <span v-else style="color:#999">—</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="stock" label="库存" width="60" align="center">
+        <template #default="{ row }">
+          <el-tag size="small" :type="row.stock <= 3 ? 'danger' : 'info'" effect="plain">{{ row.stock }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" width="80" align="center">
+        <template #default="{ row }">
+          <el-tag :type="row.status === 'ACTIVE' ? 'success' : row.status === 'INVENTORY' ? 'warning' : 'info'" size="small" effect="plain">{{ STATUS_LABELS[row.status] || row.status }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createdAt" label="发布时间" width="150" />
+      <el-table-column label="操作" width="260">
+        <template #default="{ row }">
+          <el-space size="small">
+            <el-button size="small" @click="edit(row)">编辑</el-button>
+            <el-button size="small" @click="uploadImage(row)">图片</el-button>
+            <el-button size="small" @click="copyProduct(row)">复制</el-button>
+            <el-button v-if="row.status !== 'INACTIVE'" size="small" type="danger" @click="remove(row)">下架</el-button>
+          </el-space>
         </template>
       </el-table-column>
     </el-table>
@@ -60,6 +125,30 @@
           </el-col>
         </el-row>
         <el-collapse style="border:none">
+          <el-collapse-item title="采购信息" name="purchase">
+            <el-row :gutter="16">
+              <el-col :span="8">
+                <el-form-item label="采购价">
+                  <el-input-number v-model="form.purchasePrice" :min="0" :precision="2" controls-position="right" style="width:100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="采购币种">
+                  <el-select v-model="form.purchaseCurrency" style="width:100%">
+                    <el-option label="USD" value="USD" />
+                    <el-option label="EUR" value="EUR" />
+                    <el-option label="CNY" value="CNY" />
+                    <el-option label="JPY" value="JPY" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="供应商">
+                  <el-input v-model="form.supplier" placeholder="来源/供应商" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-collapse-item>
           <el-collapse-item title="评级信息 (Grading)" name="grading">
             <el-row :gutter="16">
               <el-col :span="8">
@@ -181,7 +270,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { api } from '../api'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
@@ -193,9 +282,55 @@ const showForm = ref(false)
 const isEdit = ref(false)
 const editId = ref(null)
 const formRef = ref(null)
-const form = ref({ title: '', description: '', price: 0, stock: 0, currency: 'USD', categoryId: null, barcode: '', ratingCompany: '', ratingNumber: '', ratingGrade: '', country: '', year: null, material: '', denomination: '', weight: null })
+const form = ref({ title: '', description: '', price: 0, stock: 0, currency: 'USD', categoryId: null, barcode: '', ratingCompany: '', ratingNumber: '', ratingGrade: '', country: '', year: null, material: '', denomination: '', weight: null, purchasePrice: null, purchaseCurrency: 'USD', supplier: '' })
+
+const STATUS_LABELS = { INVENTORY: '库存中', ACTIVE: '在售', INACTIVE: '已下架' }
+
+// Profit calculations
+const totalInvestment = computed(() => {
+  return products.value.reduce((sum, p) => sum + (p.purchasePrice || 0) * (p.stock || 0), 0).toLocaleString(undefined, {minimumFractionDigits:2})
+})
+const totalValue = computed(() => {
+  return products.value.reduce((sum, p) => sum + (p.price || 0) * (p.stock || 0), 0).toLocaleString(undefined, {minimumFractionDigits:2})
+})
+const totalProfit = computed(() => {
+  const invest = products.value.reduce((sum, p) => sum + (p.purchasePrice || 0) * (p.stock || 0), 0)
+  const value = products.value.reduce((sum, p) => sum + (p.price || 0) * (p.stock || 0), 0)
+  return (value - invest).toLocaleString(undefined, {minimumFractionDigits:2})
+})
+const profitPercent = computed(() => {
+  const invest = products.value.reduce((sum, p) => sum + (p.purchasePrice || 0) * (p.stock || 0), 0)
+  if (invest === 0) return 0
+  const value = products.value.reduce((sum, p) => sum + (p.price || 0) * (p.stock || 0), 0)
+  return ((value - invest) / invest * 100).toFixed(1)
+})
+function profitColor(row) {
+  if (!row.purchasePrice) return '#999'
+  return (row.price - row.purchasePrice) >= 0 ? '#67c23a' : '#f56c6c'
+}
 
 const countries = ['USA','China','Canada','UK','Germany','France','Japan','Spain','Italy','Greece','Roman Empire','Byzantine Empire','Luxembourg','Vatican','Vietnam','Australia','Austria','India','Mexico','Netherlands','Switzerland','Russia']
+
+// Batch selection
+const selectedIds = ref([])
+function onSelectionChange(rows) { selectedIds.value = rows.map(r => r.id) }
+
+async function batchStatus(status) {
+  try {
+    await api.put('/products/batch-status', { ids: selectedIds.value, status })
+    ElMessage.success(status === 'ACTIVE' ? '批量上架成功' : '批量下架成功')
+    selectedIds.value = []
+    loadProducts()
+  } catch (e) { /* handled */ }
+}
+
+async function copyProduct(row) {
+  try {
+    await api.post('/products/' + row.id + '/copy')
+    ElMessage.success('复制成功！请在原商品名后加"副本"字样区分')
+    loadProducts()
+  } catch (e) { /* handled */ }
+}
 
 const showUpload = ref(false)
 const uploadProduct = ref(null)
@@ -259,7 +394,7 @@ async function doUpload() {
 }
 
 function resetForm() {
-  form.value = { title: '', description: '', price: 0, stock: 0, currency: 'USD', categoryId: null, barcode: '', ratingCompany: '', ratingNumber: '', ratingGrade: '', country: '', year: null, material: '', denomination: '', weight: null }
+  form.value = { title: '', description: '', price: 0, stock: 0, currency: 'USD', categoryId: null, barcode: '', ratingCompany: '', ratingNumber: '', ratingGrade: '', country: '', year: null, material: '', denomination: '', weight: null, purchasePrice: null, purchaseCurrency: 'USD', supplier: '' }
   isEdit.value = false
   editId.value = null
 }
@@ -267,7 +402,7 @@ function resetForm() {
 async function loadProducts() {
   loading.value = true
   try {
-    const res = await api.get('/products', { params: { page: 0, size: 50 } })
+    const res = await api.get('/products/my', { params: { page: 0, size: 200 } })
     products.value = res.data?.content || []
   } catch (e) { products.value = [] }
   loading.value = false
@@ -308,6 +443,9 @@ function edit(row) {
     material: row.material || '',
     denomination: row.denomination || '',
     weight: row.weight,
+    purchasePrice: row.purchasePrice,
+    purchaseCurrency: row.purchaseCurrency || 'USD',
+    supplier: row.supplier || '',
   }
   showForm.value = true
 }
@@ -331,6 +469,18 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.profit-summary { margin-bottom: 16px; }
+.profit-card { border-radius: 8px; }
+.profit-body { display: flex; flex-direction: column; gap: 4px; }
+.profit-label { font-size: 12px; color: #909399; }
+.profit-value { font-size: 20px; font-weight: 700; }
+.price-cell { font-weight: 600; color: #059669; }
+.cost-cell { color: #e6a23c; }
+.profit-cell { font-weight: 600; }
+.action-left { display: flex; gap: 8px; flex-wrap: wrap; }
+.action-right { color: #909399; font-size: 13px; }
+.selected-count { font-weight: 600; color: #409eff; }
 .upload-zone {
   border: 2px dashed #d9d9d9;
   border-radius: 12px;

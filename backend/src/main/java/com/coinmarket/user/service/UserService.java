@@ -3,6 +3,7 @@ package com.coinmarket.user.service;
 import com.coinmarket.common.exception.BusinessException;
 import com.coinmarket.common.security.JwtTokenProvider;
 import com.coinmarket.user.dto.*;
+import io.jsonwebtoken.Claims;
 import com.coinmarket.user.entity.PasswordResetToken;
 import com.coinmarket.user.entity.Role;
 import com.coinmarket.user.entity.User;
@@ -62,7 +63,24 @@ public class UserService {
         return buildAuthResponse(user);
     }
 
+    @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
+        // 验证码校验：如果携带了 captchaToken 则验证
+        if (request.getCaptchaToken() != null && !request.getCaptchaToken().isBlank()) {
+            try {
+                Claims claims = jwtTokenProvider.parseToken(request.getCaptchaToken());
+                Object captchaAnswer = claims.get("captcha");
+                if (captchaAnswer == null
+                        || !captchaAnswer.toString().equals(request.getCaptchaAnswer())) {
+                    throw new BusinessException(400, "验证码错误");
+                }
+            } catch (BusinessException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new BusinessException(400, "验证码已过期，请重新获取");
+            }
+        }
+
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new BusinessException(401, "Invalid credentials"));
 
@@ -104,7 +122,8 @@ public class UserService {
         passwordResetTokenRepository.save(resetToken);
 
         // For dev: log the reset URL. In production, send email via JavaMailSender.
-        log.info("Password reset link: http://localhost:3000/reset-password?token={}", token);
+        String masked = token.substring(0, Math.min(8, token.length())) + "****";
+        log.info("Password reset link: http://localhost:3000/reset-password?token={}", masked);
     }
 
     @Transactional

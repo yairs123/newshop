@@ -225,7 +225,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void markAsShipped(Long orderId, Long sellerId) {
+    public void markAsShipped(Long orderId, Long sellerId, String trackingCompany, String trackingNumber) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException("订单不存在"));
         if (!order.getSellerId().equals(sellerId)) {
@@ -236,8 +236,14 @@ public class OrderService {
         }
         String prev = order.getStatus();
         order.setStatus("SHIPPED");
+        if (trackingCompany != null) order.setTrackingCompany(trackingCompany);
+        if (trackingNumber != null) order.setTrackingNumber(trackingNumber);
         orderRepository.save(order);
-        saveOrderLog(orderId, prev, "SHIPPED", "卖家", "卖家已发货");
+        String note = "卖家已发货";
+        if (trackingCompany != null && trackingNumber != null) {
+            note += " (" + trackingCompany + ": " + trackingNumber + ")";
+        }
+        saveOrderLog(orderId, prev, "SHIPPED", "卖家", note);
     }
 
     @Transactional
@@ -268,22 +274,26 @@ public class OrderService {
         saveOrderLog(orderId, prevStatus, "COMPLETED", "管理员", "管理员强制完成");
     }
 
+    @Transactional(readOnly = true)
     public OrderResponse getOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException("订单不存在"));
         return toResponse(order);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> getBuyerOrders(Long buyerId) {
         return orderRepository.findByBuyerIdOrderByCreatedAtDesc(buyerId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> getSellerOrders(Long sellerId) {
         return orderRepository.findBySellerIdOrderByCreatedAtDesc(sellerId)
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> getBuyerUnshippedOrders(Long buyerId) {
         return orderRepository.findByBuyerIdAndStatusInOrderByCreatedAtDesc(
                 buyerId, List.of("PAID", "SHIPPED"))

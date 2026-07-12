@@ -111,7 +111,7 @@ public class AdminProductService {
                 .orElseThrow(() -> new BusinessException("商品不存在"));
         product.setTitle(req.getTitle());
         product.setDescription(req.getDescription());
-        product.setPrice(req.getPrice());
+        if (req.getPrice() != null) product.setPrice(req.getPrice());
         if (req.getCurrency() != null) product.setCurrency(req.getCurrency());
         if (req.getStock() != null) product.setStock(req.getStock());
         if (req.getCategoryId() != null) product.setCategoryId(req.getCategoryId());
@@ -123,6 +123,10 @@ public class AdminProductService {
         if (req.getMaterial() != null) product.setMaterial(req.getMaterial());
         if (req.getDenomination() != null) product.setDenomination(req.getDenomination());
         if (req.getWeight() != null) product.setWeight(req.getWeight());
+        if (req.getPurchasePrice() != null) product.setPurchasePrice(req.getPurchasePrice());
+        if (req.getPurchaseCurrency() != null) product.setPurchaseCurrency(req.getPurchaseCurrency());
+        if (req.getSupplier() != null) product.setSupplier(req.getSupplier());
+        if (req.getSourceInvoice() != null) product.setSourceInvoice(req.getSourceInvoice());
         productRepository.save(product);
         return toResponse(product);
     }
@@ -161,9 +165,9 @@ public class AdminProductService {
     }
 
     public ProductResponse findByBarcode(String barcode) {
-        Product product = productRepository.findByBarcode(barcode)
-                .orElseThrow(() -> new BusinessException("商品不存在: " + barcode));
-        return toResponse(product);
+        return productRepository.findByBarcode(barcode)
+                .map(this::toResponse)
+                .orElse(null);
     }
 
     public Page<ProductResponse> searchByKeyword(String keyword, Pageable pageable) {

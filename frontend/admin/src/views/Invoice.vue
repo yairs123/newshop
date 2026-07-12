@@ -37,7 +37,7 @@
           </div>
           <div class="invoice-date">
             <p>Date: {{ formatDate(order.createdAt) }}</p>
-            <p class="status-tag">{{ order.status }}</p>
+            <p class="status-tag no-print">{{ order.status }}</p>
           </div>
         </div>
 

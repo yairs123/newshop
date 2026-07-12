@@ -1,0 +1,62 @@
+<h2>🏗️ 财务模块 — 3 种布局方案</h2>
+<p class="subtitle">你更喜欢哪种整体风格？后面细节基于这个方向展开</p>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>一体化仪表盘 (推荐)</h3>
+      <p><strong>布局：</strong>一个主页面 + Tab 切换子模块</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>👍 优点</h4><ul>
+          <li>所有财务数据一目了然</li>
+          <li>顶部图表总览 + Tab 切明细</li>
+          <li>切换快，不跳页面</li>
+        </ul></div>
+        <div class="cons"><h4>👎 缺点</h4><ul>
+          <li>单页内容较多</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>多页导航式</h3>
+      <p><strong>布局：</strong>左侧菜单，每个模块独立页面</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>👍 优点</h4><ul>
+          <li>每个页面聚焦一个功能</li>
+          <li>页面加载快，内容清晰</li>
+          <li>保持现有路由风格</li>
+        </ul></div>
+        <div class="cons"><h4>👎 缺点</h4><ul>
+          <li>总览数据需要跳转查看</li>
+          <li>模块之间切换频繁</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>会计软件工作台</h3>
+      <p><strong>布局：</strong>左侧财务侧边栏，右侧内容区（QuickBooks 风格）</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>👍 优点</h4><ul>
+          <li>专业会计软件体验</li>
+          <li>专属财务侧边栏</li>
+          <li>功能丰富</li>
+        </ul></div>
+        <div class="cons"><h4>👎 缺点</h4><ul>
+          <li>与现有后台布局不统一</li>
+          <li>实现成本最高</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top: 24px; font-size: 14px; color: #6b7280;">💡 我个人推荐方案 A — 既保持和现有后台风格一致，又能在首页看到完整财务数据</p>

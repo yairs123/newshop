@@ -71,9 +71,9 @@ const messages = {
       quantity: 'Quantity', soldBy: 'Sold by', soldOut: 'Sold Out', inStockWithQty: 'In Stock ({stock} available)',
       lowStock: 'Only {stock} left'
     },
-    common: { search: 'Search', login: 'Login', register: 'Register', submit: 'Submit', cancel: 'Cancel', all: 'All', remove: 'Remove', fullName: 'Full Name', phone: 'Phone', address: 'Address', city: 'City', zipCode: 'ZIP Code', country: 'Country' },
+    common: { search: 'Search', login: 'Login', register: 'Register', submit: 'Submit', cancel: 'Cancel', close: 'Close', review: 'Review', all: 'All', remove: 'Remove', fullName: 'Full Name', phone: 'Phone', address: 'Address', city: 'City', zipCode: 'ZIP Code', country: 'Country' },
     order: { orderNo: 'Order No', status: 'Status', totalAmount: 'Total', createdAt: 'Date' },
-    auth: { forgotPasswordTitle: 'Forgot Password', forgotPasswordDesc: 'Enter your email address and we\'ll send you a link to reset your password.', forgotPasswordSent: 'If an account with that email exists, a password reset link has been sent.', resetPasswordTitle: 'Reset Password', resetPasswordNewPassword: 'New Password', resetPasswordConfirmPassword: 'Confirm New Password', resetPasswordSuccess: 'Your password has been reset successfully!', backToLogin: 'Back to Login', resetPasswordSend: 'Send Reset Link' },
+    auth: { welcomeBack: 'Welcome back', joinUs: 'Join us', step: 'Step', orContinue: 'or continue with', noAccount: 'Don\'t have an account?', hasAccount: 'Already have an account?', enterUsername: 'Please enter username or email', rememberMe: 'Remember me', twoFactor: 'Two-Factor Authentication', enterCode: 'Enter the code sent to your email', sixDigitCode: '6-digit code', verify: 'Verify', change: 'Change', featureSecure: 'Secure & Encrypted', featureSecureDesc: '256-bit SSL + Two-Factor Auth', featureShipping: 'Worldwide Shipping', featureShippingDesc: 'Safe packaging, tracked delivery', featureAuthentic: '100% Authentic', featureAuthenticDesc: 'All items certified by experts', community: 'Join 10,000+ collectors worldwide', forgotPasswordTitle: 'Forgot Password', forgotPasswordDesc: 'Enter your email address and we\'ll send you a link to reset your password.', forgotPasswordSent: 'If an account with that email exists, a password reset link has been sent.', resetPasswordTitle: 'Reset Password', resetPasswordNewPassword: 'New Password', resetPasswordConfirmPassword: 'Confirm New Password', resetPasswordSuccess: 'Your password has been reset successfully!', backToLogin: 'Back to Login', resetPasswordSend: 'Send Reset Link' },
     cart: { title: 'Shopping Cart', empty: 'Your cart is empty', checkout: 'Checkout', pageTitle: 'Shopping Cart', colProduct: 'Product', colPrice: 'Price', colQuantity: 'Quantity', colTotal: 'Total', colAction: 'Action' },
     cartDrawer: { title: 'Shopping Cart', empty: 'Your cart is empty', subtotal: 'Subtotal', total: 'Total', checkout: 'Checkout', remove: 'Remove' },
     checkout: {
@@ -214,13 +214,15 @@ const messages = {
     },
     product: {
       search: '搜索', category: '分类', allCategories: '全部分类', ratingCompany: '评级公司',
+      ratingInfo: '评级信息', ratingNumber: '证书编号', ratingGrade: '评分等级',
+      priceRange: '价格范围', addToCart: '加入购物车', buyNow: '立即购买',
       stock: '库存', description: '描述', searchPlaceholder: '关键词...',
       quantity: '数量', soldBy: '卖家', soldOut: '已售罄', inStockWithQty: '库存 {stock} 件',
       lowStock: '仅剩 {stock} 件'
     },
-    common: { search: '搜索', login: '登录', register: '注册', submit: '提交', cancel: '取消', all: '全部', remove: '删除', fullName: '收件人姓名', phone: '电话', address: '详细地址', city: '城市', zipCode: '邮编', country: '国家' },
+    common: { search: '搜索', login: '登录', register: '注册', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '删除', fullName: '收件人姓名', phone: '电话', address: '详细地址', city: '城市', zipCode: '邮编', country: '国家' },
     order: { orderNo: '订单号', status: '状态', totalAmount: '金额', createdAt: '时间' },
-    auth: { forgotPasswordTitle: '忘记密码', forgotPasswordDesc: '输入您的邮箱地址，我们将向您发送重置密码的链接。', forgotPasswordSent: '如果该邮箱存在对应的账户，密码重置链接已发送。', resetPasswordTitle: '重置密码', resetPasswordNewPassword: '新密码', resetPasswordConfirmPassword: '确认新密码', resetPasswordSuccess: '密码重置成功！', backToLogin: '返回登录', resetPasswordSend: '发送重置链接' },
+    auth: { welcomeBack: '欢迎回来', joinUs: '加入我们', step: '步骤', orContinue: '或继续使用', noAccount: '还没有账号？', hasAccount: '已有账号？', enterUsername: '请输入用户名或邮箱', rememberMe: '记住我', twoFactor: '双因素认证', enterCode: '请输入发送到您邮箱的验证码', sixDigitCode: '6位验证码', verify: '验证', change: '更换', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 双因素认证', featureShipping: '全球配送', featureShippingDesc: '安全包装，追踪保障', featureAuthentic: '正品保证', featureAuthenticDesc: '所有藏品经专业鉴定', community: '加入超过10,000名收藏家的社区', forgotPasswordTitle: '忘记密码', forgotPasswordDesc: '输入您的邮箱地址，我们将向您发送重置密码的链接。', forgotPasswordSent: '如果该邮箱存在对应的账户，密码重置链接已发送。', resetPasswordTitle: '重置密码', resetPasswordNewPassword: '新密码', resetPasswordConfirmPassword: '确认新密码', resetPasswordSuccess: '密码重置成功！', backToLogin: '返回登录', resetPasswordSend: '发送重置链接' },
     cart: { title: '购物车', empty: '购物车为空', checkout: '去结算', pageTitle: '购物车', colProduct: '商品', colPrice: '单价', colQuantity: '数量', colTotal: '合计', colAction: '操作' },
     cartDrawer: { title: '购物车', empty: '购物车为空', subtotal: '小计', total: '合计', checkout: '去结算', remove: '删除' },
     checkout: {
@@ -366,9 +368,9 @@ const messages = {
       quantity: '數量', soldBy: '賣家', soldOut: '已售罄', inStockWithQty: '庫存 {stock} 件',
       lowStock: '僅剩 {stock} 件'
     },
-    common: { search: '搜索', login: '登錄', register: '註冊', submit: '提交', cancel: '取消', all: '全部', remove: '刪除', fullName: '收件人姓名', phone: '電話', address: '詳細地址', city: '城市', zipCode: '郵編', country: '國家' },
+    common: { search: '搜索', login: '登錄', register: '註冊', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '刪除', fullName: '收件人姓名', phone: '電話', address: '詳細地址', city: '城市', zipCode: '郵編', country: '國家' },
     order: { orderNo: '訂單號', status: '狀態', totalAmount: '金額', createdAt: '時間' },
-    auth: { forgotPasswordTitle: '忘記密碼', forgotPasswordDesc: '輸入您的郵箱地址，我們將向您發送重置密碼的鏈接。', forgotPasswordSent: '如果該郵箱存在對應的賬戶，密碼重置鏈接已發送。', resetPasswordTitle: '重置密碼', resetPasswordNewPassword: '新密碼', resetPasswordConfirmPassword: '確認新密碼', resetPasswordSuccess: '密碼重置成功！', backToLogin: '返回登錄', resetPasswordSend: '發送重置鏈接' },
+    auth: { welcomeBack: '歡迎回來', joinUs: '加入我們', step: '步驟', orContinue: '或繼續使用', noAccount: '還沒有帳號？', hasAccount: '已有帳號？', enterUsername: '請輸入用戶名或郵箱', rememberMe: '記住我', twoFactor: '雙因素認證', enterCode: '請輸入發送到您郵箱的驗證碼', sixDigitCode: '6位驗證碼', verify: '驗證', change: '更換', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 雙因素認證', featureShipping: '全球配送', featureShippingDesc: '安全包裝，追蹤保障', featureAuthentic: '正品保證', featureAuthenticDesc: '所有藏品經專業鑑定', community: '加入超過10,000名收藏家的社群', forgotPasswordTitle: '忘記密碼', forgotPasswordDesc: '輸入您的郵箱地址，我們將向您發送重置密碼的鏈接。', forgotPasswordSent: '如果該郵箱存在對應的賬戶，密碼重置鏈接已發送。', resetPasswordTitle: '重置密碼', resetPasswordNewPassword: '新密碼', resetPasswordConfirmPassword: '確認新密碼', resetPasswordSuccess: '密碼重置成功！', backToLogin: '返回登錄', resetPasswordSend: '發送重置鏈接' },
     cart: { title: '購物車', empty: '購物車為空', checkout: '去結算', pageTitle: '購物車', colProduct: '商品', colPrice: '單價', colQuantity: '數量', colTotal: '合計', colAction: '操作' },
     cartDrawer: { title: '購物車', empty: '購物車為空', subtotal: '小計', total: '合計', checkout: '去結算', remove: '刪除' },
     checkout: {
@@ -514,9 +516,9 @@ const messages = {
       quantity: '数量', soldBy: '販売元', soldOut: '売り切れ', inStockWithQty: '在庫 {stock} 点',
       lowStock: '残り {stock} 点のみ'
     },
-    common: { search: '検索', login: 'ログイン', register: '登録', submit: '送信', cancel: 'キャンセル', all: 'すべて', remove: '削除', fullName: 'お名前', phone: '電話番号', address: '住所', city: '市区町村', zipCode: '郵便番号', country: '国' },
+    common: { search: '検索', login: 'ログイン', register: '登録', submit: '送信', cancel: 'キャンセル', close: '閉じる', review: 'レビュー', all: 'すべて', remove: '削除', fullName: 'お名前', phone: '電話番号', address: '住所', city: '市区町村', zipCode: '郵便番号', country: '国' },
     order: { orderNo: '注文番号', status: 'ステータス', totalAmount: '金額', createdAt: '日時' },
-    auth: { forgotPasswordTitle: 'パスワードをお忘れの方', forgotPasswordDesc: 'メールアドレスを入力してください。パスワードリセット用のリンクをお送りします。', forgotPasswordSent: 'そのメールアドレスのアカウントが存在する場合、パスワードリセットリンクを送信しました。', resetPasswordTitle: 'パスワードリセット', resetPasswordNewPassword: '新しいパスワード', resetPasswordConfirmPassword: '新しいパスワード（確認）', resetPasswordSuccess: 'パスワードが正常にリセットされました！', backToLogin: 'ログインに戻る', resetPasswordSend: 'リセットリンクを送信' },
+    auth: { welcomeBack: 'おかえりなさい', joinUs: '参加する', step: 'ステップ', orContinue: 'または次で続ける', noAccount: 'アカウントをお持ちでない方', hasAccount: 'すでにアカウントをお持ちの方', enterUsername: 'ユーザー名またはメールアドレスを入力', rememberMe: 'ログイン状態を保持', twoFactor: '二要素認証', enterCode: 'メールに送信された認証コードを入力', sixDigitCode: '6桁の認証コード', verify: '認証', change: '変更', featureSecure: '安全な取引', featureSecureDesc: '256-bit SSL + 二要素認証', featureShipping: '国際配送', featureShippingDesc: '安全梱包、追跡保証', featureAuthentic: '正品保証', featureAuthenticDesc: '専門家による鑑定済み', community: '10,000人以上のコレクターコミュニティに参加', forgotPasswordTitle: 'パスワードをお忘れの方', forgotPasswordDesc: 'メールアドレスを入力してください。パスワードリセット用のリンクをお送りします。', forgotPasswordSent: 'そのメールアドレスのアカウントが存在する場合、パスワードリセットリンクを送信しました。', resetPasswordTitle: 'パスワードリセット', resetPasswordNewPassword: '新しいパスワード', resetPasswordConfirmPassword: '新しいパスワード（確認）', resetPasswordSuccess: 'パスワードが正常にリセットされました！', backToLogin: 'ログインに戻る', resetPasswordSend: 'リセットリンクを送信' },
     cart: { title: 'カート', empty: 'カートは空です', checkout: '購入手続きへ', pageTitle: 'カート', colProduct: '商品', colPrice: '価格', colQuantity: '数量', colTotal: '合計', colAction: '操作' },
     cartDrawer: { title: 'カート', empty: 'カートは空です', subtotal: '小計', total: '合計', checkout: '購入手続きへ', remove: '削除' },
     checkout: {

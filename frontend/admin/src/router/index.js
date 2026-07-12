@@ -18,10 +18,14 @@ const routes = [
   { path: '/product-history', component: () => import('../views/ProductHistory.vue'), meta: { requiresAuth: true } },
   { path: '/barcode-codes', component: () => import('../views/BarcodeCodes.vue'), meta: { requiresAuth: true } },
   { path: '/audit-logs', component: () => import('../views/AuditLogs.vue'), meta: { requiresAuth: true } },
-  { path: '/finance', component: () => import('../views/Finance.vue'), meta: { requiresAuth: true } },
-  { path: '/finance/sales-revenue', component: () => import('../views/SalesRevenue.vue'), meta: { requiresAuth: true } },
-  { path: '/finance/purchase-report', component: () => import('../views/PurchaseReport.vue'), meta: { requiresAuth: true } },
-  { path: '/finance/profit-report', component: () => import('../views/ProfitReport.vue'), meta: { requiresAuth: true } }
+  { path: '/finance',                     component: () => import('../views/finance/Overview.vue'), meta: { requiresAuth: true } },
+  { path: '/finance/banks',               component: () => import('../views/finance/Banks.vue'), meta: { requiresAuth: true } },
+  { path: '/finance/income',              component: () => import('../views/finance/Income.vue'), meta: { requiresAuth: true } },
+  { path: '/finance/purchases',           component: () => import('../views/finance/Purchases.vue'), meta: { requiresAuth: true } },
+  { path: '/finance/personnel',           component: () => import('../views/finance/Personnel.vue'), meta: { requiresAuth: true } },
+  { path: '/finance/reimbursements',      component: () => import('../views/finance/Reimbursements.vue'), meta: { requiresAuth: true } },
+  { path: '/finance/expenses',            component: () => import('../views/finance/Expenses.vue'), meta: { requiresAuth: true } },
+  { path: '/finance/profit',              component: () => import('../views/finance/Profit.vue'), meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({ history: createWebHistory(), routes })
