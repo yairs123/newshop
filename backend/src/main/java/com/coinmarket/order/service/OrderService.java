@@ -359,6 +359,7 @@ public class OrderService {
                 .paymentMethod(order.getPaymentMethod())
                 .shippingMethod(order.getShippingMethod())
                 .buyerNote(order.getBuyerNote())
+                .adminNote(order.getAdminNote())
                 .paidAt(order.getPaidAt())
                 .completedAt(order.getCompletedAt())
                 .trackingNumber(order.getTrackingNumber())

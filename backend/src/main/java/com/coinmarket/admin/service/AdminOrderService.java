@@ -42,6 +42,7 @@ public class AdminOrderService {
                 .currency(order.getCurrency())
                 .trackingNumber(order.getTrackingNumber())
                 .trackingCompany(order.getTrackingCompany())
+                .adminNote(order.getAdminNote())
                 .createdAt(order.getCreatedAt())
                 .build();
     }
@@ -112,6 +113,11 @@ public class AdminOrderService {
         if (request.getTrackingCompany() != null) {
             order.setTrackingCompany(request.getTrackingCompany());
             saveEditLog(orderId, "trackingCompany", null, request.getTrackingCompany(), reason);
+        }
+        if (request.getAdminNote() != null) {
+            String oldVal = order.getAdminNote();
+            order.setAdminNote(request.getAdminNote());
+            saveEditLog(orderId, "adminNote", oldVal, request.getAdminNote(), reason);
         }
 
         orderRepository.save(order);

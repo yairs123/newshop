@@ -50,6 +50,9 @@ public class OrderResponse {
     @Schema(description = "买家备注")
     private String buyerNote;
 
+    @Schema(description = "管理员备注")
+    private String adminNote;
+
     @Schema(description = "支付时间")
     private LocalDateTime paidAt;
 

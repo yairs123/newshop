@@ -39,12 +39,18 @@
             <div class="order-cell order-time-col">{{ formatDate(o.createdAt) }}</div>
             <div class="order-cell order-actions-col" @click.stop>
               <div class="action-group">
+                <!-- 智能提醒图标 -->
+                <span v-if="getAlert(o)" class="alert-badge" :title="getAlert(o).text" :style="{ background: getAlert(o).color }">{{ getAlert(o).icon }}</span>
+                <!-- 备注标记 -->
+                <span class="note-badge" :class="{ 'has-note': o.adminNote }" @click="openNote(o)" title="备注">
+                  {{ o.adminNote ? '📝' : '📄' }}
+                </span>
                 <button class="action-btn action-detail" @click="viewDetail(o)">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   详情
                 </button>
                 <button v-if="o.status === 'PENDING_PAYMENT'" class="action-btn action-pay" @click="markPaid(o)">
-                  💰 确认收款
+                  💰 收款
                 </button>
                 <button v-if="o.status === 'PAID'" class="action-btn action-ship" @click="openShip(o)">
                   📦 发货
@@ -84,6 +90,45 @@
       </template>
       <el-empty v-else-if="!loading" description="暂无订单" :image-size="80" />
     </el-card>
+
+    <!-- 备注编辑弹窗 -->
+    <el-dialog v-model="showNote" width="420px" :close-on-click-modal="false" class="note-dialog">
+      <template #header>
+        <div class="dialog-header">
+          <span class="dialog-icon">📝</span>
+          <div>
+            <h4>订单备注</h4>
+            <p class="dialog-sub">添加内部备注，方便日后查看</p>
+          </div>
+        </div>
+      </template>
+      <template v-if="noteOrder">
+        <div class="note-order-info">
+          <code>{{ noteOrder.orderNo }}</code>
+          <el-tag :type="statusType(noteOrder.status)" size="small" effect="plain">{{ STATUS_LABELS[noteOrder.status] }}</el-tag>
+        </div>
+        <el-input
+          v-model="noteText"
+          type="textarea"
+          :rows="4"
+          placeholder="输入备注内容..."
+          maxlength="500"
+          show-word-limit
+        />
+        <div class="note-history" v-if="noteHistory.length">
+          <div class="note-history-title">修改记录</div>
+          <div v-for="(h, i) in noteHistory" :key="i" class="note-history-item">
+            <span class="note-history-text">{{ h }}</span>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <button class="btn-cancel" @click="showNote = false">取消</button>
+        <button class="btn-confirm" @click="saveNote" :disabled="savingNote">
+          {{ savingNote ? '保存中...' : '💾 保存备注' }}
+        </button>
+      </template>
+    </el-dialog>
 
     <!-- 分页 -->
     <div class="pagination-bar">
@@ -168,6 +213,59 @@ const showShip = ref(false)
 const shipOrder = ref(null)
 const shipping = ref(false)
 const shipForm = ref({ company: '', number: '' })
+
+// Note
+const showNote = ref(false)
+const noteOrder = ref(null)
+const noteText = ref('')
+const savingNote = ref(false)
+const noteHistory = ref([])
+
+/** 智能提醒：基于订单状态和时间算出是否需要关注 */
+function getAlert(o) {
+  if (!o.createdAt) return null
+  const created = new Date(o.createdAt)
+  const now = new Date()
+  const daysDiff = (now - created) / (1000 * 60 * 60 * 24)
+
+  if (o.status === 'PENDING_PAYMENT' && daysDiff > 3) {
+    return { icon: '🔴', text: `${Math.floor(daysDiff)}天未支付`, color: '#f56c6c' }
+  }
+  if (o.status === 'PAID') {
+    const paidAt = o.paidAt ? new Date(o.paidAt) : created
+    const paidDays = (now - paidAt) / (1000 * 60 * 60 * 24)
+    if (paidDays > 2) {
+      return { icon: '🟡', text: `${Math.floor(paidDays)}天未发货`, color: '#e6a23c' }
+    }
+    return { icon: '🆕', text: '待发货', color: '#409eff' }
+  }
+  if (o.status === 'SHIPPED') {
+    const shippedDays = daysDiff > 0 ? daysDiff : 0  // rough
+    if (shippedDays > 7) {
+      return { icon: '🔵', text: `${Math.floor(shippedDays)}天未确认`, color: '#909399' }
+    }
+  }
+  return null
+}
+
+function openNote(o) {
+  noteOrder.value = o
+  noteText.value = o.adminNote || ''
+  showNote.value = true
+}
+
+async function saveNote() {
+  savingNote.value = true
+  try {
+    await api.put(`/admin/orders/${noteOrder.value.id}`, { adminNote: noteText.value, reason: '管理员添加备注' })
+    ElMessage.success('备注已保存')
+    showNote.value = false
+    // Update local state
+    const found = orders.value.find(o => o.id === noteOrder.value.id)
+    if (found) found.adminNote = noteText.value
+  } catch (e) { /* handled */ }
+  savingNote.value = false
+}
 
 const STATUS_LABELS = {
   PENDING_PAYMENT: '待支付', PAID: '待发货', SHIPPED: '已发货',
@@ -324,6 +422,28 @@ onMounted(() => load())
 .order-time-col { color: #6b7280; font-size: 12px; }
 
 /* Action buttons */
+/* Alert & Note badges */
+.alert-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  font-size: 12px; cursor: default; flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+.note-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+  font-size: 12px; transition: background 0.15s;
+}
+.note-badge.has-note { background: #fef3c7; }
+.note-badge:hover { background: #f3f4f6; }
+
+/* Note dialog */
+.note-order-info { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+.note-history { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+.note-history-title { font-size: 12px; font-weight: 600; color: #9ca3af; margin-bottom: 6px; }
+.note-history-item { font-size: 12px; color: #6b7280; padding: 4px 0; }
+
 .action-group { display: flex; gap: 6px; }
 .action-btn {
   padding: 5px 12px; border-radius: 8px; border: 1px solid #e5e7eb;

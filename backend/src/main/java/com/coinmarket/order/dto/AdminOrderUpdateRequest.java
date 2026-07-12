@@ -25,4 +25,7 @@ public class AdminOrderUpdateRequest {
 
     @Schema(description = "修改原因")
     private String reason;
+
+    @Schema(description = "管理员备注")
+    private String adminNote;
 }

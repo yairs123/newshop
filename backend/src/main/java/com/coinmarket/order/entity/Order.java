@@ -62,6 +62,9 @@ public class Order extends BaseEntity {
     @Column(name = "tracking_company", length = 50)
     private String trackingCompany;
 
+    @Column(name = "admin_note", columnDefinition = "TEXT")
+    private String adminNote;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 }
