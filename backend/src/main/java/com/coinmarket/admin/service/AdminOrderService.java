@@ -27,6 +27,7 @@ public class AdminOrderService {
     private final OrderService orderService;
     private final OrderEditLogRepository orderEditLogRepository;
 
+    @Transactional(readOnly = true)
     public Page<OrderResponse> listOrders(Pageable pageable) {
         return orderRepository.findAll(pageable).map(this::toBriefResponse);
     }
