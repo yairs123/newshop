@@ -43,11 +43,17 @@
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   详情
                 </button>
+                <button v-if="o.status === 'PENDING_PAYMENT'" class="action-btn action-pay" @click="markPaid(o)">
+                  💰 确认收款
+                </button>
                 <button v-if="o.status === 'PAID'" class="action-btn action-ship" @click="openShip(o)">
                   📦 发货
                 </button>
                 <button v-if="o.status === 'SHIPPED'" class="action-btn action-force" @click="forceComplete(o)">
                   ✅ 完成
+                </button>
+                <button v-if="o.status === 'PENDING_PAYMENT' || o.status === 'PAID'" class="action-btn action-cancel" @click="cancelOrder(o)">
+                  ❌ 取消
                 </button>
               </div>
             </div>
@@ -164,7 +170,7 @@ const shipping = ref(false)
 const shipForm = ref({ company: '', number: '' })
 
 const STATUS_LABELS = {
-  PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已发货',
+  PENDING_PAYMENT: '待支付', PAID: '待发货', SHIPPED: '已发货',
   COMPLETED: '已完成', CANCELLED: '已取消'
 }
 
@@ -225,6 +231,28 @@ async function load() {
 function formatPrice(val) { return val != null ? Number(val).toFixed(2) : '0.00' }
 function formatDate(d) { return d ? d.slice(0, 16).replace('T', ' ') : '-' }
 function viewDetail(row) { router.push('/orders/' + row.id + '/invoice') }
+
+async function markPaid(row) {
+  try {
+    await ElMessageBox.confirm(`确认收到 ${row.orderNo} 的付款？`, '确认收款', {
+      confirmButtonText: '确认', cancelButtonText: '取消', type: 'info'
+    })
+    await api.post(`/admin/orders/${row.id}/mark-paid`)
+    ElMessage.success('已标记为待发货')
+    load()
+  } catch (e) { /* cancelled */ }
+}
+
+async function cancelOrder(row) {
+  try {
+    await ElMessageBox.confirm(`确定取消订单 ${row.orderNo} ？`, '取消订单', {
+      confirmButtonText: '确认取消', cancelButtonText: '再想想', type: 'warning'
+    })
+    await api.post(`/admin/orders/${row.id}/cancel`)
+    ElMessage.success('订单已取消')
+    load()
+  } catch (e) { /* cancelled */ }
+}
 
 async function forceComplete(row) {
   try {
@@ -310,6 +338,10 @@ onMounted(() => load())
 .action-ship:hover { background: #fef3c7; }
 .action-force { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
 .action-force:hover { background: #dcfce7; }
+.action-pay { background: #f0f9ff; color: #0284c7; border-color: #bae6fd; }
+.action-pay:hover { background: #e0f2fe; }
+.action-cancel { color: #dc2626; border-color: #fecaca; }
+.action-cancel:hover { background: #fef2f2; }
 
 /* Expanded detail */
 .order-expand { background: #f8fafc; border-top: 1px solid #f0f0f0; }
