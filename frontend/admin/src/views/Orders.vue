@@ -39,17 +39,15 @@
             <div class="order-cell order-time-col">{{ formatDate(o.createdAt) }}</div>
             <div class="order-cell order-actions-col" @click.stop>
               <div class="action-group">
-                <button class="action-btn action-detail" @click="viewDetail(o)" title="查看详情">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <button class="action-btn action-detail" @click="viewDetail(o)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  详情
                 </button>
-                <button class="action-btn action-invoice" @click="$router.push('/orders/' + o.id + '/invoice')" title="账单">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <button v-if="o.status === 'PAID'" class="action-btn action-ship" @click="openShip(o)">
+                  📦 发货
                 </button>
-                <button v-if="o.status === 'PAID'" class="action-btn action-ship" @click="openShip(o)" title="发货">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                </button>
-                <button v-if="o.status !== 'COMPLETED' && o.status !== 'CANCELLED'" class="action-btn action-force" @click="forceComplete(o)" title="强制完成">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <button v-if="o.status === 'SHIPPED'" class="action-btn action-force" @click="forceComplete(o)">
+                  ✅ 完成
                 </button>
               </div>
             </div>
@@ -298,17 +296,20 @@ onMounted(() => load())
 .order-time-col { color: #6b7280; font-size: 12px; }
 
 /* Action buttons */
-.action-group { display: flex; gap: 4px; }
+.action-group { display: flex; gap: 6px; }
 .action-btn {
-  width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e5e7eb;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: #fff; cursor: pointer; color: #6b7280; transition: all 0.15s;
+  padding: 5px 12px; border-radius: 8px; border: 1px solid #e5e7eb;
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #fff; cursor: pointer; color: #374151; transition: all 0.15s;
+  font-size: 12px; font-weight: 500;
 }
-.action-btn:hover { transform: translateY(-1px); }
-.action-detail:hover { background: #eff6ff; color: #3b82f6; border-color: #bfdbfe; }
-.action-invoice:hover { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
-.action-ship:hover { background: #fffbeb; color: #d97706; border-color: #fde68a; }
-.action-force:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+.action-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+.action-detail { color: #3b82f6; border-color: #bfdbfe; }
+.action-detail:hover { background: #eff6ff; }
+.action-ship { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+.action-ship:hover { background: #fef3c7; }
+.action-force { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.action-force:hover { background: #dcfce7; }
 
 /* Expanded detail */
 .order-expand { background: #f8fafc; border-top: 1px solid #f0f0f0; }
