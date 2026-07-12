@@ -50,9 +50,44 @@
             v-if="row.status !== 'COMPLETED' && row.status !== 'CANCELLED'">
             {{ $t('orders.forceComplete') }}
           </el-button>
+          <el-button size="small" type="primary" @click="openShip(row)"
+            v-if="row.status === 'PAID'">
+            📦 发货
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 发货弹窗 -->
+    <el-dialog v-model="showShip" title="发货" width="420px" destroy-on-close>
+      <template v-if="shipOrder">
+        <div class="ship-info">
+          <p><strong>订单：</strong><code>{{ shipOrder.orderNo }}</code></p>
+          <p><strong>金额：</strong>{{ shipOrder.currency }} {{ formatPrice(shipOrder.totalAmount) }}</p>
+          <p><strong>买家：</strong>{{ shipOrder.buyerName || '-' }}</p>
+        </div>
+        <el-form label-position="top">
+          <el-form-item label="快递公司">
+            <el-select v-model="shipForm.company" placeholder="选择快递公司" style="width:100%">
+              <el-option label="USPS" value="USPS" />
+              <el-option label="UPS" value="UPS" />
+              <el-option label="FedEx" value="FedEx" />
+              <el-option label="DHL" value="DHL" />
+              <el-option label="EMS" value="EMS" />
+              <el-option label="顺丰速运" value="顺丰速运" />
+              <el-option label="其他" value="其他" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="快递单号">
+            <el-input v-model="shipForm.number" placeholder="输入快递单号" />
+          </el-form-item>
+        </el-form>
+      </template>
+      <template #footer>
+        <el-button @click="showShip = false">取消</el-button>
+        <el-button type="primary" @click="confirmShip" :loading="shipping">确认发货</el-button>
+      </template>
+    </el-dialog>
 
     <div class="pagination-wrap">
       <el-pagination
@@ -83,6 +118,35 @@ const page = ref(1)
 const total = ref(0)
 const size = 20
 const statusFilter = ref('')
+
+// Ship dialog
+const showShip = ref(false)
+const shipOrder = ref(null)
+const shipping = ref(false)
+const shipForm = ref({ company: '', number: '' })
+
+function openShip(row) {
+  shipOrder.value = row
+  shipForm.value = { company: '', number: '' }
+  showShip.value = true
+}
+
+async function confirmShip() {
+  if (!shipForm.value.company || !shipForm.value.number) {
+    ElMessage.warning('请填写快递公司和单号')
+    return
+  }
+  shipping.value = true
+  try {
+    await api.post(`/admin/orders/${shipOrder.value.id}/ship`, null, {
+      params: { trackingCompany: shipForm.value.company, trackingNumber: shipForm.value.number }
+    })
+    ElMessage.success('发货成功！')
+    showShip.value = false
+    load()
+  } catch (e) { /* handled */ }
+  finally { shipping.value = false }
+}
 
 function statusTag(s) {
   const map = { PENDING_PAYMENT: 'danger', PAID: 'success', SHIPPED: 'warning', COMPLETED: 'success', CANCELLED: 'info' }
@@ -140,6 +204,8 @@ async function forceComplete(row) {
 .order-table { border-radius: 8px; }
 .order-no-text { font-family: 'Courier New', monospace; font-size: 13px; color: #409eff; font-weight: 600; }
 .amount-text { font-weight: 600; color: #f56c6c; }
+.ship-info { margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; }
+.ship-info p { margin: 4px 0; font-size: 14px; }
 .pagination-wrap {
   display: flex; justify-content: center; margin-top: 20px; padding: 16px 0;
 }
