@@ -52,9 +52,7 @@
             <div class="order-cell order-time-col">{{ formatDate(o.createdAt) }}</div>
             <div class="order-cell order-actions-col" @click.stop>
               <div class="action-btn-row">
-                <button class="act act-detail" @click="viewDetail(o)">👁️ 详情</button>
-
-                <!-- 待支付可操作 -->
+                <!-- 点击行可展开详情，这里不再放重复的详情按钮 -->
                 <template v-if="o.status === 'PENDING_PAYMENT'">
                   <button class="act act-pay" @click="markPaid(o)">💰 确认收款</button>
                   <button class="act act-cancel" @click="cancelOrder(o)">❌ 取消订单</button>
@@ -351,7 +349,6 @@ async function forceComplete(row) {
   } catch (e) { /* cancelled */ }
 }
 
-function viewDetail(row) { router.push('/orders/' + row.id + '/invoice') }
 function formatPrice(val) { return val != null ? Number(val).toFixed(2) : '0.00' }
 function formatDate(d) { return d ? d.slice(0, 16).replace('T', ' ') : '-' }
 
