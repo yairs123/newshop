@@ -1,109 +1,147 @@
 <template>
   <div class="orders-page">
+    <!-- 页面标题 -->
     <div class="page-header">
-      <h3>{{ $t('orders.title') }}</h3>
-      <div class="page-actions">
-        <el-select v-model="statusFilter" :placeholder="$t('common.all', '全部状态')" size="small" clearable style="width:130px">
-          <el-option label="待支付" value="PENDING_PAYMENT" />
-          <el-option label="已支付" value="PAID" />
-          <el-option label="已发货" value="SHIPPED" />
-          <el-option label="已完成" value="COMPLETED" />
-          <el-option label="已取消" value="CANCELLED" />
-        </el-select>
-        <el-button size="small" @click="load" :icon="Refresh" circle />
+      <div>
+        <h3>订单管理</h3>
+        <p class="page-desc">查看和处理所有订单</p>
       </div>
+      <el-button size="small" @click="load" :icon="Refresh" circle />
     </div>
 
-    <el-table :data="orders" stripe style="width:100%" v-loading="loading" size="large" border class="order-table">
-      <el-table-column prop="id" :label="$t('orders.id')" width="70" align="center" />
-      <el-table-column prop="orderNo" :label="$t('orders.orderNo')" width="200">
-        <template #default="{ row }">
-          <span class="order-no-text">{{ row.orderNo }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('orders.status')" width="120" align="center">
-        <template #default="{ row }">
-          <el-tag :type="statusTag(row.status)" effect="dark" size="small">
-            {{ $t('orders.statuses.' + row.status, row.status) }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('orders.amount')" width="130" align="right">
-        <template #default="{ row }">
-          <span class="amount-text">{{ row.currency }} {{ formatPrice(row.totalAmount) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column :label="$t('orders.buyer')" prop="buyerName" min-width="120" />
-      <el-table-column :label="$t('orders.seller')" prop="sellerId" width="80" align="center" />
-      <el-table-column :label="$t('orders.createdAt', '创建时间')" width="170">
-        <template #default="{ row }">{{ formatDate(row.createdAt) }}</template>
-      </el-table-column>
-      <el-table-column :label="$t('common.actions', '操作')" width="280" fixed="right">
-        <template #default="{ row }">
-          <el-button size="small" type="primary" plain @click="viewDetail(row)">
-            {{ $t('orders.detail', '详情') }}
-          </el-button>
-          <el-button size="small" type="success" plain @click="$router.push('/orders/' + row.id + '/invoice')">
-            {{ $t('orders.invoice', '账单') }}
-          </el-button>
-          <el-button size="small" type="warning" plain @click="forceComplete(row)"
-            v-if="row.status !== 'COMPLETED' && row.status !== 'CANCELLED'">
-            {{ $t('orders.forceComplete') }}
-          </el-button>
-          <el-button size="small" type="primary" @click="openShip(row)"
-            v-if="row.status === 'PAID'">
-            📦 发货
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 发货弹窗 -->
-    <el-dialog v-model="showShip" title="发货" width="420px" destroy-on-close>
-      <template v-if="shipOrder">
-        <div class="ship-info">
-          <p><strong>订单：</strong><code>{{ shipOrder.orderNo }}</code></p>
-          <p><strong>金额：</strong>{{ shipOrder.currency }} {{ formatPrice(shipOrder.totalAmount) }}</p>
-          <p><strong>买家：</strong>{{ shipOrder.buyerName || '-' }}</p>
+    <!-- 状态统计条 -->
+    <el-row :gutter="12" class="stats-bar">
+      <el-col :span="4" v-for="s in statusStats" :key="s.key">
+        <div class="stat-chip" :class="'chip-' + s.type" @click="statusFilter = s.key">
+          <span class="chip-count">{{ s.count }}</span>
+          <span class="chip-label">{{ s.label }}</span>
         </div>
-        <el-form label-position="top">
-          <el-form-item label="快递公司">
-            <el-select v-model="shipForm.company" placeholder="选择快递公司" style="width:100%">
-              <el-option label="USPS" value="USPS" />
-              <el-option label="UPS" value="UPS" />
-              <el-option label="FedEx" value="FedEx" />
-              <el-option label="DHL" value="DHL" />
-              <el-option label="EMS" value="EMS" />
-              <el-option label="顺丰速运" value="顺丰速运" />
-              <el-option label="其他" value="其他" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="快递单号">
-            <el-input v-model="shipForm.number" placeholder="输入快递单号" />
-          </el-form-item>
-        </el-form>
-      </template>
-      <template #footer>
-        <el-button @click="showShip = false">取消</el-button>
-        <el-button type="primary" @click="confirmShip" :loading="shipping">确认发货</el-button>
-      </template>
-    </el-dialog>
+      </el-col>
+    </el-row>
 
-    <div class="pagination-wrap">
+    <!-- 订单列表卡片 -->
+    <el-card shadow="never" class="list-card">
+      <template v-if="orders.length">
+        <div v-for="(o, idx) in orders" :key="o.id" class="order-row" :class="{ 'order-row-expand': expandedId === o.id }">
+          <!-- 主行 -->
+          <div class="order-main" @click="expandedId = expandedId === o.id ? null : o.id">
+            <div class="order-cell order-index">#{{ idx + 1 + (page-1) * size }}</div>
+            <div class="order-cell order-no-col">
+              <code class="order-no">{{ o.orderNo }}</code>
+            </div>
+            <div class="order-cell order-status-col">
+              <span class="status-pill" :class="'status-' + o.status">{{ STATUS_LABELS[o.status] || o.status }}</span>
+            </div>
+            <div class="order-cell order-amount-col">
+              <span class="amount">{{ o.currency }} {{ formatPrice(o.totalAmount) }}</span>
+            </div>
+            <div class="order-cell order-buyer-col">{{ o.buyerName || '—' }}</div>
+            <div class="order-cell order-time-col">{{ formatDate(o.createdAt) }}</div>
+            <div class="order-cell order-actions-col" @click.stop>
+              <div class="action-group">
+                <button class="action-btn action-detail" @click="viewDetail(o)" title="查看详情">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="action-btn action-invoice" @click="$router.push('/orders/' + o.id + '/invoice')" title="账单">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </button>
+                <button v-if="o.status === 'PAID'" class="action-btn action-ship" @click="openShip(o)" title="发货">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                </button>
+                <button v-if="o.status !== 'COMPLETED' && o.status !== 'CANCELLED'" class="action-btn action-force" @click="forceComplete(o)" title="强制完成">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 展开详情 -->
+          <div v-if="expandedId === o.id" class="order-expand">
+            <div class="expand-inner">
+              <div class="expand-section">
+                <span class="expand-label">商品</span>
+                <div v-for="item in (o.items || [])" :key="item.id" class="expand-item">
+                  <span class="item-title">{{ item.productTitle }}</span>
+                  <span class="item-qty">x{{ item.quantity }}</span>
+                  <span class="item-subtotal">{{ o.currency }} {{ formatPrice(item.subtotal) }}</span>
+                </div>
+              </div>
+              <div class="expand-section">
+                <span class="expand-label">物流</span>
+                <span class="expand-text">{{ o.trackingCompany ? o.trackingCompany + ' · ' + o.trackingNumber : '未发货' }}</span>
+              </div>
+              <div class="expand-section">
+                <span class="expand-label">买家备注</span>
+                <span class="expand-text">{{ o.buyerNote || '无' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <el-empty v-else-if="!loading" description="暂无订单" :image-size="80" />
+    </el-card>
+
+    <!-- 分页 -->
+    <div class="pagination-bar">
       <el-pagination
         v-model:current-page="page"
         :total="total"
         :page-size="size"
-        layout="total, prev, pager, next, jumper"
+        layout="total, prev, pager, next"
         @current-change="load"
         background
+        small
       />
     </div>
+
+    <!-- 发货弹窗 -->
+    <el-dialog v-model="showShip" width="480px" :close-on-click-modal="false" class="ship-dialog">
+      <template #header>
+        <div class="dialog-header">
+          <span class="dialog-icon">📦</span>
+          <div>
+            <h4>确认发货</h4>
+            <p class="dialog-sub">填写物流信息后提交</p>
+          </div>
+        </div>
+      </template>
+      <template v-if="shipOrder">
+        <div class="ship-order-info">
+          <div class="ship-field"><span class="ship-field-label">订单号</span><code>{{ shipOrder.orderNo }}</code></div>
+          <div class="ship-field"><span class="ship-field-label">金额</span><strong>{{ shipOrder.currency }} {{ formatPrice(shipOrder.totalAmount) }}</strong></div>
+          <div class="ship-field"><span class="ship-field-label">买家</span>{{ shipOrder.buyerName || '-' }}</div>
+        </div>
+        <div class="ship-form">
+          <div class="ship-form-row">
+            <label>快递公司</label>
+            <el-select v-model="shipForm.company" placeholder="选择快递公司" style="width:100%">
+              <el-option label="📮 USPS" value="USPS" />
+              <el-option label="🚚 UPS" value="UPS" />
+              <el-option label="✈️ FedEx" value="FedEx" />
+              <el-option label="🌍 DHL" value="DHL" />
+              <el-option label="📬 EMS" value="EMS" />
+              <el-option label="📦 顺丰速运" value="顺丰速运" />
+              <el-option label="其他" value="其他" />
+            </el-select>
+          </div>
+          <div class="ship-form-row">
+            <label>快递单号</label>
+            <el-input v-model="shipForm.number" placeholder="输入快递单号" size="large" />
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <button class="btn-cancel" @click="showShip = false">取消</button>
+        <button class="btn-confirm" @click="confirmShip" :disabled="shipping">
+          {{ shipping ? '提交中...' : '✅ 确认发货' }}
+        </button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api } from '../api'
@@ -112,18 +150,45 @@ import { Refresh } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const { t } = useI18n()
+
 const orders = ref([])
 const loading = ref(false)
 const page = ref(1)
 const total = ref(0)
 const size = 20
 const statusFilter = ref('')
+const expandedId = ref(null)
 
-// Ship dialog
+// Ship
 const showShip = ref(false)
 const shipOrder = ref(null)
 const shipping = ref(false)
 const shipForm = ref({ company: '', number: '' })
+
+const STATUS_LABELS = {
+  PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已发货',
+  COMPLETED: '已完成', CANCELLED: '已取消'
+}
+
+const STATUS_KEYS = ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'COMPLETED', 'CANCELLED']
+
+const statusStats = computed(() => {
+  const counts = {}
+  for (const o of orders.value) {
+    counts[o.status] = (counts[o.status] || 0) + 1
+  }
+  return STATUS_KEYS.map(key => ({
+    key,
+    type: statusType(key),
+    label: STATUS_LABELS[key] || key,
+    count: counts[key] || 0
+  }))
+})
+
+function statusType(s) {
+  const map = { PENDING_PAYMENT: 'danger', PAID: 'success', SHIPPED: 'warning', COMPLETED: 'success', CANCELLED: 'info' }
+  return map[s] || 'info'
+}
 
 function openShip(row) {
   shipOrder.value = row
@@ -148,13 +213,6 @@ async function confirmShip() {
   finally { shipping.value = false }
 }
 
-function statusTag(s) {
-  const map = { PENDING_PAYMENT: 'danger', PAID: 'success', SHIPPED: 'warning', COMPLETED: 'success', CANCELLED: 'info' }
-  return map[s] || 'info'
-}
-
-onMounted(() => load())
-
 async function load() {
   loading.value = true
   try {
@@ -166,47 +224,133 @@ async function load() {
   finally { loading.value = false }
 }
 
-function formatPrice(val) {
-  return val != null ? Number(val).toFixed(2) : '0.00'
-}
-
-function formatDate(d) {
-  if (!d) return '-'
-  return new Date(d).toLocaleString()
-}
-
-function viewDetail(row) {
-  router.push('/orders/' + row.id + '/invoice')
-}
+function formatPrice(val) { return val != null ? Number(val).toFixed(2) : '0.00' }
+function formatDate(d) { return d ? d.slice(0, 16).replace('T', ' ') : '-' }
+function viewDetail(row) { router.push('/orders/' + row.id + '/invoice') }
 
 async function forceComplete(row) {
   try {
-    await ElMessageBox.confirm(
-      t('orders.forceCompleteTip') + ': ' + row.orderNo,
-      t('common.confirm', '确认'),
-      { confirmButtonText: t('common.yes', '确认'), cancelButtonText: t('common.cancel', '取消'), type: 'warning' }
-    )
+    await ElMessageBox.confirm(`确定强制完成订单 ${row.orderNo} ？`, '确认', {
+      confirmButtonText: '确认', cancelButtonText: '取消', type: 'warning'
+    })
     await api.post(`/admin/orders/${row.id}/complete`)
-    ElMessage.success(t('common.success', '操作成功'))
+    ElMessage.success('操作成功')
     load()
   } catch (e) { /* cancelled or error */ }
 }
+
+onMounted(() => load())
 </script>
 
 <style scoped>
-.orders-page { }
-.page-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+.orders-page { max-width: 1280px; }
+
+/* Header */
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.page-header h3 { font-size: 20px; font-weight: 700; color: #111827; margin: 0; }
+.page-desc { font-size: 13px; color: #9ca3af; margin-top: 2px; }
+
+/* Stats bar */
+.stats-bar { margin-bottom: 20px; }
+.stat-chip {
+  background: #fff; border-radius: 10px; padding: 12px; cursor: pointer;
+  text-align: center; border: 2px solid #f0f0f0; transition: all 0.2s;
 }
-.page-header h3 { font-size: 18px; font-weight: 600; color: #303133; margin: 0; }
-.page-actions { display: flex; gap: 8px; align-items: center; }
-.order-table { border-radius: 8px; }
-.order-no-text { font-family: 'Courier New', monospace; font-size: 13px; color: #409eff; font-weight: 600; }
-.amount-text { font-weight: 600; color: #f56c6c; }
-.ship-info { margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; }
-.ship-info p { margin: 4px 0; font-size: 14px; }
-.pagination-wrap {
-  display: flex; justify-content: center; margin-top: 20px; padding: 16px 0;
+.stat-chip:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.chip-count { display: block; font-size: 22px; font-weight: 800; line-height: 1.2; }
+.chip-label { display: block; font-size: 11px; margin-top: 2px; font-weight: 500; }
+.chip-danger .chip-count { color: #f56c6c; }
+.chip-success .chip-count { color: #67c23a; }
+.chip-warning .chip-count { color: #e6a23c; }
+.chip-info .chip-count { color: #909399; }
+.chip-danger .chip-label { color: #f56c6c; }
+.chip-success .chip-label { color: #67c23a; }
+.chip-warning .chip-label { color: #e6a23c; }
+.chip-info .chip-label { color: #909399; }
+
+/* List card */
+.list-card { border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
+
+/* Order row */
+.order-row { border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+.order-row:last-child { border-bottom: none; }
+.order-row:hover { background: #f9fafb; }
+.order-main {
+  display: grid; grid-template-columns: 50px 1fr 90px 120px 100px 140px 120px;
+  align-items: center; padding: 14px 16px; cursor: pointer; gap: 8px;
 }
+.order-cell { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.order-index { color: #9ca3af; font-weight: 500; font-size: 12px; }
+.order-no { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: #409eff; font-weight: 600; }
+
+/* Status pill */
+.status-pill {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+}
+.status-PENDING_PAYMENT { background: #fef2f2; color: #dc2626; }
+.status-PAID { background: #f0fdf4; color: #16a34a; }
+.status-SHIPPED { background: #fffbeb; color: #d97706; }
+.status-COMPLETED { background: #f0fdf4; color: #16a34a; }
+.status-CANCELLED { background: #f3f4f6; color: #6b7280; }
+
+.amount { font-weight: 700; color: #dc2626; font-size: 14px; }
+.order-time-col { color: #6b7280; font-size: 12px; }
+
+/* Action buttons */
+.action-group { display: flex; gap: 4px; }
+.action-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e5e7eb;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; cursor: pointer; color: #6b7280; transition: all 0.15s;
+}
+.action-btn:hover { transform: translateY(-1px); }
+.action-detail:hover { background: #eff6ff; color: #3b82f6; border-color: #bfdbfe; }
+.action-invoice:hover { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+.action-ship:hover { background: #fffbeb; color: #d97706; border-color: #fde68a; }
+.action-force:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+/* Expanded detail */
+.order-expand { background: #f8fafc; border-top: 1px solid #f0f0f0; }
+.expand-inner { padding: 16px 24px 16px 66px; display: flex; flex-direction: column; gap: 8px; }
+.expand-section { display: flex; gap: 12px; align-items: baseline; }
+.expand-label { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; min-width: 56px; letter-spacing: 0.04em; }
+.expand-text { font-size: 13px; color: #374151; }
+.expand-item { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+.item-title { color: #374151; }
+.item-qty { color: #9ca3af; }
+.item-subtotal { color: #dc2626; font-weight: 600; margin-left: auto; }
+
+/* Pagination */
+.pagination-bar { display: flex; justify-content: center; margin-top: 20px; padding: 8px 0; }
+
+/* Ship dialog */
+.ship-dialog :deep(.el-dialog__body) { padding: 0 24px 20px; }
+.ship-dialog :deep(.el-dialog__header) { padding: 20px 24px 0; }
+.dialog-header { display: flex; align-items: center; gap: 12px; }
+.dialog-icon { font-size: 32px; }
+.dialog-header h4 { margin: 0; font-size: 16px; font-weight: 700; color: #111827; }
+.dialog-sub { margin: 2px 0 0; font-size: 13px; color: #9ca3af; }
+
+.ship-order-info {
+  background: #f8fafc; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ship-field { display: flex; gap: 8px; font-size: 13px; align-items: center; }
+.ship-field-label { color: #6b7280; min-width: 56px; font-size: 12px; }
+
+.ship-form { display: flex; flex-direction: column; gap: 16px; }
+.ship-form-row label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+
+.btn-cancel {
+  padding: 8px 20px; border-radius: 8px; border: 1px solid #d1d5db;
+  background: #fff; color: #374151; font-size: 14px; cursor: pointer;
+}
+.btn-confirm {
+  padding: 8px 20px; border-radius: 8px; border: none;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn-confirm:hover { opacity: 0.9; }
+.btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>
