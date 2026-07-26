@@ -1,7 +1,8 @@
 package com.coinmarket.common.storage;
 
+import com.coinmarket.product.repository.ProductImageRepository;
+import com.coinmarket.product.repository.ProductRepository;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,19 +18,26 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "s3")
-public class S3FileStorageService implements FileStorageService {
+public class S3FileStorageService extends AbstractFileStorageService {
 
     private final S3Client s3Client;
-
-    @Value("${app.storage.s3.bucket:coinmarket}")
-    private String bucket;
-
-    @Value("${app.storage.s3.endpoint:}")
-    private String endpoint;
+    private final String bucket;
+    private final String endpoint;
 
     private String baseUrl;
+
+    public S3FileStorageService(
+            ProductRepository productRepository,
+            ProductImageRepository productImageRepository,
+            S3Client s3Client,
+            @Value("${app.storage.s3.bucket:coinmarket}") String bucket,
+            @Value("${app.storage.s3.endpoint:}") String endpoint) {
+        super(productRepository, productImageRepository);
+        this.s3Client = s3Client;
+        this.bucket = bucket;
+        this.endpoint = endpoint;
+    }
 
     @PostConstruct
     public void init() {

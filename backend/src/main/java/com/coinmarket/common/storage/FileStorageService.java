@@ -30,4 +30,21 @@ public interface FileStorageService {
      * @return file bytes, or null if not found
      */
     byte[] load(String path);
+
+    /**
+     * Store a product image: saves the file to storage and creates the corresponding
+     * ProductImage database record linked to the product identified by barcode.
+     *
+     * @param barcode product barcode
+     * @param filename sanitized filename
+     * @param data file bytes
+     * @return result containing path, url, and barcode
+     * @throws IllegalArgumentException if no product found with the given barcode
+     */
+    StoreResult storeProductImage(String barcode, String filename, byte[] data);
+
+    /**
+     * Result of a product image store operation.
+     */
+    record StoreResult(String path, String url, String barcode) {}
 }

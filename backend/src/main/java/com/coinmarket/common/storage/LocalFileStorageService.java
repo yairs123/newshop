@@ -1,5 +1,7 @@
 package com.coinmarket.common.storage;
 
+import com.coinmarket.product.repository.ProductImageRepository;
+import com.coinmarket.product.repository.ProductRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +23,18 @@ import java.util.stream.Stream;
 @Slf4j
 @Service
 @ConditionalOnProperty(name = "app.storage.type", havingValue = "local", matchIfMissing = true)
-public class LocalFileStorageService implements FileStorageService {
+public class LocalFileStorageService extends AbstractFileStorageService {
 
-    @Value("${app.file.upload-dir:./uploads}")
-    private String uploadDir;
-
+    private final String uploadDir;
     private Path rootPath;
+
+    public LocalFileStorageService(
+            ProductRepository productRepository,
+            ProductImageRepository productImageRepository,
+            @Value("${app.file.upload-dir:./uploads}") String uploadDir) {
+        super(productRepository, productImageRepository);
+        this.uploadDir = uploadDir;
+    }
 
     @PostConstruct
     public void init() {

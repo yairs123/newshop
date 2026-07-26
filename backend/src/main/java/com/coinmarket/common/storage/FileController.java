@@ -1,11 +1,8 @@
 package com.coinmarket.common.storage;
 
 import com.coinmarket.common.dto.ApiResponse;
+import com.coinmarket.common.storage.FileStorageService.StoreResult;
 import com.coinmarket.common.util.BarcodeUtil;
-import com.coinmarket.product.entity.Product;
-import com.coinmarket.product.entity.ProductImage;
-import com.coinmarket.product.repository.ProductImageRepository;
-import com.coinmarket.product.repository.ProductRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +26,6 @@ import java.util.Map;
 public class FileController {
 
     private final FileStorageService storageService;
-    private final ProductRepository productRepository;
-    private final ProductImageRepository productImageRepository;
 
     /**
      * Upload a single image for a product identified by barcode.
@@ -46,32 +41,18 @@ public class FileController {
         if (!BarcodeUtil.isValid(barcode)) {
             return ApiResponse.error("Invalid barcode: " + barcode);
         }
-        var productOpt = productRepository.findByBarcode(barcode);
-        if (productOpt.isEmpty()) {
-            return ApiResponse.error("No product found with barcode: " + barcode);
-        }
 
         try {
             String filename = sanitizeFilename(file.getOriginalFilename(), barcode);
-            String path = storageService.store(barcode, filename, file.getBytes());
-
-            // Determine sort order
-            Product product = productOpt.get();
-            int nextOrder = product.getImages() != null ? product.getImages().size() + 1 : 1;
-
-            ProductImage image = ProductImage.builder()
-                    .product(product)
-                    .url("/api/files/" + path)
-                    .sortOrder(nextOrder)
-                    .isPrimary(nextOrder == 1)
-                    .build();
-            productImageRepository.save(image);
+            StoreResult result = storageService.storeProductImage(barcode, filename, file.getBytes());
 
             return ApiResponse.success(Map.of(
-                    "path", path,
-                    "url", "/api/files/" + path,
-                    "barcode", barcode
+                    "path", result.path(),
+                    "url", result.url(),
+                    "barcode", result.barcode()
             ));
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.error(e.getMessage());
         } catch (IOException e) {
             log.error("File upload failed", e);
             return ApiResponse.error("Upload failed: " + e.getMessage());
@@ -99,32 +80,18 @@ public class FileController {
                 failed.add(Map.of("file", originalName, "reason", "No valid barcode in filename"));
                 continue;
             }
-            var productOpt = productRepository.findByBarcode(barcode);
-            if (productOpt.isEmpty()) {
-                failed.add(Map.of("file", originalName, "reason", "No product found for barcode: " + barcode));
-                continue;
-            }
 
             try {
                 String filename = sanitizeFilename(originalName, barcode);
-                String path = storageService.store(barcode, filename, file.getBytes());
-
-                Product product = productOpt.get();
-                int nextOrder = product.getImages() != null ? product.getImages().size() + 1 : 1;
-
-                ProductImage image = ProductImage.builder()
-                        .product(product)
-                        .url("/api/files/" + path)
-                        .sortOrder(nextOrder)
-                        .isPrimary(nextOrder == 1)
-                        .build();
-                productImageRepository.save(image);
+                StoreResult result = storageService.storeProductImage(barcode, filename, file.getBytes());
 
                 succeeded.add(Map.of(
                         "file", originalName,
-                        "path", path,
-                        "barcode", barcode
+                        "path", result.path(),
+                        "barcode", result.barcode()
                 ));
+            } catch (IllegalArgumentException e) {
+                failed.add(Map.of("file", originalName, "reason", e.getMessage()));
             } catch (IOException e) {
                 failed.add(Map.of("file", originalName, "reason", "Store failed: " + e.getMessage()));
             }
