@@ -23,7 +23,8 @@ public class RegisterRequest {
 
     @NotBlank(message = "{validation.password.required}")
     @Size(min = 8, max = 100, message = "{validation.password.length}")
-    @Schema(description = "密码")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$", message = "{validation.password.complexity}")
+    @Schema(description = "密码（需包含大小写字母和数字）")
     private String password;
 
     @Schema(description = "手机号码")

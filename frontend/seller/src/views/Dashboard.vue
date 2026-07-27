@@ -61,6 +61,55 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- Sales Summary -->
+    <el-card shadow="hover" class="sales-summary-card">
+      <template #header>
+        <div class="summary-header">
+          <span style="font-weight:600">{{ $t('dashboard.salesSummary', '本月销售概况') }}</span>
+          <el-button size="small" plain @click="$router.push('/sales-report')">
+            {{ $t('dashboard.viewReport', '查看报表') }}
+          </el-button>
+        </div>
+      </template>
+      <el-row :gutter="16" v-if="salesSummary.orders.length">
+        <el-col :span="12">
+          <div class="summary-section">
+            <h4 class="summary-title">{{ $t('dashboard.recentCompleted', '最近完成订单') }}</h4>
+            <div v-for="o in salesSummary.orders.slice(0, 5)" :key="o.id" class="summary-order-item" @click="$router.push('/orders')">
+              <div class="summary-order-top">
+                <code class="summary-order-no">{{ o.orderNo }}</code>
+                <span class="summary-order-amount">{{ o.currency || 'USD' }} {{ formatPrice(o.totalAmount) }}</span>
+              </div>
+              <div class="summary-order-meta">
+                <span>{{ o.buyerName }}</span>
+                <span>{{ formatDate(o.createdAt) }}</span>
+              </div>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="summary-section">
+            <h4 class="summary-title">{{ $t('dashboard.revenueOverview', '收入概览') }}</h4>
+            <div class="revenue-stats">
+              <div class="revenue-item">
+                <span class="revenue-label">{{ $t('dashboard.completedOrders', '已完成订单') }}</span>
+                <span class="revenue-value">{{ salesSummary.completedCount }} 单</span>
+              </div>
+              <div class="revenue-item">
+                <span class="revenue-label">{{ $t('dashboard.totalRevenue', '总收入') }}</span>
+                <span class="revenue-value revenue-highlight">${{ formatPrice(salesSummary.totalRevenue) }}</span>
+              </div>
+              <div class="revenue-item">
+                <span class="revenue-label">{{ $t('dashboard.avgOrderValue', '平均订单金额') }}</span>
+                <span class="revenue-value">${{ formatPrice(salesSummary.avgOrderValue) }}</span>
+              </div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-empty v-else description="本月暂无已完成订单" :image-size="50" />
+    </el-card>
   </div>
 </template>
 
@@ -93,6 +142,17 @@ const statCards = computed(() => [
 ])
 
 const maxSale = computed(() => Math.max(...weeklySales.value, 1))
+
+const salesSummary = computed(() => {
+  const completed = recentOrders.value.filter(o => o.status === 'COMPLETED')
+  const total = completed.reduce((s, o) => s + Number(o.totalAmount || 0), 0)
+  return {
+    orders: completed,
+    completedCount: completed.length,
+    totalRevenue: total,
+    avgOrderValue: completed.length ? total / completed.length : 0
+  }
+})
 
 function barHeight(sale) {
   return Math.max(4, (sale / maxSale.value) * 120)
@@ -155,4 +215,38 @@ onMounted(async () => {
 .order-meta { display: flex; justify-content: space-between; font-size: 12px; }
 .order-amount { font-weight: 600; color: #059669; }
 .order-date { color: #909399; }
+
+.sales-summary-card { border-radius: 10px; margin-top: 16px; }
+.summary-header { display: flex; justify-content: space-between; align-items: center; }
+.summary-section { padding: 0 8px; }
+.summary-title { font-size: 14px; font-weight: 600; color: #374151; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }
+.summary-order-item { padding: 8px 10px; border-radius: 6px; border: 1px solid #f0f0f0; cursor: pointer; transition: all 0.15s; margin-bottom: 6px; }
+.summary-order-item:hover { border-color: #409eff; background: #f0f7ff; }
+.summary-order-top { display: flex; justify-content: space-between; align-items: center; }
+.summary-order-no { font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace; color: #606266; }
+.summary-order-amount { font-weight: 600; color: #059669; font-size: 13px; }
+.summary-order-meta { display: flex; justify-content: space-between; font-size: 11px; color: #909399; margin-top: 4px; }
+.revenue-stats { display: flex; flex-direction: column; gap: 12px; }
+.revenue-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f8fafc; border-radius: 8px; }
+.revenue-label { font-size: 13px; color: #606266; }
+.revenue-value { font-size: 15px; font-weight: 700; color: #303133; }
+.revenue-highlight { color: #059669; font-size: 18px; }
+
+/* ====== Mobile Responsive ====== */
+@media (max-width: 768px) {
+  .charts-row .el-col { width: 100% !important; flex: 0 0 100% !important; }
+  .sales-summary-card .el-row .el-col { width: 100% !important; flex: 0 0 100% !important; }
+  .stat-card { margin-bottom: 8px; }
+  .summary-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .bar-chart { height: 140px; }
+  .bar { width: 28px; }
+  .revenue-stats { gap: 8px; }
+  .revenue-item { padding: 6px 10px; }
+}
+@media (max-width: 480px) {
+  .dashboard { padding: 0; }
+  .stat-value { font-size: 18px; }
+  .stat-icon { font-size: 24px; }
+  .chart-container { padding: 4px 0; }
+}
 </style>

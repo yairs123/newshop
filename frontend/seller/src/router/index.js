@@ -40,6 +40,11 @@ const routes = [
     path: '/print-labels',
     component: () => import('../views/PrintLabels.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/sales-report',
+    component: () => import('../views/SalesReport.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

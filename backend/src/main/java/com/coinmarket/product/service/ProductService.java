@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.coinmarket.common.util.BarcodeUtil;
+import com.coinmarket.product.repository.ReviewRepository;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class ProductService {
     private final RatingLookupService ratingLookupService;
     private final ProductIndexService productIndexService;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public ProductResponse createProduct(Long sellerId, ProductCreateRequest request) {
@@ -257,6 +259,8 @@ public class ProductService {
                 .supplier(product.getSupplier())
                 .sourceInvoice(product.getSourceInvoice())
                 .saleQty(product.getSaleQty())
+                .averageRating(reviewRepository.averageRatingByProductId(product.getId()))
+                .totalReviews(reviewRepository.countByProductId(product.getId()))
                 .build();
     }
 }

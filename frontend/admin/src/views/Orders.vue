@@ -69,8 +69,13 @@
                   <button class="act act-force" @click="forceComplete(o)">✅ 完成订单</button>
                 </template>
 
-                <!-- 已完成/已取消可操作 -->
-                <template v-if="o.status === 'COMPLETED' || o.status === 'CANCELLED'">
+                <!-- 退款 -->
+                <button v-if="o.status === 'PAID' || o.status === 'SHIPPED'" class="act act-cancel" @click="openRefund(o)">
+                  💳 退款
+                </button>
+
+                <!-- 已完成/已取消/已退款可操作 -->
+                <template v-if="o.status === 'COMPLETED' || o.status === 'CANCELLED' || o.status === 'REFUNDED'">
                   <button class="act act-invoice" @click="$router.push('/orders/' + o.id + '/invoice')">📄 查看账单</button>
                 </template>
 
@@ -224,10 +229,10 @@ const savingNote = ref(false)
 
 const STATUS_LABELS = {
   PENDING_PAYMENT: '待支付', PAID: '待发货', SHIPPED: '已发货',
-  COMPLETED: '已完成', CANCELLED: '已取消'
+  COMPLETED: '已完成', CANCELLED: '已取消', REFUNDED: '已退款'
 }
 
-const STATUS_KEYS = ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'COMPLETED', 'CANCELLED']
+const STATUS_KEYS = ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'COMPLETED', 'CANCELLED', 'REFUNDED']
 
 const statusStats = computed(() => {
   const counts = {}
@@ -240,7 +245,7 @@ const statusStats = computed(() => {
 })
 
 function statusType(s) {
-  const map = { PENDING_PAYMENT: 'danger', PAID: 'success', SHIPPED: 'warning', COMPLETED: 'success', CANCELLED: 'info' }
+  const map = { PENDING_PAYMENT: 'danger', PAID: 'success', SHIPPED: 'warning', COMPLETED: 'success', CANCELLED: 'info', REFUNDED: 'warning' }
   return map[s] || 'info'
 }
 
@@ -348,6 +353,17 @@ async function forceComplete(row) {
     load()
   } catch (e) { /* cancelled */ }
 }
+async function openRefund(row) {
+  try {
+    const { value } = await ElMessageBox.prompt('请输入退款原因（可选）', '退款确认', {
+      confirmButtonText: '确认退款', cancelButtonText: '取消',
+      inputPlaceholder: '退款原因...', inputPattern: /.*/,
+    })
+    await api.post(`/admin/orders/${row.id}/refund`, { reason: value || '' })
+    ElMessage.success('退款处理成功')
+    load()
+  } catch (e) { /* cancelled */ }
+}
 
 function formatPrice(val) { return val != null ? Number(val).toFixed(2) : '0.00' }
 function formatDate(d) { return d ? d.slice(0, 16).replace('T', ' ') : '-' }
@@ -410,6 +426,7 @@ onMounted(() => load())
 .status-SHIPPED { background: #fffbeb; color: #d97706; }
 .status-COMPLETED { background: #f0fdf4; color: #16a34a; }
 .status-CANCELLED { background: #f3f4f6; color: #6b7280; }
+.status-REFUNDED { background: #fef2f2; color: #dc2626; }
 
 /* Alert tag inline */
 .alert-tag { display: inline-block; padding: 2px 6px; border-radius: 4px; color: #fff; font-size: 10px; font-weight: 600; white-space: nowrap; }
@@ -481,4 +498,40 @@ onMounted(() => load())
 
 /* Pagination */
 .pagination-bar { display: flex; justify-content: center; margin-top: 20px; padding: 8px 0; }
+
+/* ====== Mobile Responsive ====== */
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; gap: 12px; }
+  .legend-items { gap: 8px; }
+  .legend-card { padding: 4px 0; }
+  .legend-item { font-size: 11px; }
+
+  .stats-bar .el-col { width: 50% !important; flex: 0 0 50% !important; margin-bottom: 8px; }
+  .stat-chip { padding: 8px; }
+  .chip-count { font-size: 18px; }
+
+  .order-main {
+    grid-template-columns: 30px 1fr 130px;
+    padding: 10px 8px; gap: 6px;
+  }
+  .order-amount-col, .order-buyer-col, .order-time-col { display: none; }
+  .order-actions-col { grid-column: 1 / -1; padding-top: 4px; }
+  .action-btn-row { flex-wrap: wrap; gap: 4px; }
+  .act { flex: 1; text-align: center; justify-content: center; }
+  .order-note-line { padding: 6px 8px 6px 8px; }
+
+  .el-dialog { width: 95% !important; max-width: 95vw !important; }
+  .note-footer { flex-direction: column; gap: 8px; }
+  .note-footer > div { width: 100%; display: flex; gap: 8px; }
+  .btn-delete { flex: 1; text-align: center; }
+  .btn-cancel { flex: 1; text-align: center; }
+  .btn-confirm { flex: 1; text-align: center; margin-left: 0; }
+  .dialog-header { flex-direction: column; text-align: center; }
+}
+@media (max-width: 480px) {
+  .order-main { grid-template-columns: 1fr; }
+  .order-index { display: none; }
+  .order-status-col .alert-tag { display: none; }
+  .orders-page { padding: 0; }
+}
 </style>

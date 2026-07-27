@@ -7,6 +7,7 @@ import com.coinmarket.search.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class SearchController {
     }
 
     @PostMapping("/reindex")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "重建索引", description = "重新构建商品搜索索引")
     public ApiResponse<Void> reindex() {
         productIndexService.reindexAll();

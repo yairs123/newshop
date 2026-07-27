@@ -2,6 +2,7 @@ package com.coinmarket.order.service;
 
 import com.coinmarket.admin.service.AdminOrderService;
 import com.coinmarket.common.exception.BusinessException;
+import com.coinmarket.common.notification.NotificationService;
 import com.coinmarket.order.dto.AdminOrderUpdateRequest;
 import com.coinmarket.order.dto.OrderResponse;
 import com.coinmarket.order.entity.Order;
@@ -43,6 +44,9 @@ class AdminOrderServiceTest {
 
     @Mock
     private OrderEditLogRepository orderEditLogRepository;
+
+    @Mock
+    private NotificationService notificationService;
 
     @InjectMocks
     private AdminOrderService adminOrderService;

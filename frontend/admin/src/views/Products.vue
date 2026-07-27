@@ -1,30 +1,56 @@
 <template>
   <div class="products-page">
-    <!-- 状态统计卡片 -->
+    <!-- Page Header -->
+    <div class="page-head">
+      <div>
+        <h2>{{ $t('products.title') || '商品管理' }}</h2>
+        <p class="page-desc">管理平台上的所有商品 — 查看库存、上架、下架与编辑</p>
+      </div>
+      <div class="page-actions">
+        <el-button @click="$router.push('/inventory')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          入库
+        </el-button>
+        <el-button @click="$router.push('/print-labels')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px"><path d="M20 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z"/><path d="M9 3v18"/></svg>
+          打印条码
+        </el-button>
+      </div>
+    </div>
+
+    <!-- Status Stat Cards -->
     <div class="stats-row">
       <div class="stat-card" @click="statusFilter = ''">
-        <div class="stat-icon stat-icon-total">&#x1F4E6;</div>
+        <div class="stat-icon stat-icon-total">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
         <div class="stat-info">
           <span class="stat-label">全部</span>
           <span class="stat-value">{{ total }}</span>
         </div>
       </div>
       <div class="stat-card" @click="statusFilter = 'INVENTORY'">
-        <div class="stat-icon stat-icon-inventory">&#x1F4E5;</div>
+        <div class="stat-icon stat-icon-inventory">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
         <div class="stat-info">
           <span class="stat-label">库存中</span>
           <span class="stat-value">{{ stats.inventory }}</span>
         </div>
       </div>
       <div class="stat-card" @click="statusFilter = 'ACTIVE'">
-        <div class="stat-icon stat-icon-active">&#x1F6D2;</div>
+        <div class="stat-icon stat-icon-active">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
         <div class="stat-info">
           <span class="stat-label">在售</span>
           <span class="stat-value">{{ stats.active }}</span>
         </div>
       </div>
       <div class="stat-card" @click="statusFilter = 'INACTIVE'">
-        <div class="stat-icon stat-icon-inactive">&#x23F8;&#xFE0F;</div>
+        <div class="stat-icon stat-icon-inactive">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+        </div>
         <div class="stat-info">
           <span class="stat-label">已下架</span>
           <span class="stat-value">{{ stats.inactive }}</span>
@@ -32,22 +58,24 @@
       </div>
     </div>
 
-    <!-- 搜索与操作栏 -->
+    <!-- Search & Filters -->
     <div class="action-bar">
       <div class="filter-tabs">
-        <el-tag :type="statusFilter === '' ? 'primary' : 'info'" effect="plain" style="cursor:pointer" @click="statusFilter = ''">全部</el-tag>
-        <el-tag :type="statusFilter === 'INVENTORY' ? 'warning' : 'info'" effect="plain" style="cursor:pointer" @click="statusFilter = 'INVENTORY'">库存中</el-tag>
-        <el-tag :type="statusFilter === 'ACTIVE' ? 'success' : 'info'" effect="plain" style="cursor:pointer" @click="statusFilter = 'ACTIVE'">在售</el-tag>
-        <el-tag :type="statusFilter === 'INACTIVE' ? 'danger' : 'info'" effect="plain" style="cursor:pointer" @click="statusFilter = 'INACTIVE'">已下架</el-tag>
+        <button class="filter-btn" :class="{ active: statusFilter === '' }" @click="statusFilter = ''">全部</button>
+        <button class="filter-btn" :class="{ active: statusFilter === 'INVENTORY' }" @click="statusFilter = 'INVENTORY'">库存中</button>
+        <button class="filter-btn" :class="{ active: statusFilter === 'ACTIVE' }" @click="statusFilter = 'ACTIVE'">在售</button>
+        <button class="filter-btn" :class="{ active: statusFilter === 'INACTIVE' }" @click="statusFilter = 'INACTIVE'">已下架</button>
       </div>
-      <div style="display:flex; gap:8px; align-items:center">
-        <el-input v-model="searchKeyword" placeholder="搜索条码/名称/国家..." clearable style="width:240px" @input="onSearchInput" />
-        <el-button @click="$router.push('/print-labels')">&#x1F5A8;&#xFE0F; 打印条码</el-button>
-        <el-button @click="$router.push('/inventory')">&#x1F4E5; 入库</el-button>
+      <div class="search-area">
+        <el-input v-model="searchKeyword" placeholder="搜索条码/名称/国家..." clearable style="width:260px" @input="onSearchInput">
+          <template #prefix>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </template>
+        </el-input>
       </div>
     </div>
 
-    <!-- 商品列表 -->
+    <!-- Products Table -->
     <el-card shadow="never" class="list-card">
       <el-table :data="products" v-loading="loading" stripe border style="width:100%" :empty-text="statusFilter ? '暂无此状态商品' : '暂无商品，请先入库'">
         <el-table-column prop="barcode" label="条码" width="150">
@@ -71,21 +99,35 @@
         <el-table-column prop="country" label="国家" width="90" show-overflow-tooltip />
         <el-table-column prop="denomination" label="面值" width="80" show-overflow-tooltip />
         <el-table-column prop="ratingGrade" label="评分" width="80" align="center" />
-        <el-table-column label="操作" width="200" align="center" fixed="right">
+        <el-table-column label="操作" width="220" align="center" fixed="right">
           <template #default="{ row }">
-            <el-space size="small">
-              <el-button size="small" plain @click="openEdit(row)">编辑</el-button>
-              <el-button v-if="row.status === 'INVENTORY'" type="warning" size="small" @click.stop="openListDialog(row)">上架</el-button>
-              <el-button v-else-if="row.status === 'ACTIVE'" type="danger" size="small" plain @click="toggleStatus(row.id, 'INACTIVE')">下架</el-button>
-              <el-button v-else type="success" size="small" @click="openListDialog(row)">上架</el-button>
-            </el-space>
+            <div class="action-btns">
+              <button class="tbl-btn tbl-btn-edit" @click="openEdit(row)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                编辑
+              </button>
+              <button v-if="row.status === 'INVENTORY'" class="tbl-btn tbl-btn-list" @click.stop="openListDialog(row)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                上架
+              </button>
+              <button v-else-if="row.status === 'ACTIVE'" class="tbl-btn tbl-btn-off" @click="toggleStatus(row.id, 'INACTIVE')">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+                下架
+              </button>
+              <button v-else class="tbl-btn tbl-btn-list" @click="openListDialog(row)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                上架
+              </button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination v-model:current-page="page" :total="total" :page-size="size" layout="total, prev, pager, next" background style="margin-top:16px; justify-content:center" @current-change="load" />
+      <div class="pagination-wrap">
+        <el-pagination v-model:current-page="page" :total="total" :page-size="size" layout="total, prev, pager, next" background @current-change="load" />
+      </div>
     </el-card>
 
-    <!-- 上架弹窗 -->
+    <!-- List for Sale Dialog -->
     <el-dialog v-model="listDialog" title="商品上架" width="420px" :close-on-click-modal="false" destroy-on-close>
       <template v-if="selectedProduct">
         <el-card shadow="never" class="info-card">
@@ -108,7 +150,7 @@
       </template>
     </el-dialog>
 
-    <!-- 编辑商品弹窗 -->
+    <!-- Edit Product Dialog -->
     <el-dialog v-model="editDialog" title="编辑商品" width="500px" destroy-on-close>
       <el-form ref="formRef" :model="editForm" label-width="100px" size="small" label-position="top">
         <el-form-item label="标题"><el-input v-model="editForm.title" /></el-form-item>
@@ -247,27 +289,137 @@ onMounted(() => { load() })
 </script>
 
 <style scoped>
-.products-page { padding: 0; }
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
-.stat-card { background: #fff; border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06); cursor: pointer; transition: transform .15s, box-shadow .15s; }
-.stat-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
-.stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-.stat-icon-total { background: #eef2ff; }
-.stat-icon-inventory { background: #fef3c7; }
-.stat-icon-active { background: #ecfdf5; }
-.stat-icon-inactive { background: #fce7f3; }
+.products-page { max-width: 1400px; }
+
+/* Page head */
+.page-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 20px;
+}
+.page-head h2 {
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 24px; font-weight: 700; color: var(--ink, #0f172a); margin: 0;
+}
+.page-desc { font-size: 13px; color: var(--text-muted, #94a3b8); margin-top: 2px; }
+.page-actions { display: flex; gap: 8px; }
+
+/* Stats row */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 10px);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,.06));
+}
+.stat-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: #fff;
+}
+.stat-icon-total { background: linear-gradient(135deg, #6366f1, #818cf8); }
+.stat-icon-inventory { background: linear-gradient(135deg, var(--gold-dark, #b8932a), var(--gold, #d4a843)); }
+.stat-icon-active { background: linear-gradient(135deg, #059669, #10b981); }
+.stat-icon-inactive { background: linear-gradient(135deg, #6b7280, #9ca3af); }
 .stat-info { display: flex; flex-direction: column; }
-.stat-label { font-size: 12px; color: #6b7280; font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
-.stat-value { font-size: 26px; font-weight: 700; color: #111827; line-height: 1.2; }
-.action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
-.filter-tabs { display: flex; gap: 8px; }
-.list-card { border-radius: 8px; border: 1px solid #ebeef5; margin-bottom: 16px; }
-.barcode-text { font-family: 'Courier New', monospace; font-size: 13px; color: #409eff; font-weight: 700; letter-spacing: 1px; }
-.price-cell { font-weight: 600; color: #059669; }
+.stat-label {
+  font-size: 12px; color: var(--text-muted, #94a3b8);
+  font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.stat-value {
+  font-size: 26px; font-weight: 800;
+  color: var(--ink, #0f172a); line-height: 1.2;
+}
+
+/* Action bar */
+.action-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+}
+.filter-tabs { display: flex; gap: 4px; background: var(--ivory-dark, #e8e2d6); padding: 3px; border-radius: 8px; }
+.filter-btn {
+  padding: 6px 14px; border-radius: 6px; border: none;
+  font-size: 12px; font-weight: 500; font-family: inherit;
+  color: var(--text-muted, #94a3b8);
+  background: transparent; cursor: pointer; transition: all 0.15s;
+}
+.filter-btn:hover { color: var(--text, #1e293b); }
+.filter-btn.active { background: var(--surface, #fff); color: var(--ink, #0f172a); box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.search-area { display: flex; gap: 8px; align-items: center; }
+
+/* Table card */
+.list-card {
+  border-radius: var(--radius, 10px);
+  border: 1px solid var(--border, #e5e7eb);
+  margin-bottom: 16px;
+}
+
+/* Pagination */
+.pagination-wrap { display: flex; justify-content: center; margin-top: 16px; }
+
+/* Table action buttons */
+.action-btns { display: flex; gap: 6px; justify-content: center; }
+.tbl-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border, #e5e7eb);
+  font-size: 12px; font-weight: 500; font-family: inherit;
+  background: var(--surface, #fff); color: var(--text, #1e293b);
+  cursor: pointer; transition: all 0.15s;
+}
+.tbl-btn:hover { border-color: var(--gold, #d4a843); color: var(--gold-dark, #b8932a); }
+.tbl-btn-edit:hover { border-color: var(--info, #3b82f6); color: #3b82f6; }
+.tbl-btn-list:hover { border-color: var(--success, #059669); color: var(--success, #059669); }
+.tbl-btn-off:hover { border-color: var(--danger, #dc2626); color: var(--danger, #dc2626); }
+
+/* Barcode */
+.barcode-text {
+  font-family: 'Courier New', monospace;
+  font-size: 13px; color: var(--gold-dark, #b8932a);
+  font-weight: 700; letter-spacing: 1px;
+}
+.price-cell { font-weight: 600; color: var(--success, #059669); }
+
+/* Dialog product summary */
 .product-summary { font-size: 13px; }
 .summary-row { display: flex; align-items: center; gap: 12px; padding: 5px 0; }
-.summary-label { color: #909399; min-width: 60px; font-size: 12px; font-weight: 500; }
-.info-card { border: 1px solid #e8eaed; border-radius: 6px; }
-.form-section { margin-bottom: 16px; border: 1px solid #e8eaed; border-radius: 6px; }
-.form-section :deep(.el-card__header) { padding: 10px 16px; background: #f5f7fa; border-bottom: 1px solid #e8eaed; font-size: 14px; font-weight: 600; color: #303133; }
+.summary-label {
+  color: var(--text-muted, #94a3b8);
+  min-width: 60px; font-size: 12px; font-weight: 500;
+}
+.info-card { border: 1px solid var(--border, #e5e7eb); border-radius: var(--radius-sm, 6px); }
+
+/* ====== Mobile Responsive ====== */
+@media (max-width: 1024px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .page-head { flex-direction: column; gap: 12px; }
+  .page-actions { width: 100%; }
+  .page-actions .el-button { flex: 1; justify-content: center; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .action-bar { flex-direction: column; align-items: stretch; }
+  .search-area { width: 100%; }
+  .search-area .el-input { width: 100% !important; }
+  .filter-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .el-table { overflow-x: auto; }
+  .action-btns { flex-wrap: wrap; }
+  .tbl-btn { flex: 1; justify-content: center; }
+  .pagination-wrap { overflow-x: auto; }
+  .el-dialog { width: 95% !important; max-width: 95vw !important; }
+}
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .products-page { padding: 0; }
+  .stat-value { font-size: 22px; }
+  .stat-card { padding: 14px; }
+}
 </style>

@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.0",
     "echarts": "^6.1.0",
+    "sockjs-client": "^1.6.1",
     "element-plus": "^2.7.0",
     "jsbarcode": "^3.12.3",
     "pinia": "^2.1.0",

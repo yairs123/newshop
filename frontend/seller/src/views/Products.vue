@@ -519,4 +519,21 @@ onMounted(async () => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ====== Mobile Responsive ====== */
+@media (max-width: 768px) {
+  .action-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+  .action-left { flex-wrap: wrap; }
+  .action-left .el-button { flex: 1; justify-content: center; min-width: 0; }
+  .profit-summary .el-col { width: 100% !important; flex: 0 0 100% !important; margin-bottom: 8px; }
+  .profit-value { font-size: 18px; }
+  .el-table { overflow-x: auto; }
+  .el-dialog { width: 95% !important; max-width: 95vw !important; }
+  .upload-zone { padding: 20px; }
+  .upload-previews { justify-content: center; }
+}
+@media (max-width: 480px) {
+  .products-page { padding: 0; }
+  .action-left .el-button { font-size: 12px; padding: 8px 10px; }
+}
 </style>

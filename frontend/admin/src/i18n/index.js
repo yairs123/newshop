@@ -58,14 +58,18 @@ const messages = {
       email: 'Email',
       enabled: 'Enabled',
       roles: 'Roles',
-      toggleStatus: 'Toggle Status'
+      toggleStatus: 'Toggle Status',
+      enable: 'Enable',
+      disable: 'Disable'
     },
     sellers: {
       title: 'Seller Management',
       applications: 'Applications',
       profiles: 'Profiles',
+      id: 'ID',
       shopName: 'Shop Name',
       status: 'Status',
+      actions: 'Actions',
       approve: 'Approve',
       reject: 'Reject',
       reason: 'Reject Reason'
@@ -164,14 +168,18 @@ const messages = {
       email: '邮箱',
       enabled: '状态',
       roles: '角色',
-      toggleStatus: '切换状态'
+      toggleStatus: '切换状态',
+      enable: '启用',
+      disable: '禁用'
     },
     sellers: {
       title: '卖家管理',
       applications: '申请列表',
       profiles: '卖家列表',
+      id: 'ID',
       shopName: '店铺名称',
       status: '状态',
+      actions: '操作',
       approve: '通过',
       reject: '拒绝',
       reason: '拒绝原因'
@@ -231,16 +239,16 @@ const messages = {
       sendReply: '發送回覆'
     },
     dashboard: {
-      title: '控制台',
+      title: '控制台', quickActions: '快捷操作',
       totalProducts: '商品總數',
       totalOrders: '訂單總數',
       totalUsers: '用戶總數',
       pendingSellers: '待審核賣家'
     },
     products: { title: '商品管理', addProduct: '添加商品', id: 'ID', name: '名稱', price: '價格', status: '狀態', actions: '操作', activate: '上架', deactivate: '下架' },
-    orders: { title: '訂單管理', id: 'ID', orderNo: '訂單號', status: '狀態', amount: '金額', buyer: '買家', seller: '賣家', forceComplete: '強制完成', forceCompleteTip: '強制完成此訂單' },
-    users: { title: '用戶管理', id: 'ID', username: '用戶名', email: '郵箱', enabled: '狀態', roles: '角色', toggleStatus: '切換狀態' },
-    sellers: { title: '賣家管理', applications: '申請列表', profiles: '賣家列表', shopName: '店鋪名稱', status: '狀態', approve: '通過', reject: '拒絕', reason: '拒絕原因' },
+    orders: { title: '訂單管理', id: 'ID', orderNo: '訂單號', status: '狀態', statuses: { PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已發貨', COMPLETED: '已完成', CANCELLED: '已取消' }, amount: '金額', buyer: '買家', seller: '賣家', detail: '詳情', createdAt: '創建時間', invoice: '賬單', forceComplete: '強制完成', forceCompleteTip: '強制完成此訂單' },
+    users: { title: '用戶管理', id: 'ID', username: '用戶名', email: '郵箱', enabled: '狀態', roles: '角色', toggleStatus: '切換狀態', enable: '啟用', disable: '禁用' },
+    sellers: { title: '賣家管理', applications: '申請列表', profiles: '賣家列表', id: 'ID', shopName: '店鋪名稱', status: '狀態', actions: '操作', approve: '通過', reject: '拒絕', reason: '拒絕原因' },
     ads: {
       title: '廣告管理', addAd: '添加廣告', editAd: '編輯廣告', title_: '標題', imageUrl: '圖片地址', linkUrl: '連結地址', sortOrder: '排序', isActive: '啟用', startDate: '開始日期', endDate: '結束日期', deleteConfirm: '確定要刪除這個廣告嗎？'
     },
@@ -276,7 +284,7 @@ const messages = {
       list: '上架', listConfirm: '商品上架', salePrice: '售價',
       confirmList: '確認上架', listing: '上架中...'
     },
-    common: { logout: '退出登錄', submit: '提交', cancel: '取消', search: '搜索', yes: '是', no: '否', noData: '暫無數據', startDate: '開始日期', endDate: '結束日期' }
+    common: { login: '登錄', logout: '退出登錄', actions: '操作', all: '全部', confirm: '確認', success: '操作成功', submit: '提交', cancel: '取消', search: '搜索', yes: '是', no: '否', noData: '暫無數據', startDate: '開始日期', endDate: '結束日期' }
   },
   ja: {
     admin: {
@@ -296,16 +304,16 @@ const messages = {
       sendReply: '返信を送信'
     },
     dashboard: {
-      title: 'ダッシュボード',
+      title: 'ダッシュボード', quickActions: 'クイックアクション',
       totalProducts: '商品数',
       totalOrders: '注文数',
       totalUsers: 'ユーザー数',
       pendingSellers: '審査待ち'
     },
     products: { title: '商品管理', addProduct: '商品追加', id: 'ID', name: '名称', price: '価格', status: 'ステータス', actions: '操作', activate: '公開', deactivate: '非公開' },
-    orders: { title: '注文管理', id: 'ID', orderNo: '注文番号', status: 'ステータス', amount: '金額', buyer: '買い手', seller: '売り手', forceComplete: '強制完了', forceCompleteTip: 'この注文を強制完了する' },
-    users: { title: 'ユーザー管理', id: 'ID', username: 'ユーザー名', email: 'メール', enabled: '有効', roles: '役割', toggleStatus: '状態切替' },
-    sellers: { title: '売り手管理', applications: '申請一覧', profiles: '売り手一覧', shopName: 'ショップ名', status: 'ステータス', approve: '承認', reject: '却下', reason: '却下理由' },
+    orders: { title: '注文管理', id: 'ID', orderNo: '注文番号', status: 'ステータス', statuses: { PENDING_PAYMENT: '支払い待ち', PAID: '支払い済み', SHIPPED: '発送済み', COMPLETED: '完了', CANCELLED: 'キャンセル済み' }, amount: '金額', buyer: '買い手', seller: '売り手', detail: '詳細', createdAt: '作成日時', invoice: '請求書', forceComplete: '強制完了', forceCompleteTip: 'この注文を強制完了する' },
+    users: { title: 'ユーザー管理', id: 'ID', username: 'ユーザー名', email: 'メール', enabled: '有効', roles: '役割', toggleStatus: '状態切替', enable: '有効にする', disable: '無効にする' },
+    sellers: { title: '売り手管理', applications: '申請一覧', profiles: '売り手一覧', id: 'ID', shopName: 'ショップ名', status: 'ステータス', actions: '操作', approve: '承認', reject: '却下', reason: '却下理由' },
     ads: {
       title: '広告管理', addAd: '広告追加', editAd: '広告編集', title_: 'タイトル', imageUrl: '画像URL', linkUrl: 'リンクURL', sortOrder: '並び順', isActive: '有効', startDate: '開始日', endDate: '終了日', deleteConfirm: 'この広告を削除してもよろしいですか？'
     },
@@ -341,7 +349,7 @@ const messages = {
       list: '出品', listConfirm: '商品出品', salePrice: '販売価格',
       confirmList: '出品確定', listing: '出品中...'
     },
-    common: { logout: 'ログアウト', submit: '送信', cancel: 'キャンセル', search: '検索', yes: 'はい', no: 'いいえ', noData: 'データなし', startDate: '開始日', endDate: '終了日' }
+    common: { login: 'ログイン', logout: 'ログアウト', actions: '操作', all: 'すべて', confirm: '確認', success: '成功', submit: '送信', cancel: 'キャンセル', search: '検索', yes: 'はい', no: 'いいえ', noData: 'データなし', startDate: '開始日', endDate: '終了日' }
   },
   ko: {
     admin: {
@@ -361,16 +369,16 @@ const messages = {
       sendReply: '답변 보내기'
     },
     dashboard: {
-      title: '대시보드',
+      title: '대시보드', quickActions: '빠른 작업',
       totalProducts: '총 상품',
       totalOrders: '총 주문',
       totalUsers: '총 사용자',
       pendingSellers: '승인 대기 판매자'
     },
     products: { title: '상품 관리', addProduct: '상품 추가', id: 'ID', name: '이름', price: '가격', status: '상태', actions: '작업', activate: '활성화', deactivate: '비활성화' },
-    orders: { title: '주문 관리', id: 'ID', orderNo: '주문 번호', status: '상태', amount: '금액', buyer: '구매자', seller: '판매자', forceComplete: '강제 완료', forceCompleteTip: '이 주문을 강제 완료합니다' },
-    users: { title: '사용자 관리', id: 'ID', username: '사용자명', email: '이메일', enabled: '활성', roles: '역할', toggleStatus: '상태 전환' },
-    sellers: { title: '판매자 관리', applications: '신청 목록', profiles: '판매자 목록', shopName: '상점명', status: '상태', approve: '승인', reject: '거절', reason: '거절 사유' },
+    orders: { title: '주문 관리', id: 'ID', orderNo: '주문 번호', status: '상태', statuses: { PENDING_PAYMENT: '결제 대기', PAID: '결제 완료', SHIPPED: '배송 중', COMPLETED: '완료', CANCELLED: '취소됨' }, amount: '금액', buyer: '구매자', seller: '판매자', detail: '상세', createdAt: '생성 시간', invoice: '청구서', forceComplete: '강제 완료', forceCompleteTip: '이 주문을 강제 완료합니다' },
+    users: { title: '사용자 관리', id: 'ID', username: '사용자명', email: '이메일', enabled: '활성', roles: '역할', toggleStatus: '상태 전환', enable: '활성화', disable: '비활성화' },
+    sellers: { title: '판매자 관리', applications: '신청 목록', profiles: '판매자 목록', id: 'ID', shopName: '상점명', status: '상태', actions: '작업', approve: '승인', reject: '거절', reason: '거절 사유' },
     ads: {
       title: '광고 관리', addAd: '광고 추가', editAd: '광고 수정', title_: '제목', imageUrl: '이미지 URL', linkUrl: '링크 URL', sortOrder: '정렬 순서', isActive: '활성', startDate: '시작 날짜', endDate: '종료 날짜', deleteConfirm: '이 광고를 삭제하시겠습니까?'
     },
@@ -406,7 +414,7 @@ const messages = {
       list: '판매등록', listConfirm: '판매등록', salePrice: '판매 가격',
       confirmList: '등록 확인', listing: '등록 중...'
     },
-    common: { logout: '로그아웃', submit: '제출', cancel: '취소', search: '검색', yes: '예', no: '아니오', noData: '데이터 없음', startDate: '시작 날짜', endDate: '종료 날짜' }
+    common: { login: '로그인', logout: '로그아웃', actions: '작업', all: '전체', confirm: '확인', success: '성공', submit: '제출', cancel: '취소', search: '검색', yes: '예', no: '아니오', noData: '데이터 없음', startDate: '시작 날짜', endDate: '종료 날짜' }
   }
 }
 

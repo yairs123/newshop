@@ -59,8 +59,10 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @Operation(summary = "查询订单详情", description = "根据订单ID查询订单详细信息")
-    public ApiResponse<OrderResponse> getOrder(@PathVariable Long id) {
-        return ApiResponse.success(orderService.getOrder(id));
+    public ApiResponse<OrderResponse> getOrder(
+            @PathVariable Long id,
+            @CurrentUser UserPrincipal principal) {
+        return ApiResponse.success(orderService.getOrder(id, principal.getId()));
     }
 
     @GetMapping("/buyer")

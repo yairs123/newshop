@@ -12,6 +12,9 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByOrderNo(String orderNo);
+
+    @Query("SELECT COUNT(o) > 0 FROM Order o JOIN o.items i WHERE o.buyerId = :buyerId AND i.productId = :productId AND o.status = :status")
+    boolean existsByBuyerIdAndItemsProductIdAndStatus(@Param("buyerId") Long buyerId, @Param("productId") Long productId, @Param("status") String status);
     List<Order> findByBuyerIdOrderByCreatedAtDesc(Long buyerId);
     List<Order> findBySellerIdOrderByCreatedAtDesc(Long sellerId);
     List<Order> findByBuyerIdAndStatusInOrderByCreatedAtDesc(Long buyerId, List<String> statuses);

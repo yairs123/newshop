@@ -133,7 +133,7 @@ class OrderControllerTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        given(orderService.getOrder(100L)).willReturn(orderResponse);
+        given(orderService.getOrder(100L, 1L)).willReturn(orderResponse);
 
         mockMvc.perform(get("/api/orders/100")
                         .accept(MediaType.APPLICATION_JSON))
@@ -148,7 +148,7 @@ class OrderControllerTest {
 
     @Test
     void getOrderShouldReturn404WhenNotFound() throws Exception {
-        given(orderService.getOrder(999L))
+        given(orderService.getOrder(999L, 1L))
                 .willThrow(new BusinessException(404, "Order not found: 999"));
 
         mockMvc.perform(get("/api/orders/999")

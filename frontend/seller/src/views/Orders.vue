@@ -234,4 +234,17 @@ onMounted(loadOrders)
 .total-amount { font-size: 16px; font-weight: 700; color: #dc2626; }
 .ship-info { margin-bottom: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; }
 .ship-info p { margin: 4px 0; font-size: 14px; }
+
+/* ====== Mobile Responsive ====== */
+@media (max-width: 768px) {
+  .filter-bar { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  .el-table { overflow-x: auto; }
+  .el-dialog { width: 95% !important; max-width: 95vw !important; }
+  .info-grid { grid-template-columns: 1fr; }
+  .detail-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .orders-page { padding: 0; }
+  .el-table :deep(.el-table__body-wrapper) { overflow-x: auto; }
+}
 </style>

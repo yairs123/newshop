@@ -78,15 +78,28 @@ function initCharts() {
   if (trendChartRef.value) {
     trendChart = echarts.init(trendChartRef.value)
     trendChart.setOption({
-      tooltip: { trigger: 'axis' },
+      tooltip: { trigger: 'axis', formatter: (p) => {
+        let html = `<b>${p[0].axisValue}</b><br/>`
+        p.forEach(i => html += `${i.marker} ${i.seriesName}: <b>$${Number(i.value).toLocaleString()}</b><br/>`)
+        return html
+      }},
       legend: { data: ['收入', '支出', '利润'] },
       grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
       xAxis: { type: 'category', data: data.monthlyTrend.map(m => m.month) },
-      yAxis: { type: 'value', axisLabel: { formatter: '${v}' } },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: (v) => {
+            if (Math.abs(v) >= 1000000) return '$' + (v/1000000).toFixed(1) + 'M'
+            if (Math.abs(v) >= 1000) return '$' + (v/1000).toFixed(1) + 'K'
+            return '$' + v
+          }
+        }
+      },
       series: [
-        { name: '收入', type: 'bar', stack: 'total', data: data.monthlyTrend.map(m => m.income), itemStyle: { color: '#10b981' } },
-        { name: '支出', type: 'bar', stack: 'total', data: data.monthlyTrend.map(m => m.expenses), itemStyle: { color: '#f59e0b' } },
-        { name: '利润', type: 'line', data: data.monthlyTrend.map(m => m.profit), itemStyle: { color: '#3b82f6' }, lineStyle: { width: 3 } },
+        { name: '收入', type: 'bar', data: data.monthlyTrend.map(m => m.income), itemStyle: { color: '#10b981', borderRadius: [4,4,0,0] } },
+        { name: '支出', type: 'bar', data: data.monthlyTrend.map(m => m.expenses), itemStyle: { color: '#f59e0b', borderRadius: [4,4,0,0] } },
+        { name: '利润', type: 'line', data: data.monthlyTrend.map(m => Number(m.profit)), itemStyle: { color: '#3b82f6' }, lineStyle: { width: 3 }, symbol: 'circle', symbolSize: 8, areaStyle: { color: 'rgba(59,130,246,0.08)' } },
       ],
     })
   }

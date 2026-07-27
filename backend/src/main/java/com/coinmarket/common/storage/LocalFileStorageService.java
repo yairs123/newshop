@@ -50,9 +50,15 @@ public class LocalFileStorageService extends AbstractFileStorageService {
     @Override
     public String store(String barcode, String filename, byte[] data) {
         try {
-            Path barcodeDir = rootPath.resolve(barcode);
+            Path barcodeDir = rootPath.resolve(barcode).normalize();
+            if (!barcodeDir.startsWith(rootPath)) {
+                throw new SecurityException("Access denied: path traversal detected in barcode");
+            }
             Files.createDirectories(barcodeDir);
-            Path target = barcodeDir.resolve(filename);
+            Path target = barcodeDir.resolve(filename).normalize();
+            if (!target.startsWith(barcodeDir)) {
+                throw new SecurityException("Access denied: path traversal detected in filename");
+            }
             Files.write(target, data);
             String relativePath = barcode + "/" + filename;
             log.info("Stored file: {}", relativePath);
@@ -65,7 +71,10 @@ public class LocalFileStorageService extends AbstractFileStorageService {
     @Override
     public void delete(String path) {
         try {
-            Path target = rootPath.resolve(path);
+            Path target = rootPath.resolve(path).normalize();
+            if (!target.startsWith(rootPath)) {
+                throw new SecurityException("Access denied: path traversal detected");
+            }
             Files.deleteIfExists(target);
         } catch (IOException e) {
             log.warn("Failed to delete file: {}", path, e);
@@ -79,7 +88,11 @@ public class LocalFileStorageService extends AbstractFileStorageService {
 
     @Override
     public List<String> listByBarcode(String barcode) {
-        Path barcodeDir = rootPath.resolve(barcode);
+        Path barcodeDir = rootPath.resolve(barcode).normalize();
+        if (!barcodeDir.startsWith(rootPath)) {
+            log.warn("Path traversal detected in listByBarcode: {}", barcode);
+            return Collections.emptyList();
+        }
         if (!Files.exists(barcodeDir)) {
             return Collections.emptyList();
         }
@@ -96,7 +109,12 @@ public class LocalFileStorageService extends AbstractFileStorageService {
     }
 
     public Path loadAsPath(String relativePath) {
-        return rootPath.resolve(relativePath).normalize();
+        Path resolved = rootPath.resolve(relativePath).normalize();
+        // Verify the resolved path stays within the root directory to prevent path traversal
+        if (!resolved.startsWith(rootPath)) {
+            throw new SecurityException("Access denied: path traversal detected");
+        }
+        return resolved;
     }
 
     @Override

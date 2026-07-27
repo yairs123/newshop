@@ -222,5 +222,16 @@ async function load() { onMounted() }
 .dot-CANCELLED { background: var(--text-muted, #94a3b8); }
 .order-code { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--gold-dark, #b8932a); }
 
-@media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .content-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .content-grid { grid-template-columns: 1fr; }
+  .page-head { flex-direction: column; gap: 12px; }
+  .refresh-btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .dashboard { padding: 0; }
+  .stat-value { font-size: 24px; }
+  .content-card { padding: 16px; }
+}
 </style>

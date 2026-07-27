@@ -51,6 +51,13 @@ public class AdminOrderController {
         return ApiResponse.success(null);
     }
 
+    @PostMapping("/{id}/refund")
+    @Operation(summary = "退款", description = "管理员对订单进行退款处理")
+    public ApiResponse<Void> refundOrder(@PathVariable Long id, @RequestBody(required = false) java.util.Map<String, String> body) {
+        adminOrderService.refundOrder(id, body != null ? body.get("reason") : null);
+        return ApiResponse.success(null);
+    }
+
     @PostMapping("/{id}/complete")
     @Operation(summary = "强制完成", description = "强制将订单标记为已完成状态")
     public ApiResponse<Void> forceComplete(@PathVariable Long id) {

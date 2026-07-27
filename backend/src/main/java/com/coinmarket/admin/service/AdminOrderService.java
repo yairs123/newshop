@@ -1,6 +1,7 @@
 package com.coinmarket.admin.service;
 
 import com.coinmarket.common.exception.BusinessException;
+import com.coinmarket.common.notification.NotificationService;
 import com.coinmarket.order.dto.AdminOrderUpdateRequest;
 import com.coinmarket.order.dto.OrderEditLogResponse;
 import com.coinmarket.order.dto.OrderResponse;
@@ -26,6 +27,7 @@ public class AdminOrderService {
     private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final OrderEditLogRepository orderEditLogRepository;
+    private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public Page<OrderResponse> listOrders(Pageable pageable) {
@@ -70,6 +72,7 @@ public class AdminOrderService {
         order.setPaidAt(LocalDateTime.now());
         orderRepository.save(order);
         saveEditLog(orderId, "status", prev, "PAID", "管理员标记已支付");
+        notificationService.notifyOrderStatusChange(orderId, "PAID");
     }
 
     @Transactional
@@ -83,6 +86,7 @@ public class AdminOrderService {
         order.setStatus("CANCELLED");
         orderRepository.save(order);
         saveEditLog(orderId, "status", prev, "CANCELLED", "管理员取消订单");
+        notificationService.notifyOrderStatusChange(orderId, "CANCELLED");
     }
 
     @Transactional
@@ -125,6 +129,20 @@ public class AdminOrderService {
     }
 
     @Transactional
+    public void refundOrder(Long orderId, String reason) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException("订单不存在"));
+        String prev = order.getStatus();
+        if (!"PAID".equals(prev) && !"SHIPPED".equals(prev)) {
+            throw new BusinessException("当前状态不允许退款");
+        }
+        order.setStatus("REFUNDED");
+        orderRepository.save(order);
+        saveEditLog(orderId, "status", prev, "REFUNDED", "管理员退款: " + (reason != null ? reason : ""));
+        notificationService.notifyOrderStatusChange(orderId, "REFUNDED");
+    }
+
+    @Transactional
     public void shipOrder(Long orderId, String trackingNumber, String trackingCompany) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException("订单不存在"));
@@ -137,6 +155,7 @@ public class AdminOrderService {
         order.setTrackingCompany(trackingCompany);
         orderRepository.save(order);
         saveEditLog(orderId, "status", prevStatus, "SHIPPED", "管理员发货");
+        notificationService.notifyOrderStatusChange(orderId, "SHIPPED");
     }
 
     private void saveEditLog(Long orderId, String fieldName, String oldValue, String newValue, String reason) {

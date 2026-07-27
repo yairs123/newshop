@@ -1,5 +1,13 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
-COPY target/coin-marketplace-*.jar app.jar
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src ./src
+RUN ./mvnw package -DskipTests
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

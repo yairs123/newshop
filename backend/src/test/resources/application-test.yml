@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;INIT=CREATE SCHEMA IF NOT EXISTS coin_users\;CREATE SCHEMA IF NOT EXISTS coin_order\;CREATE SCHEMA IF NOT EXISTS coin_product
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
+  data:
+    redis:
+      enabled: false
+  rabbitmq:
+    enabled: false
+  elasticsearch:
+    enabled: false
+app:
+  storage:
+    type: local
+  jwt:
+    secret: test-secret-key-that-is-at-least-256-bits-long-for-hs256-test
+    expiration-ms: 86400000
+  file:
+    upload-dir: ./test-uploads
+    max-size: 10485760

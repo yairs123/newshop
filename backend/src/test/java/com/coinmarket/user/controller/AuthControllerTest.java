@@ -3,6 +3,7 @@ package com.coinmarket.user.controller;
 import com.coinmarket.common.exception.BusinessException;
 import com.coinmarket.common.security.JwtAuthenticationFilter;
 import com.coinmarket.common.security.JwtTokenProvider;
+import com.coinmarket.common.util.RateLimiter;
 import com.coinmarket.user.dto.AuthResponse;
 import com.coinmarket.user.dto.ForgotPasswordRequest;
 import com.coinmarket.user.dto.LoginRequest;
@@ -11,6 +12,7 @@ import com.coinmarket.user.dto.ResetPasswordRequest;
 import com.coinmarket.user.dto.UserProfileResponse;
 import com.coinmarket.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -21,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,12 +49,20 @@ class AuthControllerTest {
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @MockBean
+    private RateLimiter rateLimiter;
+
+    @BeforeEach
+    void setUp() {
+        given(rateLimiter.isAllowed(anyString(), anyInt(), anyInt())).willReturn(true);
+    }
+
     @Test
     void registerShouldReturn201() throws Exception {
         RegisterRequest request = RegisterRequest.builder()
                 .username("testuser")
                 .email("test@example.com")
-                .password("password123")
+                .password("Password123")
                 .preferredLanguage("en")
                 .build();
 

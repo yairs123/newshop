@@ -1,6 +1,7 @@
 package com.coinmarket.order.service;
 
 import com.coinmarket.common.exception.BusinessException;
+import com.coinmarket.common.notification.NotificationService;
 import com.coinmarket.order.dto.BuyerOrderItemResponse;
 import com.coinmarket.order.dto.OrderCreateBatchRequest;
 import com.coinmarket.order.dto.OrderCreateRequest;
@@ -44,6 +45,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
     private final PaymentService paymentService;
+    private final NotificationService notificationService;
 
     @Transactional
     public OrderResponse createOrder(Long buyerId, OrderCreateRequest request) {
@@ -93,6 +95,9 @@ public class OrderService {
 
         // Send payment event
         rabbitTemplate.convertAndSend(EXCHANGE_ORDER, ROUTING_KEY_PAYMENT, savedOrder.getId());
+
+        // Notify
+        notificationService.notifyNewOrder(savedOrder.getId(), savedOrder.getOrderNo());
 
         return toResponse(savedOrder);
     }
@@ -158,6 +163,9 @@ public class OrderService {
         // Send payment event
         rabbitTemplate.convertAndSend(EXCHANGE_ORDER, ROUTING_KEY_PAYMENT, savedOrder.getId());
 
+        // Notify
+        notificationService.notifyNewOrder(savedOrder.getId(), savedOrder.getOrderNo());
+
         return toResponse(savedOrder);
     }
 
@@ -177,6 +185,7 @@ public class OrderService {
         order.setStatus("CANCELLED");
         orderRepository.save(order);
         saveOrderLog(orderId, prev, "CANCELLED", "买家", "买家取消订单");
+        notificationService.notifyOrderStatusChange(orderId, "CANCELLED");
     }
 
     @Transactional
@@ -222,6 +231,7 @@ public class OrderService {
         order.setPaidAt(LocalDateTime.now());
         orderRepository.save(order);
         saveOrderLog(orderId, "PENDING_PAYMENT", "PAID", "系统", "支付成功");
+        notificationService.notifyOrderStatusChange(orderId, "PAID");
     }
 
     @Transactional
@@ -244,6 +254,7 @@ public class OrderService {
             note += " (" + trackingCompany + ": " + trackingNumber + ")";
         }
         saveOrderLog(orderId, prev, "SHIPPED", "卖家", note);
+        notificationService.notifyOrderStatusChange(orderId, "SHIPPED");
     }
 
     @Transactional
@@ -261,6 +272,24 @@ public class OrderService {
         order.setCompletedAt(LocalDateTime.now());
         orderRepository.save(order);
         saveOrderLog(orderId, prev, "COMPLETED", "买家", "买家确认收货");
+        notificationService.notifyOrderStatusChange(orderId, "COMPLETED");
+    }
+
+    @Transactional
+    public void refundOrder(Long orderId, Long userId, String reason) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException("订单不存在"));
+        if (!order.getBuyerId().equals(userId)) {
+            throw new BusinessException("无权操作此订单");
+        }
+        String prev = order.getStatus();
+        if (!"PAID".equals(prev) && !"SHIPPED".equals(prev)) {
+            throw new BusinessException("当前状态不允许退款");
+        }
+        order.setStatus("REFUNDED");
+        orderRepository.save(order);
+        saveOrderLog(orderId, prev, "REFUNDED", "系统", "退款处理: " + (reason != null ? reason : "买家申请退款"));
+        notificationService.notifyOrderStatusChange(orderId, "REFUNDED");
     }
 
     @Transactional
@@ -272,12 +301,24 @@ public class OrderService {
         order.setCompletedAt(LocalDateTime.now());
         orderRepository.save(order);
         saveOrderLog(orderId, prevStatus, "COMPLETED", "管理员", "管理员强制完成");
+        notificationService.notifyOrderStatusChange(orderId, "COMPLETED");
     }
 
     @Transactional(readOnly = true)
     public OrderResponse getOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BusinessException("订单不存在"));
+        return toResponse(order);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponse getOrder(Long orderId, Long userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException("订单不存在"));
+        // Only the buyer or seller of this order can view it
+        if (!order.getBuyerId().equals(userId) && !order.getSellerId().equals(userId)) {
+            throw new BusinessException("无权查看此订单");
+        }
         return toResponse(order);
     }
 

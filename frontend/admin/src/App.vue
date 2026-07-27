@@ -17,6 +17,9 @@
             <span class="logo-sub">管理后台</span>
           </div>
         </div>
+        <button class="mobile-menu-btn" @click="toggleMobileMenu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
       </div>
       <div class="header-right">
         <el-breadcrumb separator="›" class="header-breadcrumb">
@@ -24,6 +27,9 @@
           <el-breadcrumb-item v-if="route.path !== '/dashboard'">{{ currentPageName }}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="header-actions">
+          <span class="ws-indicator" :class="{ connected }" :title="connected ? 'WebSocket 已连接' : 'WebSocket 未连接'">
+            <span class="ws-dot"></span>
+          </span>
           <el-dropdown @command="switchLanguage" trigger="click">
             <button class="h-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -47,9 +53,10 @@
       </div>
     </el-header>
 
+    <div v-if="mobileMenuOpen" class="mobile-overlay" @click="mobileMenuOpen = false"></div>
     <el-container class="app-body">
       <!-- 侧边栏 -->
-      <el-aside :width="sidebarWidth" class="app-aside">
+      <el-aside :width="sidebarWidth" class="app-aside" :class="{'sidebar-open': mobileMenuOpen}">
         <div class="sidebar-inner">
           <el-menu
             router
@@ -148,18 +155,28 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
   Odometer, Goods, List, UserFilled, Document, Money, Tools, Message
 } from '@element-plus/icons-vue'
+import { useNotifications } from '@/composables/useNotifications'
 
 const route = useRoute()
 const router = useRouter()
 const { locale } = useI18n()
 const isCollapsed = ref(false)
+const mobileMenuOpen = ref(false)
 const sidebarWidth = computed(() => isCollapsed.value ? '64px' : '220px')
+
+const { connected, connect } = useNotifications()
+
+onMounted(() => {
+  if (localStorage.getItem('token')) {
+    connect()
+  }
+})
 
 const currentLangLabel = computed(() => {
   const labels = { en: 'EN', 'zh-CN': '简体', 'zh-TW': '繁體', ja: '日語', ko: '한국어' }
@@ -185,6 +202,7 @@ function switchLanguage(lang) {
 }
 
 function toggleSidebar() { isCollapsed.value = !isCollapsed.value }
+function toggleMobileMenu() { mobileMenuOpen.value = !mobileMenuOpen.value }
 
 function logout() {
   localStorage.removeItem('token')
@@ -344,5 +362,67 @@ body {
   .app-main { padding: 0 !important; margin: 0 !important; }
   .el-card { box-shadow: none !important; border: 1px solid var(--border) !important; break-inside: avoid; }
   button { display: none !important; }
+}
+
+/* WebSocket indicator */
+.ws-indicator { display: inline-flex; align-items: center; padding: 6px 8px; }
+.ws-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--danger); transition: background 0.3s;
+}
+.ws-indicator.connected .ws-dot { background: var(--success); }
+
+/* ====== Mobile Responsive ====== */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.mobile-menu-btn:hover { background: var(--ivory-dark); }
+
+.mobile-overlay { display: none; }
+
+@media (max-width: 768px) {
+  .mobile-menu-btn { display: flex; }
+
+  .app-aside {
+    position: fixed !important;
+    top: 56px !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 260px !important;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+  }
+  .app-aside.sidebar-open { transform: translateX(0); }
+
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 999;
+  }
+
+  .app-main { padding: 16px !important; }
+  .header-breadcrumb { display: none; }
+  .app-header { padding: 0 12px !important; height: 52px !important; }
+  .sidebar-footer { display: none; }
+}
+
+@media (max-width: 480px) {
+  .app-main { padding: 12px !important; }
+  .logo-text { display: none; }
 }
 </style>

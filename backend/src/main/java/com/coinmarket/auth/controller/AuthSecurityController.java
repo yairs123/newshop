@@ -91,8 +91,8 @@ public class AuthSecurityController {
                 .compact();
 
         // 实际项目中这里应该发邮件/短信
-        // 开发环境把验证码输出到日志方便测试
-        log.info("2FA code for {}: {}", username, code);
+        // For development, only log that a code was sent (never log the actual code)
+        log.info("2FA code sent to user: {}", username);
         return ApiResponse.success(Map.of(
                 "verifyToken", verifyToken,
                 "message", "验证码已发送到您的邮箱"

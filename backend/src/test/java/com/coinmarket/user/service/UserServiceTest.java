@@ -20,14 +20,21 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
+
+import com.coinmarket.user.dto.ResetPasswordRequest;
+import com.coinmarket.user.entity.PasswordResetToken;
+import io.jsonwebtoken.Claims;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -235,6 +242,184 @@ class UserServiceTest {
             assertThatThrownBy(() -> userService.getProfile(999L))
                     .isInstanceOf(BusinessException.class)
                     .hasMessage("User not found");
+        }
+    }
+
+    @Nested
+    @DisplayName("忘记密码")
+    class ForgotPassword {
+
+        @Test
+        @DisplayName("有效邮箱生成重置令牌")
+        void validEmail_generatesToken() {
+            given(userRepository.findByEmail("admin@test.com")).willReturn(Optional.of(adminUser));
+            willDoNothing().given(passwordResetTokenRepository).deleteByUserId(1L);
+            given(passwordResetTokenRepository.save(any(PasswordResetToken.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+            userService.generatePasswordResetToken("admin@test.com");
+
+            verify(passwordResetTokenRepository).save(any(PasswordResetToken.class));
+        }
+
+        @Test
+        @DisplayName("不存在的邮箱静默返回（防止枚举）")
+        void unknownEmail_doesNothing() {
+            given(userRepository.findByEmail("unknown@test.com")).willReturn(Optional.empty());
+
+            userService.generatePasswordResetToken("unknown@test.com");
+
+            verify(passwordResetTokenRepository, never()).save(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("重置密码")
+    class ResetPassword {
+
+        @Test
+        @DisplayName("有效令牌重置成功")
+        void validToken_resetsPassword() {
+            ResetPasswordRequest request = new ResetPasswordRequest();
+            request.setToken("valid-token");
+            request.setNewPassword("newPassword123");
+
+            PasswordResetToken resetToken = PasswordResetToken.builder()
+                    .userId(1L)
+                    .token("valid-token")
+                    .expiresAt(LocalDateTime.now().plusHours(1))
+                    .used(false)
+                    .build();
+            resetToken.setId(1L);
+
+            given(passwordResetTokenRepository.findByToken("valid-token")).willReturn(Optional.of(resetToken));
+            given(passwordEncoder.encode("newPassword123")).willReturn("encoded-new-password");
+            given(userRepository.findById(1L)).willReturn(Optional.of(adminUser));
+            given(userRepository.save(any(User.class))).willReturn(adminUser);
+            given(passwordResetTokenRepository.save(any(PasswordResetToken.class))).willReturn(resetToken);
+
+            userService.resetPassword(request);
+
+            verify(userRepository).save(any(User.class));
+            verify(passwordResetTokenRepository).save(resetToken);
+            assertThat(resetToken.isUsed()).isTrue();
+        }
+
+        @Test
+        @DisplayName("过期令牌抛出异常")
+        void expiredToken_throwsException() {
+            ResetPasswordRequest request = new ResetPasswordRequest();
+            request.setToken("expired-token");
+            request.setNewPassword("newPassword123");
+
+            PasswordResetToken resetToken = PasswordResetToken.builder()
+                    .userId(1L)
+                    .token("expired-token")
+                    .expiresAt(LocalDateTime.now().minusHours(1))
+                    .used(false)
+                    .build();
+
+            given(passwordResetTokenRepository.findByToken("expired-token")).willReturn(Optional.of(resetToken));
+
+            assertThatThrownBy(() -> userService.resetPassword(request))
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage("Reset token has expired");
+        }
+
+        @Test
+        @DisplayName("已使用的令牌抛出异常")
+        void usedToken_throwsException() {
+            ResetPasswordRequest request = new ResetPasswordRequest();
+            request.setToken("used-token");
+            request.setNewPassword("newPassword123");
+
+            PasswordResetToken resetToken = PasswordResetToken.builder()
+                    .userId(1L)
+                    .token("used-token")
+                    .expiresAt(LocalDateTime.now().plusHours(1))
+                    .used(true)
+                    .build();
+
+            given(passwordResetTokenRepository.findByToken("used-token")).willReturn(Optional.of(resetToken));
+
+            assertThatThrownBy(() -> userService.resetPassword(request))
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage("Reset token has already been used");
+        }
+
+        @Test
+        @DisplayName("无效令牌抛出异常")
+        void invalidToken_throwsException() {
+            ResetPasswordRequest request = new ResetPasswordRequest();
+            request.setToken("invalid-token");
+            request.setNewPassword("newPassword123");
+
+            given(passwordResetTokenRepository.findByToken("invalid-token")).willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> userService.resetPassword(request))
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage("Invalid or expired reset token");
+        }
+    }
+
+    @Nested
+    @DisplayName("验证码登录")
+    class CaptchaLogin {
+
+        @Test
+        @DisplayName("有效验证码登录成功")
+        void validCaptcha_logsIn() {
+            LoginRequest request = new LoginRequest();
+            request.setUsername("admin");
+            request.setPassword("123");
+            request.setCaptchaToken("captcha-jwt-token");
+            request.setCaptchaAnswer("42");
+
+            Claims claims = org.mockito.Mockito.mock(Claims.class);
+            given(jwtTokenProvider.parseToken("captcha-jwt-token")).willReturn(claims);
+            given(claims.get("captcha")).willReturn("42");
+            given(userRepository.findByUsername("admin")).willReturn(Optional.of(adminUser));
+            given(passwordEncoder.matches("123", "encoded-admin-123")).willReturn(true);
+            given(jwtTokenProvider.generateToken(1L, "admin", java.util.List.of("ROLE_ADMIN")))
+                    .willReturn("jwt-token");
+
+            AuthResponse response = userService.login(request);
+
+            assertThat(response).isNotNull();
+            assertThat(response.getToken()).isEqualTo("jwt-token");
+        }
+
+        @Test
+        @DisplayName("错误验证码抛出异常")
+        void wrongCaptcha_throwsException() {
+            LoginRequest request = new LoginRequest();
+            request.setUsername("admin");
+            request.setPassword("123");
+            request.setCaptchaToken("captcha-jwt-token");
+            request.setCaptchaAnswer("wrong");
+
+            Claims claims = org.mockito.Mockito.mock(Claims.class);
+            given(jwtTokenProvider.parseToken("captcha-jwt-token")).willReturn(claims);
+            given(claims.get("captcha")).willReturn("42");
+
+            assertThatThrownBy(() -> userService.login(request))
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage("验证码错误");
+        }
+
+        @Test
+        @DisplayName("过期验证码Token抛出异常")
+        void expiredCaptchaToken_throwsException() {
+            LoginRequest request = new LoginRequest();
+            request.setUsername("admin");
+            request.setPassword("123");
+            request.setCaptchaToken("expired-captcha-jwt");
+
+            given(jwtTokenProvider.parseToken("expired-captcha-jwt"))
+                    .willThrow(new io.jsonwebtoken.ExpiredJwtException(null, null, "Token expired"));
+
+            assertThatThrownBy(() -> userService.login(request))
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage("验证码已过期，请重新获取");
         }
     }
 }

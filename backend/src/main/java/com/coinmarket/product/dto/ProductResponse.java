@@ -100,4 +100,10 @@ public class ProductResponse {
 
     @Schema(description = "出售数量")
     private Integer saleQty;
+
+    @Schema(description = "平均评分")
+    private Double averageRating;
+
+    @Schema(description = "评价总数")
+    private Long totalReviews;
 }
