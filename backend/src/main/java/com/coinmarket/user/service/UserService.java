@@ -95,6 +95,7 @@ public class UserService {
         return buildAuthResponse(user);
     }
 
+    @Transactional(readOnly = true)
     public UserProfileResponse getProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("User not found"));

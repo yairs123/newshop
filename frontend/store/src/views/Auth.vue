@@ -89,7 +89,7 @@
                 <el-form @submit.prevent="handleLogin" class="auth-form">
                   <div class="username-display">
                     <span>{{ username }}</span>
-                    <button class="change-btn" @click="authStep = 1">{{ $t('auth.change', '更换') }}</button>
+                    <button type="button" class="change-btn" @click="authStep = 1">{{ $t('auth.change', '更换') }}</button>
                   </div>
                   <el-form-item>
                     <el-input

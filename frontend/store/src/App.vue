@@ -272,23 +272,30 @@ const isLoggedIn = ref(!!localStorage.getItem('token'))
 
 provide('openCartDrawer', () => { cartDrawerVisible.value = true })
 
-function checkLogin() {
-  isLoggedIn.value = !!localStorage.getItem('token')
-}
-
-onMounted(async () => {
-  window.addEventListener('storage', checkLogin)
-  if (isLoggedIn.value) {
+async function checkLogin() {
+  const loggedIn = !!localStorage.getItem('token')
+  isLoggedIn.value = loggedIn
+  if (loggedIn) {
     try {
-      const [meRes] = await Promise.all([
-        api.get('/users/me'),
-        cartStore.mergeLocalToServer(),
-      ])
+      const meRes = await api.get('/users/me')
       username.value = meRes.data?.username || ''
     } catch (e) {
       localStorage.removeItem('token')
       isLoggedIn.value = false
+      username.value = ''
     }
+  } else {
+    username.value = ''
+  }
+}
+
+onMounted(async () => {
+  window.addEventListener('storage', checkLogin)
+  await checkLogin()
+  if (isLoggedIn.value) {
+    try {
+      await cartStore.mergeLocalToServer()
+    } catch (e) { /* cart merge is best-effort */ }
   }
   // Periodically sync cart from server
   const cartSyncInterval = setInterval(() => {
