@@ -12,8 +12,11 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
   response => response.data,
   error => {
+    const url = error.config?.url || ''
+    // 登录/注册请求的 401 是"账号密码错误"，不应跳转刷新页面
+    const isAuthRequest = url.includes('/auth/login') || url.includes('/auth/register')
     ElMessage.error(error.response?.data?.message || error.message)
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !isAuthRequest) {
       localStorage.removeItem('token')
       window.location.href = '/auth'
     }
