@@ -2,6 +2,20 @@ import { createI18n } from 'vue-i18n'
 
 const messages = {
   en: {
+    errors: {
+      'Invalid credentials': 'Invalid username or password',
+      'Account is disabled': 'Account is disabled',
+      'Username already exists': 'Username already exists',
+      'Email already exists': 'Email already exists',
+      'User not found': 'User not found',
+      'Role not found': 'Role not found',
+      'Default role not found': 'Default role not found',
+      'Address not found': 'Address not found',
+      'Payment method not found': 'Payment method not found',
+      'Invalid or expired reset token': 'Invalid or expired reset token',
+      'Reset token has already been used': 'Reset token has already been used',
+      'Reset token has expired': 'Reset token has expired'
+    },
     header: { freeShipping: 'Free shipping on orders over $500' },
     nav: { home: 'Home', shop: 'Shop', contact: 'Contact', login: 'Sign In', register: 'Register', myOrders: 'My Orders', logout: 'Logout' },
     hero: { title: 'Discover Certified Coins', subtitle: 'NGC · PCGS · PMG graded coins from trusted sellers worldwide', cta: 'Browse Collection' },
@@ -170,6 +184,20 @@ const messages = {
     }
   },
   'zh-CN': {
+    errors: {
+      'Invalid credentials': '用户名或密码错误',
+      'Account is disabled': '账号已被禁用',
+      'Username already exists': '用户名已存在',
+      'Email already exists': '邮箱已被注册',
+      'User not found': '用户不存在',
+      'Role not found': '角色不存在',
+      'Default role not found': '默认角色不存在',
+      'Address not found': '地址不存在',
+      'Payment method not found': '支付方式不存在',
+      'Invalid or expired reset token': '重置令牌无效或已过期',
+      'Reset token has already been used': '重置令牌已被使用',
+      'Reset token has expired': '重置令牌已过期'
+    },
     header: { freeShipping: '订单满 $500 免运费' },
     nav: { home: '首页', shop: '商城', contact: '联系我们', login: '登录', register: '注册', myOrders: '我的订单', logout: '退出登录' },
     hero: { title: '发现认证钱币', subtitle: '来自全球可信卖家的 NGC · PCGS · PMG 评级钱币', cta: '浏览收藏' },
@@ -337,6 +365,20 @@ const messages = {
     }
   },
   'zh-TW': {
+    errors: {
+      'Invalid credentials': '用戶名或密碼錯誤',
+      'Account is disabled': '帳號已被禁用',
+      'Username already exists': '用戶名已存在',
+      'Email already exists': '郵箱已被註冊',
+      'User not found': '用戶不存在',
+      'Role not found': '角色不存在',
+      'Default role not found': '默認角色不存在',
+      'Address not found': '地址不存在',
+      'Payment method not found': '支付方式不存在',
+      'Invalid or expired reset token': '重置令牌無效或已過期',
+      'Reset token has already been used': '重置令牌已被使用',
+      'Reset token has expired': '重置令牌已過期'
+    },
     header: { freeShipping: '訂單滿 $500 免運費' },
     nav: { home: '首頁', shop: '商城', contact: '聯絡我們', login: '登錄', register: '註冊', myOrders: '我的訂單', logout: '退出登錄' },
     hero: { title: '發現認證錢幣', subtitle: '來自全球可信賣家的 NGC · PCGS · PMG 評級錢幣', cta: '瀏覽收藏' },
@@ -504,6 +546,20 @@ const messages = {
     }
   },
   ja: {
+    errors: {
+      'Invalid credentials': 'ユーザー名またはパスワードが正しくありません',
+      'Account is disabled': 'アカウントが無効です',
+      'Username already exists': 'ユーザー名は既に存在します',
+      'Email already exists': 'メールアドレスは既に登録されています',
+      'User not found': 'ユーザーが見つかりません',
+      'Role not found': 'ロールが見つかりません',
+      'Default role not found': 'デフォルトロールが見つかりません',
+      'Address not found': '住所が見つかりません',
+      'Payment method not found': '支払い方法が見つかりません',
+      'Invalid or expired reset token': 'リセットトークンが無効または期限切れです',
+      'Reset token has already been used': 'リセットトークンは既に使用されています',
+      'Reset token has expired': 'リセットトークンの期限が切れました'
+    },
     header: { freeShipping: '$500以上のご注文で送料無料' },
     nav: { home: 'ホーム', shop: 'ショップ', contact: 'お問い合わせ', login: 'ログイン', register: '登録', myOrders: '注文履歴', logout: 'ログアウト' },
     hero: { title: '認証済みコインを見つける', subtitle: 'NGC · PCGS · PMG 鑑定済みコインを世界中の信頼できる売り手から', cta: 'コインを見る' },

@@ -2,6 +2,13 @@ import { createI18n } from 'vue-i18n'
 
 const messages = {
   en: {
+    errors: {
+      'Invalid credentials': 'Invalid username or password',
+      'Account is disabled': 'Account is disabled',
+      'Username already exists': 'Username already exists',
+      'Email already exists': 'Email already exists',
+      'User not found': 'User not found'
+    },
     admin: {
       title: 'Admin Panel', loginSubtitle: 'Management Dashboard', username: 'Username', password: 'Password',
       menu: { dashboard: 'Dashboard', products: 'Products', orders: 'Orders', users: 'Users', sellers: 'Sellers', tickets: 'Tickets' },
@@ -112,6 +119,13 @@ const messages = {
     common: { login: 'Login', logout: 'Logout', actions: 'Actions', all: 'All', confirm: 'Confirm', success: 'Success', submit: 'Submit', cancel: 'Cancel', search: 'Search', yes: 'Yes', no: 'No', noData: 'No Data', startDate: 'Start Date', endDate: 'End Date' }
   },
   'zh-CN': {
+    errors: {
+      'Invalid credentials': '用户名或密码错误',
+      'Account is disabled': '账号已被禁用',
+      'Username already exists': '用户名已存在',
+      'Email already exists': '邮箱已被注册',
+      'User not found': '用户不存在'
+    },
     admin: {
       title: '管理后台', loginSubtitle: '管理后台', username: '用户名', password: '密码',
       menu: { dashboard: '控制台', products: '商品管理', orders: '订单管理', users: '用户管理', sellers: '卖家管理', tickets: '工单管理' },
@@ -222,6 +236,13 @@ const messages = {
     common: { login: '登录', logout: '退出登录', actions: '操作', all: '全部', confirm: '确认', success: '操作成功', submit: '提交', cancel: '取消', search: '搜索', yes: '是', no: '否', noData: '暂无数据', startDate: '开始日期', endDate: '结束日期' }
   },
   'zh-TW': {
+    errors: {
+      'Invalid credentials': '用戶名或密碼錯誤',
+      'Account is disabled': '帳號已被禁用',
+      'Username already exists': '用戶名已存在',
+      'Email already exists': '郵箱已被註冊',
+      'User not found': '用戶不存在'
+    },
     admin: {
       title: '管理後台',
       menu: { dashboard: '控制台', products: '商品管理', orders: '訂單管理', users: '用戶管理', sellers: '賣家管理', tickets: '工單管理' },
@@ -287,6 +308,13 @@ const messages = {
     common: { login: '登錄', logout: '退出登錄', actions: '操作', all: '全部', confirm: '確認', success: '操作成功', submit: '提交', cancel: '取消', search: '搜索', yes: '是', no: '否', noData: '暫無數據', startDate: '開始日期', endDate: '結束日期' }
   },
   ja: {
+    errors: {
+      'Invalid credentials': 'ユーザー名またはパスワードが正しくありません',
+      'Account is disabled': 'アカウントが無効です',
+      'Username already exists': 'ユーザー名は既に存在します',
+      'Email already exists': 'メールアドレスは既に登録されています',
+      'User not found': 'ユーザーが見つかりません'
+    },
     admin: {
       title: '管理パネル',
       menu: { dashboard: 'ダッシュボード', products: '商品管理', orders: '注文管理', users: 'ユーザー管理', sellers: '売り手管理', tickets: 'チケット管理' },
@@ -352,6 +380,13 @@ const messages = {
     common: { login: 'ログイン', logout: 'ログアウト', actions: '操作', all: 'すべて', confirm: '確認', success: '成功', submit: '送信', cancel: 'キャンセル', search: '検索', yes: 'はい', no: 'いいえ', noData: 'データなし', startDate: '開始日', endDate: '終了日' }
   },
   ko: {
+    errors: {
+      'Invalid credentials': '사용자 이름 또는 비밀번호가 잘못되었습니다',
+      'Account is disabled': '계정이 비활성화되었습니다',
+      'Username already exists': '사용자 이름이 이미 존재합니다',
+      'Email already exists': '이메일이 이미 등록되었습니다',
+      'User not found': '사용자를 찾을 수 없습니다'
+    },
     admin: {
       title: '관리 패널',
       menu: { dashboard: '대시보드', products: '상품 관리', orders: '주문 관리', users: '사용자 관리', sellers: '판매자 관리', tickets: '티켓 관리' },

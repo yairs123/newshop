@@ -2,6 +2,13 @@ import { createI18n } from 'vue-i18n'
 
 const messages = {
   en: {
+    errors: {
+      'Invalid credentials': 'Invalid username or password',
+      'Account is disabled': 'Account is disabled',
+      'Username already exists': 'Username already exists',
+      'Email already exists': 'Email already exists',
+      'User not found': 'User not found'
+    },
     seller: {
       title: 'Seller Center',
       menu: { dashboard: 'Dashboard', products: 'Products', orders: 'Orders', profile: 'Profile' },
@@ -122,6 +129,13 @@ const messages = {
     common: { logout: 'Logout', submit: 'Submit', upload: 'Upload', search: 'Search', save: 'Save', cancel: 'Cancel', close: 'Close', confirm: 'Confirm', loading: 'Loading...', all: 'All', detail: 'Detail', refresh: 'Refresh', actions: 'Actions', status: 'Status', back: 'Back' }
   },
   'zh-CN': {
+    errors: {
+      'Invalid credentials': '用户名或密码错误',
+      'Account is disabled': '账号已被禁用',
+      'Username already exists': '用户名已存在',
+      'Email already exists': '邮箱已被注册',
+      'User not found': '用户不存在'
+    },
     seller: {
       title: '卖家中心',
       menu: { dashboard: '控制台', products: '商品管理', orders: '订单管理', profile: '资料设置' },
@@ -242,6 +256,13 @@ const messages = {
     common: { logout: '退出登录', submit: '提交', upload: '上传', search: '搜索', save: '保存', cancel: '取消', close: '关闭', confirm: '确认', loading: '加载中...', all: '全部', detail: '详情', refresh: '刷新', actions: '操作', status: '状态', back: '返回' }
   },
   'zh-TW': {
+    errors: {
+      'Invalid credentials': '用戶名或密碼錯誤',
+      'Account is disabled': '帳號已被禁用',
+      'Username already exists': '用戶名已存在',
+      'Email already exists': '郵箱已被註冊',
+      'User not found': '用戶不存在'
+    },
     seller: {
       title: '賣家中心',
       menu: { dashboard: '控制台', products: '商品管理', orders: '訂單管理', profile: '資料設置' },
@@ -362,6 +383,13 @@ const messages = {
     common: { logout: '退出登錄', submit: '提交', upload: '上傳', search: '搜索', save: '保存', cancel: '取消', close: '關閉', confirm: '確認', loading: '加載中...', all: '全部', detail: '詳情', refresh: '刷新', actions: '操作', status: '狀態', back: '返回' }
   },
   ja: {
+    errors: {
+      'Invalid credentials': 'ユーザー名またはパスワードが正しくありません',
+      'Account is disabled': 'アカウントが無効です',
+      'Username already exists': 'ユーザー名は既に存在します',
+      'Email already exists': 'メールアドレスは既に登録されています',
+      'User not found': 'ユーザーが見つかりません'
+    },
     seller: {
       title: '売りセンタ',
       menu: { dashboard: 'ダッシュボード', products: '商品管理', orders: '注文管理', profile: 'プロフィール' },
@@ -482,6 +510,13 @@ const messages = {
     common: { logout: 'ログアウト', submit: '送信', upload: 'アップロード', search: '検索', save: '保存', cancel: 'キャンセル', close: '閉じる', confirm: '確認', loading: '読み込み中...', all: 'すべて', detail: '詳細', refresh: '更新', actions: '操作', status: 'ステータス', back: '戻る' }
   },
   ko: {
+    errors: {
+      'Invalid credentials': '사용자 이름 또는 비밀번호가 잘못되었습니다',
+      'Account is disabled': '계정이 비활성화되었습니다',
+      'Username already exists': '사용자 이름이 이미 존재합니다',
+      'Email already exists': '이메일이 이미 등록되었습니다',
+      'User not found': '사용자를 찾을 수 없습니다'
+    },
     seller: {
       title: '판매자 센터',
       menu: { dashboard: '대시보드', products: '상품 관리', orders: '주문 관리', profile: '프로필 설정' },
