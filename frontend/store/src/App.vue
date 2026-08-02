@@ -58,6 +58,7 @@
             size="default"
             class="search-input"
             @keyup.enter="doSearch"
+            @clear="clearHeaderSearch"
             clearable
           >
             <template #prefix>
@@ -245,8 +246,8 @@
 </template>
 
 <script setup>
-import { ref, computed, provide, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, provide, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCartStore } from './store/cart'
 import { useFavoritesStore } from './store/favorites'
@@ -260,6 +261,7 @@ import {
 const cartStore = useCartStore()
 const favoritesStore = useFavoritesStore()
 const router = useRouter()
+const route = useRoute()
 const { locale } = useI18n()
 
 const searchQuery = ref('')
@@ -324,9 +326,21 @@ function switchLanguage(lang) {
   localStorage.setItem('language', lang)
 }
 
+// Keep the header search in sync with the URL keyword (e.g. arriving via a link/refresh)
+watch(() => route.query.keyword, (kw) => {
+  searchQuery.value = kw || ''
+})
+
 function doSearch() {
   if (searchQuery.value.trim()) {
-    router.push(`/products?keyword=${encodeURIComponent(searchQuery.value)}`)
+    router.push({ path: '/products', query: { keyword: searchQuery.value.trim() } })
+  }
+}
+
+function clearHeaderSearch() {
+  searchQuery.value = ''
+  if (route.path === '/products') {
+    router.push('/products')
   }
 }
 

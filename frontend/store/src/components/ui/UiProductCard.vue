@@ -1,7 +1,18 @@
 <template>
   <div class="product-card" @click="handleClick">
     <div class="card-image">
-      <div class="image-placeholder">
+      <el-image
+        v-if="primaryImage"
+        :src="primaryImage"
+        fit="cover"
+        lazy
+        class="card-img-el"
+      >
+        <template #error>
+          <div class="image-placeholder"><span>{{ titleInitial }}</span></div>
+        </template>
+      </el-image>
+      <div v-else class="image-placeholder">
         <span>{{ titleInitial }}</span>
       </div>
       <div class="card-badge" v-if="product.ratingGrade">
@@ -59,6 +70,11 @@ const emits = defineEmits(['add-to-cart', 'toggle-favorite', 'open-product'])
 
 const titleInitial = computed(() => props.product.title?.charAt(0).toUpperCase() || '')
 const formattedPrice = computed(() => Number(props.product.price).toLocaleString())
+const primaryImage = computed(() => {
+  const first = (props.product.images || [])[0]
+  if (!first) return ''
+  return typeof first === 'string' ? first : (first.url || first.imageUrl || '')
+})
 
 function addToCart() {
   emits('add-to-cart', props.product)
@@ -95,6 +111,12 @@ function handleClick() {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.card-img-el {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .image-placeholder {
   width: 80px;

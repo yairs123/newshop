@@ -7,7 +7,7 @@
         <div class="article-meta">
           <span v-if="article.publishedAt">{{ article.publishedAt.substring(0, 10) }}</span>
         </div>
-        <el-image v-if="article.imageUrl" :src="article.imageUrl" fit="cover" class="article-image" />
+        <el-image v-if="article.imageUrl" :src="article.imageUrl" fit="cover" lazy class="article-image" />
         <div class="article-content" v-html="article.content"></div>
       </div>
       <el-empty v-else-if="!loading" :description="$t('common.noData')" />

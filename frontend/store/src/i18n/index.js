@@ -23,7 +23,8 @@ const messages = {
       priceRange: 'Price Range', country: 'Country', apply: 'Apply',
       sortNewest: 'Newest', sortPriceLow: 'Price: Low to High', sortPriceHigh: 'Price: High to Low',
       productsFound: 'products found', noProducts: 'No products found. Try adjusting your filters.',
-      allCategories: 'All', min: 'Min', max: 'Max', of: 'of', prev: 'Prev', next: 'Next', sortLabel: 'Sort:'
+      allCategories: 'All', min: 'Min', max: 'Max', of: 'of', prev: 'Prev', next: 'Next', sortLabel: 'Sort:',
+      searchingFor: 'Search:', clearFilters: 'Clear Filters', popular: 'Popular'
     },
     categories: {
       'ancient-coins': 'Ancient Coins',
@@ -190,7 +191,8 @@ const messages = {
       priceRange: '价格范围', country: '国家', apply: '应用',
       sortNewest: '最新', sortPriceLow: '价格从低到高', sortPriceHigh: '价格从高到低',
       productsFound: '件商品', noProducts: '没有找到商品，请调整筛选条件',
-      allCategories: '全部分类', min: '最低', max: '最高', of: '共', prev: '上一页', next: '下一页', sortLabel: '排序:'
+      allCategories: '全部分类', min: '最低', max: '最高', of: '共', prev: '上一页', next: '下一页', sortLabel: '排序:',
+      searchingFor: '搜索:', clearFilters: '清除筛选', popular: '热门分类'
     },
     categories: {
       'ancient-coins': '古钱币',
@@ -356,7 +358,8 @@ const messages = {
       priceRange: '價格範圍', country: '國家', apply: '應用',
       sortNewest: '最新', sortPriceLow: '價格從低到高', sortPriceHigh: '價格從高到低',
       productsFound: '件商品', noProducts: '沒有找到商品，請調整篩選條件',
-      allCategories: '全部分類', min: '最低', max: '最高', of: '共', prev: '上一頁', next: '下一頁', sortLabel: '排序:'
+      allCategories: '全部分類', min: '最低', max: '最高', of: '共', prev: '上一頁', next: '下一頁', sortLabel: '排序:',
+      searchingFor: '搜索:', clearFilters: '清除篩選', popular: '熱門分類'
     },
     categories: {
       'ancient-coins': '古錢幣',
@@ -522,7 +525,8 @@ const messages = {
       priceRange: '価格帯', country: '国', apply: '適用',
       sortNewest: '新着順', sortPriceLow: '価格の安い順', sortPriceHigh: '価格の高い順',
       productsFound: '件の商品', noProducts: '商品が見つかりませんでした。フィルターを調整してください。',
-      allCategories: 'すべてのカテゴリー', min: '最低', max: '最高', of: '件中', prev: '前へ', next: '次へ', sortLabel: '並び替え:'
+      allCategories: 'すべてのカテゴリー', min: '最低', max: '最高', of: '件中', prev: '前へ', next: '次へ', sortLabel: '並び替え:',
+      searchingFor: '検索:', clearFilters: 'フィルターをクリア', popular: '人気'
     },
     categories: {
       'ancient-coins': '古代コイン',

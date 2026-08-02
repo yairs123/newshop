@@ -25,7 +25,7 @@
       <el-carousel height="240px" indicator-position="inside" :interval="5000">
         <el-carousel-item v-for="ad in ads" :key="ad.id">
           <a :href="ad.linkUrl" target="_blank" class="ad-link">
-            <el-image :src="ad.imageUrl" fit="cover" style="width:100%;height:240px" />
+            <el-image :src="ad.imageUrl" fit="cover" lazy style="width:100%;height:240px" />
           </a>
         </el-carousel-item>
       </el-carousel>
@@ -44,7 +44,18 @@
         <div class="product-grid">
           <div class="product-card" v-for="p in displayProducts" :key="p.id" @click="$router.push(`/products/${p.id}`)">
             <div class="card-image">
-              <div class="image-placeholder"><span>{{ (p.title || '?').charAt(0) }}</span></div>
+              <el-image
+                v-if="primaryImage(p)"
+                :src="primaryImage(p)"
+                fit="cover"
+                lazy
+                class="home-card-img"
+              >
+                <template #error>
+                  <div class="image-placeholder"><span>{{ (p.title || '?').charAt(0) }}</span></div>
+                </template>
+              </el-image>
+              <div v-else class="image-placeholder"><span>{{ (p.title || '?').charAt(0) }}</span></div>
               <div class="card-badge" v-if="p.ratingGrade">{{ p.ratingCompany }} {{ p.ratingGrade }}</div>
               <div class="card-stock" v-if="p.stock <= 3 && p.stock > 0">仅剩 {{ p.stock }} 件</div>
             </div>
@@ -117,6 +128,12 @@ onMounted(async () => {
 })
 
 function formatPrice(p) { return Number(p || 0).toLocaleString() }
+
+function primaryImage(p) {
+  const first = (p.images || [])[0]
+  if (!first) return ''
+  return typeof first === 'string' ? first : (first.url || first.imageUrl || '')
+}
 </script>
 
 <style scoped>
@@ -153,6 +170,7 @@ function formatPrice(p) { return Number(p || 0).toLocaleString() }
 }
 .product-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); transform: translateY(-2px); }
 .card-image { position: relative; height: 180px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; }
+.home-card-img { position: absolute; inset: 0; width: 100%; height: 100%; }
 .image-placeholder { width: 64px; height: 64px; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #9ca3af; }
 .card-badge { position: absolute; top: 8px; right: 8px; background: #111827; color: #fff; font-size: 10px; font-weight: 600; padding: 3px 6px; border-radius: 4px; }
 .card-stock { position: absolute; top: 8px; left: 8px; background: #f56c6c; color: #fff; font-size: 10px; font-weight: 600; padding: 3px 6px; border-radius: 4px; }

@@ -125,6 +125,7 @@
                   v-if="item.productImage"
                   :src="item.productImage"
                   :alt="item.productTitle"
+                  loading="lazy"
                 />
                 <div v-else class="buy-again-placeholder">
                   <span>{{ getFirstLetter(item.productTitle) }}</span>

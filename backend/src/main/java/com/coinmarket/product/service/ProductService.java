@@ -11,6 +11,8 @@ import com.coinmarket.product.repository.ProductSpecifications;
 import com.coinmarket.search.service.ProductIndexService;
 import com.coinmarket.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,6 +35,7 @@ public class ProductService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
 
+    @CacheEvict(value = "categories", allEntries = true)
     @Transactional
     public ProductResponse createProduct(Long sellerId, ProductCreateRequest request) {
         Product product = Product.builder()
@@ -82,11 +85,13 @@ public class ProductService {
         return productRepository.findAll(spec, pageable).map(this::toResponse);
     }
 
+    @Cacheable(value = "categories")
     @Transactional(readOnly = true)
     public List<Category> getCategories() {
         return categoryRepository.findAllByOrderBySortOrderAsc();
     }
 
+    @Cacheable(value = "products", key = "#id")
     @Transactional
     public ProductResponse getProduct(Long id) {
         Product product = productRepository.findById(id)
@@ -96,6 +101,7 @@ public class ProductService {
         return toResponse(product);
     }
 
+    @CacheEvict(value = "products", key = "#id")
     @Transactional
     public ProductResponse updateProduct(Long id, Long sellerId, ProductCreateRequest request) {
         Product product = productRepository.findById(id)
@@ -134,6 +140,7 @@ public class ProductService {
         return related.stream().map(this::toResponse).toList();
     }
 
+    @CacheEvict(value = "products", key = "#id")
     @Transactional
     public void setProductStatus(Long id, String status) {
         Product product = productRepository.findById(id)
@@ -179,6 +186,7 @@ public class ProductService {
         return toResponse(copy);
     }
 
+    @CacheEvict(value = "products", allEntries = true)
     @Transactional
     public void batchUpdateStatus(List<Long> ids, String status, Long sellerId) {
         List<Product> products = productRepository.findAllById(ids);
@@ -194,6 +202,7 @@ public class ProductService {
         return productRepository.findBySellerId(sellerId, pageable).map(this::toResponse);
     }
 
+    @CacheEvict(value = "products", key = "#id")
     @Transactional
     public ProductResponse markAsPrinted(Long id, Long sellerId) {
         Product product = productRepository.findById(id)
@@ -206,6 +215,7 @@ public class ProductService {
         return toResponse(product);
     }
 
+    @CacheEvict(value = "products", allEntries = true)
     @Transactional
     public void batchMarkAsPrinted(List<Long> ids, Long sellerId) {
         List<Product> products = productRepository.findAllById(ids);

@@ -7,23 +7,70 @@
         <el-breadcrumb-item>{{ $t('nav.shop') }}</el-breadcrumb-item>
       </el-breadcrumb>
 
-      <!-- Top bar: Result count + Sort -->
+      <!-- Top bar: Result count + active search indicator + Sort -->
       <div class="shop-topbar">
-        <span class="result-count">
-          {{ from }}-{{ to }} {{ $t('shop.of') }} {{ total }} {{ $t('shop.productsFound') }}
-        </span>
-        <div class="sort-area">
-          <span class="sort-label">{{ $t('shop.sortLabel') }}</span>
-          <el-select v-model="sort" size="small" style="width:160px" @change="changeSort">
-            <el-option :label="$t('shop.sortNewest')" value="createdAt,desc" />
-            <el-option :label="$t('shop.sortPriceLow')" value="price,asc" />
-            <el-option :label="$t('shop.sortPriceHigh')" value="price,desc" />
-          </el-select>
+        <div class="topbar-left">
+          <span class="result-count">
+            {{ from }}-{{ to }} {{ $t('shop.of') }} {{ total }} {{ $t('shop.productsFound') }}
+          </span>
+          <span v-if="filters.keyword" class="active-search-tag">
+            <span class="active-search-label">{{ $t('shop.searchingFor') }}</span>
+            <span class="active-search-value">{{ filters.keyword }}</span>
+            <button class="active-search-clear" @click="clearSearch" aria-label="Clear search">×</button>
+          </span>
         </div>
+        <div class="topbar-right">
+          <el-button
+            v-if="hasActiveFilters"
+            size="small"
+            class="clear-filters-btn"
+            @click="clearAllFilters"
+          >{{ $t('shop.clearFilters') }}</el-button>
+          <div class="sort-area">
+            <span class="sort-label">{{ $t('shop.sortLabel') }}</span>
+            <el-select v-model="sort" size="small" style="width:160px" @change="changeSort">
+              <el-option :label="$t('shop.sortNewest')" value="createdAt,desc" />
+              <el-option :label="$t('shop.sortPriceLow')" value="price,asc" />
+              <el-option :label="$t('shop.sortPriceHigh')" value="price,desc" />
+            </el-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search input (debounced) -->
+      <div class="search-row">
+        <el-input
+          v-model="searchInput"
+          :placeholder="$t('shop.searchPlaceholder')"
+          size="default"
+          class="list-search-input"
+          clearable
+          @input="onSearchInput"
+          @clear="clearSearch"
+          @keyup.enter="handleSearch"
+        >
+          <template #prefix>
+            <el-icon><Search /></el-icon>
+          </template>
+        </el-input>
       </div>
 
       <!-- Filter Bar (sticky) -->
       <div class="filter-bar sticky-filter">
+        <div v-if="popularCategories.length" class="filter-row">
+          <span class="filter-label">{{ $t('shop.popular') }}</span>
+          <div class="filter-chips">
+            <UiFilterChip
+              v-for="cat in popularCategories"
+              :key="cat.id"
+              :active="filters.categoryId === cat.id"
+              :count="categoryCounts[cat.id] || 0"
+              @click="selectCategory(cat.id)"
+            >
+              {{ $t('categories.' + cat.slug) }}
+            </UiFilterChip>
+          </div>
+        </div>
         <div class="filter-row">
           <span class="filter-label">{{ $t('shop.categories') }}</span>
           <div class="filter-chips">
@@ -157,15 +204,70 @@ const {
   sort,
   filters,
   loadCategories,
-  loadProducts,
-  search,
-  setSort
+  loadProducts
 } = useProductSearch({
   page: route.query.page ? Number(route.query.page) : 1,
   size: 40,
   keyword: route.query.keyword || '',
   categoryId: route.query.categoryId ? Number(route.query.categoryId) : null
 })
+
+// === Keyword search (debounced) ===
+const searchInput = ref(route.query.keyword || '')
+let debounceTimer = null
+
+const hasActiveFilters = computed(() =>
+  !!filters.keyword || !!filters.categoryId || !!filters.ratingCompany ||
+  !!filters.country || !!filters.minPrice || !!filters.maxPrice
+)
+
+const POPULAR_CATEGORY_SLUGS = [
+  'ancient-coins', 'gold-coins', 'silver-coins',
+  'chinese-coins', 'world-coins', 'commemorative-coins'
+]
+
+const popularCategories = computed(() =>
+  POPULAR_CATEGORY_SLUGS
+    .map(slug => categories.value.find(c => c.slug === slug))
+    .filter(Boolean)
+)
+
+function onSearchInput() {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    filters.keyword = searchInput.value.trim()
+    page.value = 1
+    updateRouteQuery()
+  }, 300)
+}
+
+function handleSearch() {
+  clearTimeout(debounceTimer)
+  filters.keyword = searchInput.value.trim()
+  page.value = 1
+  updateRouteQuery()
+}
+
+function clearSearch() {
+  clearTimeout(debounceTimer)
+  searchInput.value = ''
+  filters.keyword = ''
+  page.value = 1
+  updateRouteQuery()
+}
+
+function clearAllFilters() {
+  clearTimeout(debounceTimer)
+  searchInput.value = ''
+  filters.keyword = ''
+  filters.categoryId = null
+  filters.ratingCompany = null
+  filters.country = null
+  filters.minPrice = null
+  filters.maxPrice = null
+  page.value = 1
+  updateRouteQuery()
+}
 
 const from = computed(() => total.value === 0 ? 0 : (page.value - 1) * size.value + 1)
 const to = computed(() => Math.min(page.value * size.value, total.value))
@@ -204,6 +306,7 @@ onMounted(async () => {
 })
 
 watch(() => route.query, () => {
+  searchInput.value = route.query.keyword || ''
   filters.keyword = route.query.keyword || ''
   filters.categoryId = route.query.categoryId ? Number(route.query.categoryId) : null
   filters.ratingCompany = route.query.ratingCompany || null
@@ -215,12 +318,11 @@ watch(() => route.query, () => {
   loadProducts()
 })
 
-function handleSearch() {
-  search()
-}
-
 function changeSort(value) {
-  setSort(value)
+  // Push the new sort to the route; the route watcher performs the reload.
+  // (Previously setSort() also reloaded here, causing a redundant second call.)
+  sort.value = value
+  page.value = 1
   updateRouteQuery()
 }
 
@@ -286,6 +388,7 @@ onMounted(function() {
 
 onUnmounted(function() {
   if (scrollHandler) window.removeEventListener('scroll', scrollHandler)
+  if (debounceTimer) clearTimeout(debounceTimer)
 })
 
 function scrollToTop() {
@@ -304,10 +407,71 @@ function onPageChange(newPage) {
 .shop-inner { max-width: 1280px; margin: 0 auto; padding: 24px 24px 40px; }
 
 /* Top bar */
-.shop-topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
-.result-count { font-size: 14px; color: #6b7280; margin-right: auto; }
+.shop-topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+.topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.topbar-left .result-count { margin-right: 0; white-space: nowrap; }
+.topbar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.result-count { font-size: 14px; color: #6b7280; }
 .sort-area { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .sort-label { font-size: 13px; color: #6b7280; }
+
+/* Active search indicator */
+.active-search-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 12px;
+  font-size: 13px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 20px;
+  max-width: 100%;
+}
+.active-search-label { color: #b45309; font-weight: 600; white-space: nowrap; }
+.active-search-value {
+  color: #92400e;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+.active-search-clear {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: #fde68a;
+  color: #92400e;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.active-search-clear:hover { background: #f59e0b; color: #fff; }
+
+.clear-filters-btn { color: #b45309; }
+.clear-filters-btn:hover { border-color: #f59e0b; background: #fffbeb; }
+
+/* Search input */
+.search-row { margin-bottom: 16px; }
+.list-search-input { max-width: 480px; }
+.list-search-input :deep(.el-input__wrapper) {
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  border: 1px solid #e5e7eb;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.list-search-input :deep(.el-input__wrapper:hover),
+.list-search-input :deep(.el-input__wrapper.is-focus) {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 1px rgba(245,158,11,.25);
+}
 
 /* Filter Bar */
 .filter-bar {
@@ -455,6 +619,9 @@ function onPageChange(newPage) {
   .product-grid { grid-template-columns: repeat(2, 1fr); }
   .filter-row { flex-direction: column; align-items: flex-start; }
   .filter-price { margin-left: 0; width: 100%; }
+  .list-search-input { max-width: 100%; }
+  .active-search-value { max-width: 140px; }
+  .topbar-right { flex-wrap: wrap; }
 }
 .back-to-top {
 	  position: fixed;

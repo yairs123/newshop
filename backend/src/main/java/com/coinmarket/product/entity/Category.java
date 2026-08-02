@@ -1,5 +1,6 @@
 package com.coinmarket.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// parent/children are lazy associations and are never exposed via the API;
+// ignoring them keeps Redis cache serialization safe (no lazy-loading / recursion).
+@JsonIgnoreProperties({"parent", "children"})
 public class Category {
 
     @Id

@@ -33,7 +33,7 @@
           <div class="product-gallery">
             <div class="main-image-container">
               <div v-if="images.length > 0" class="main-image-wrapper">
-                <img :src="images[activeImageIndex]" :alt="product.title" class="main-image" @error="onImageError" />
+                <img :src="images[activeImageIndex]" :alt="product.title" class="main-image" loading="lazy" @error="onImageError" />
               </div>
               <div v-else class="image-placeholder main-placeholder">
                 <span>{{ titleInitial }}</span>
@@ -49,7 +49,7 @@
                 :class="['thumb-item', { active: i === activeImageIndex }]"
                 @click="activeImageIndex = i"
               >
-                <img :src="img" :alt="'Image ' + (i + 1)" class="thumb-image" @error="onThumbError(i)" />
+                <img :src="img" :alt="'Image ' + (i + 1)" class="thumb-image" loading="lazy" @error="onThumbError(i)" />
               </div>
             </div>
           </div>
