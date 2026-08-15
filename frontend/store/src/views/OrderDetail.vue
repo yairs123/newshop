@@ -19,24 +19,25 @@
         <el-card shadow="never" class="detail-card header-card">
           <div class="header-row">
             <div class="header-left">
-              <h2 class="order-title">{{ $t('order.orderTitle') }} #{{ order.orderNo }}</h2>
+              <h2 class="order-title">{{ $t('order.orderTitle') }}</h2>
+              <span class="order-no-badge">#{{ order.orderNo }}</span>
               <p class="order-date">{{ $t('order.placedOn') }} {{ formatDate(order.createdAt) }}</p>
             </div>
             <div class="header-right">
               <el-tag :type="statusType(order.status)" size="large" effect="dark" class="status-tag">
                 {{ statusLabel(order.status) }}
               </el-tag>
-              <div class="action-buttons" v-if="order.status === 'PENDING_PAYMENT'">
-                <el-button type="warning" :loading="paying" @click="handlePay" size="large" class="btn-pay">
-                  {{ $t('checkout.payNow') }}
+              <div class="action-bar">
+                <el-button :loading="paying" @click="handlePay" size="large" class="btn-pay">
+                  💳 {{ $t('checkout.payNow') }}
                 </el-button>
-                <el-button :loading="cancelling" @click="handleCancel" size="small" text class="btn-cancel">
+                <el-button :loading="cancelling" @click="handleCancel" size="large" plain class="btn-cancel">
                   {{ $t('common.cancel') }}
                 </el-button>
+                <el-button @click="$router.push('/orders/' + order.id + '/invoice')" size="large" plain class="btn-invoice">
+                  🧾 {{ $t('account.invoice') }}
+                </el-button>
               </div>
-              <el-button size="small" text class="btn-invoice" @click="$router.push('/orders/' + order.id + '/invoice')">
-                {{ $t('account.invoice') }}
-              </el-button>
             </div>
           </div>
         </el-card>
@@ -334,7 +335,20 @@ onMounted(fetchOrder)
   font-size: 24px;
   font-weight: 700;
   color: #1a1a2e;
-  margin: 0 0 4px 0;
+  margin: 0 0 6px 0;
+}
+
+.order-no-badge {
+  display: inline-block;
+  font-family: 'SF Mono', 'Courier New', monospace;
+  font-size: 13px;
+  color: #8a8a93;
+  background: #f0ece6;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  word-break: break-all;
+  margin-bottom: 8px;
 }
 
 .order-date {
@@ -359,21 +373,33 @@ onMounted(fetchOrder)
   font-weight: 600;
 }
 
-.action-buttons {
+/* 醒目操作按钮 */
+.action-bar {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
-.action-buttons .btn-pay {
-  margin-right: 8px;
+.action-bar .btn-pay {
+  background: linear-gradient(135deg, #b8860b, #d4a843);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0 22px;
+  height: 40px;
+  box-shadow: 0 2px 8px rgba(184, 134, 11, 0.3);
 }
-.action-buttons .btn-cancel,
-.btn-invoice {
-  color: #6b7280;
+.action-bar .btn-pay:hover {
+  opacity: 0.92;
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.4);
 }
-.action-buttons .btn-cancel:hover,
-.btn-invoice:hover {
-  color: #f59e0b;
+.action-bar .btn-cancel,
+.action-bar .btn-invoice {
+  border-radius: 10px;
+  height: 40px;
+  font-weight: 500;
 }
 
 /* Items Table */
