@@ -1,7 +1,7 @@
 <template>
   <div class="products-page">
     <el-breadcrumb separator="/" style="margin-bottom: 16px;">
-      <el-breadcrumb-item>Products</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ $t("seller.menu.products") }}</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="action-bar">
       <div class="action-left">

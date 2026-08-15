@@ -44,4 +44,13 @@ public class ReviewController {
     public ApiResponse<ReviewSummary> getProductSummary(@PathVariable Long productId) {
         return ApiResponse.success(reviewService.getProductSummary(productId));
     }
+
+    @GetMapping("/check")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "检查是否已评价", description = "检查当前用户是否已评价指定商品")
+    public ApiResponse<Boolean> checkReviewed(
+            @RequestParam Long productId,
+            @CurrentUser UserPrincipal principal) {
+        return ApiResponse.success(reviewService.hasReviewed(principal.getId(), productId));
+    }
 }

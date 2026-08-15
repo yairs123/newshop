@@ -3,10 +3,10 @@
     <el-card class="login-card">
       <template #header><h2>{{ $t('seller.title') }} - Login</h2></template>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="Username" prop="username">
+        <el-form-item :label="$t('common.username')" prop="username">
           <el-input v-model="form.username" />
         </el-form-item>
-        <el-form-item label="Password" prop="password">
+        <el-form-item :label="$t('common.password')" prop="password">
           <el-input v-model="form.password" type="password" show-password />
         </el-form-item>
         <el-form-item>

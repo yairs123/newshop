@@ -341,6 +341,7 @@ public class OrderService {
                 .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<BuyerOrderItemResponse> getBuyerDistinctProducts(Long buyerId) {
         List<Object[]> results = orderRepository.findDistinctProductsByBuyerId(buyerId);
         return results.stream().map(row -> {

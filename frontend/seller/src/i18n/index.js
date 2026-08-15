@@ -126,7 +126,7 @@ const messages = {
       createAndEntry: 'Create & Add to Inventory',
       entryRecord: 'Inventory Records'
     },
-    common: { logout: 'Logout', submit: 'Submit', upload: 'Upload', search: 'Search', save: 'Save', cancel: 'Cancel', close: 'Close', confirm: 'Confirm', loading: 'Loading...', all: 'All', detail: 'Detail', refresh: 'Refresh', actions: 'Actions', status: 'Status', back: 'Back' }
+    common: { logout: 'Logout', submit: 'Submit', username: 'Username', password: 'Password', upload: 'Upload', search: 'Search', save: 'Save', cancel: 'Cancel', close: 'Close', confirm: 'Confirm', loading: 'Loading...', all: 'All', detail: 'Detail', refresh: 'Refresh', actions: 'Actions', status: 'Status', back: 'Back' }
   },
   'zh-CN': {
     errors: {
@@ -253,7 +253,7 @@ const messages = {
       createAndEntry: '创建并入库',
       entryRecord: '本次入库记录'
     },
-    common: { logout: '退出登录', submit: '提交', upload: '上传', search: '搜索', save: '保存', cancel: '取消', close: '关闭', confirm: '确认', loading: '加载中...', all: '全部', detail: '详情', refresh: '刷新', actions: '操作', status: '状态', back: '返回' }
+    common: { logout: '退出登录', submit: '提交', username: '用戶名', password: '密碼', upload: '上传', search: '搜索', save: '保存', cancel: '取消', close: '关闭', confirm: '确认', loading: '加载中...', all: '全部', detail: '详情', refresh: '刷新', actions: '操作', status: '状态', back: '返回' }
   },
   'zh-TW': {
     errors: {
@@ -507,7 +507,7 @@ const messages = {
       createAndEntry: '作成して入庫',
       entryRecord: '入庫記録'
     },
-    common: { logout: 'ログアウト', submit: '送信', upload: 'アップロード', search: '検索', save: '保存', cancel: 'キャンセル', close: '閉じる', confirm: '確認', loading: '読み込み中...', all: 'すべて', detail: '詳細', refresh: '更新', actions: '操作', status: 'ステータス', back: '戻る' }
+    common: { logout: 'ログアウト', submit: '送信', username: 'ユーザー名', password: 'パスワード', upload: 'アップロード', search: '検索', save: '保存', cancel: 'キャンセル', close: '閉じる', confirm: '確認', loading: '読み込み中...', all: 'すべて', detail: '詳細', refresh: '更新', actions: '操作', status: 'ステータス', back: '戻る' }
   },
   ko: {
     errors: {
@@ -634,7 +634,7 @@ const messages = {
       createAndEntry: '생성 및 입고',
       entryRecord: '입고 기록'
     },
-    common: { logout: '로그아웃', submit: '제출', upload: '업로드', search: '검색', save: '저장', cancel: '취소', close: '닫기', confirm: '확인', loading: '로딩 중...', all: '전체', detail: '상세', refresh: '새로고침', actions: '작업', status: '상태', back: '뒤로' }
+    common: { logout: '로그아웃', submit: '제출', username: '사용자 이름', password: '비밀번호', upload: '업로드', search: '검색', save: '저장', cancel: '취소', close: '닫기', confirm: '확인', loading: '로딩 중...', all: '전체', detail: '상세', refresh: '새로고침', actions: '작업', status: '상태', back: '뒤로' }
   }
 }
 

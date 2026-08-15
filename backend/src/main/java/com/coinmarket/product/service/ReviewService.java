@@ -58,6 +58,11 @@ public class ReviewService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public boolean hasReviewed(Long userId, Long productId) {
+        return reviewRepository.existsByProductIdAndUserId(productId, userId);
+    }
+
     private ReviewResponse toResponse(Review review) {
         return ReviewResponse.builder()
                 .id(review.getId())

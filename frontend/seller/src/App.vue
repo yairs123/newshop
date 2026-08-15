@@ -40,15 +40,15 @@
           </el-menu-item>
           <el-menu-item index="/inventory">
             <el-icon><Download /></el-icon>
-            <span>快捷入库</span>
+            <span>{{ $t('nav.quickInventory') }}</span>
           </el-menu-item>
           <el-menu-item index="/sales-report">
             <el-icon><DataAnalysis /></el-icon>
-            <span>销售报表</span>
+            <span>{{ $t('nav.salesReport') }}</span>
           </el-menu-item>
           <el-menu-item index="/print-labels">
             <el-icon><Printer /></el-icon>
-            <span>打印条码</span>
+            <span>{{ $t('nav.printLabels') }}</span>
           </el-menu-item>
           <el-menu-item index="/profile">
             <el-icon><User /></el-icon>

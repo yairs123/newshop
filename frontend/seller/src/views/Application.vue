@@ -1,7 +1,7 @@
 <template>
   <div class="application-page">
     <el-breadcrumb separator="/" style="margin-bottom: 16px;">
-      <el-breadcrumb-item>Application</el-breadcrumb-item>
+      <el-breadcrumb-item>{{ $t("seller.menu.profile") }}</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card v-if="!hasApplied">
       <template #header><h2>{{ $t('seller.application.title') }}</h2></template>
