@@ -68,7 +68,7 @@ public class Product extends BaseEntity {
     @Column(length = 100)
     private String country;
 
-    @Column
+    @Column(name = "\"year\"")
     private Integer year;
 
     @Column(length = 50)

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;INIT=CREATE SCHEMA IF NOT EXISTS coin_users\;CREATE SCHEMA IF NOT EXISTS coin_order\;CREATE SCHEMA IF NOT EXISTS coin_product
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;INIT=CREATE SCHEMA IF NOT EXISTS coin_users\;CREATE SCHEMA IF NOT EXISTS coin_order\;CREATE SCHEMA IF NOT EXISTS coin_product\;CREATE SCHEMA IF NOT EXISTS coin_cart\;CREATE SCHEMA IF NOT EXISTS coin_seller\;CREATE SCHEMA IF NOT EXISTS coin_admin\;CREATE SCHEMA IF NOT EXISTS coin_finance
     driver-class-name: org.h2.Driver
     username: sa
     password:
