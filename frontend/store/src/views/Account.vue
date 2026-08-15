@@ -21,39 +21,39 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               {{ $t('account.member', '会员') }}
             </span>
-            <span class="badge badge-orders">{{ orderCount || 0 }} {{ $t('account.orders', '订单') }}</span>
+            <span class="badge badge-orders">{{ orderCount || 0 }}{{ $t('account.orderCount', '件') }} {{ $t('account.orders', '订单') }}</span>
           </div>
         </div>
       </div>
 
-      <!-- Quick stats -->
+      <!-- Order stats -->
       <div class="stats-row">
-        <div class="stat-card" @click="$router.push('/orders')">
-          <span class="stat-icon" style="background:#fef3c7;color:#d97706">&#x1F4CB;</span>
+        <div class="stat-card stat-total" @click="$router.push('/orders')">
+          <span class="stat-icon">&#x1F4CB;</span>
           <div class="stat-body">
             <span class="stat-value">{{ orderCount || 0 }}</span>
-            <span class="stat-label">{{ $t('account.myOrders', '我的订单') }}</span>
+            <span class="stat-label">{{ $t('account.allOrders', '全部订单') }}</span>
           </div>
         </div>
-        <div class="stat-card" @click="$router.push('/orders')">
-          <span class="stat-icon" style="background:#fce7f3;color:#db2777">&#x23F0;</span>
+        <div class="stat-card stat-pending" @click="$router.push('/orders')">
+          <span class="stat-icon">&#x23F3;</span>
           <div class="stat-body">
             <span class="stat-value">{{ pendingCount || 0 }}</span>
-            <span class="stat-label">{{ $t('account.pendingPayment', '待支付') }}</span>
+            <span class="stat-label">{{ $t('account.unpaidOrders', '待支付') }}</span>
           </div>
         </div>
-        <div class="stat-card" @click="$router.push('/products')">
-          <span class="stat-icon" style="background:#f0f9ff;color:#0284c7">&#x2764;&#xFE0F;</span>
+        <div class="stat-card stat-paid" @click="$router.push('/orders')">
+          <span class="stat-icon">&#x2714;&#xFE0F;</span>
           <div class="stat-body">
-            <span class="stat-value">{{ favCount || '-' }}</span>
-            <span class="stat-label">{{ $t('shop.browseProducts', '浏览商品') }}</span>
+            <span class="stat-value">{{ paidCount || 0 }}</span>
+            <span class="stat-label">{{ $t('account.paidOrders', '已支付') }}</span>
           </div>
         </div>
-        <div class="stat-card" @click="$router.push('/messages')">
-          <span class="stat-icon" style="background:#f0fdf4;color:#16a34a">&#x1F4AC;</span>
+        <div class="stat-card stat-completed" @click="$router.push('/orders')">
+          <span class="stat-icon">&#x1F3C1;</span>
           <div class="stat-body">
-            <span class="stat-value">{{ msgCount || 0 }}</span>
-            <span class="stat-label">{{ $t('account.messages', '消息') }}</span>
+            <span class="stat-value">{{ completedCount || 0 }}</span>
+            <span class="stat-label">{{ $t('account.completedOrders', '已完成') }}</span>
           </div>
         </div>
       </div>
@@ -110,6 +110,8 @@ const username = ref('')
 const email = ref('')
 const orderCount = ref(0)
 const pendingCount = ref(0)
+const paidCount = ref(0)
+const completedCount = ref(0)
 const favCount = ref(0)
 const msgCount = ref(0)
 const recentOrders = ref([])
@@ -154,6 +156,8 @@ onMounted(async () => {
     recentOrders.value = orders.slice(0, 3)
     orderCount.value = orders.length
     pendingCount.value = orders.filter(o => o.status === 'PENDING_PAYMENT').length
+    paidCount.value = orders.filter(o => o.status === 'PAID' || o.status === 'SHIPPED').length
+    completedCount.value = orders.filter(o => o.status === 'COMPLETED').length
   } catch (e) { /* ignore */ }
 })
 </script>
@@ -270,37 +274,48 @@ onMounted(async () => {
   gap: 12px;
   cursor: pointer;
   border: 1px solid #f0f0f0;
+  border-top: 3px solid #e5e7eb;
   transition: all 0.2s;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-  border-color: #e5e7eb;
 }
 
+/* 各状态卡片配色 */
+.stat-total { border-top-color: #b8860b; }
+.stat-pending { border-top-color: #d97706; }
+.stat-paid { border-top-color: #059669; }
+.stat-completed { border-top-color: #2563eb; }
+
+.stat-total .stat-icon { background: #fef3c7; color: #b8860b; }
+.stat-pending .stat-icon { background: #fff7ed; color: #d97706; }
+.stat-paid .stat-icon { background: #f0fdf4; color: #059669; }
+.stat-completed .stat-icon { background: #eff6ff; color: #2563eb; }
+
 .stat-icon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
   flex-shrink: 0;
 }
 
 .stat-body { display: flex; flex-direction: column; }
 
 .stat-value {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   color: #111827;
   line-height: 1.2;
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: 12px;
   color: #9ca3af;
   font-weight: 500;
 }
