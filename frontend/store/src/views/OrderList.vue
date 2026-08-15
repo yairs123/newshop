@@ -14,8 +14,13 @@
       <!-- My Orders Tab -->
       <el-tab-pane :label="$t('account.myOrders')" name="orders">
         <div v-loading="ordersLoading">
-          <el-empty v-if="orders.length === 0" :description="$t('account.noOrders')" />
-          <div v-for="order in orders" :key="order.id" class="order-card-wrapper">
+          <!-- 状态筛选提示 -->
+          <div v-if="statusFilter" class="filter-indicator">
+            <span>{{ statusLabel(statusFilter) }}</span>
+            <button @click="clearStatusFilter">✕ {{ $t('common.clear', '清除筛选') }}</button>
+          </div>
+          <el-empty v-if="filteredOrders.length === 0" :description="$t('account.noOrders')" />
+          <div v-for="order in filteredOrders" :key="order.id" class="order-card-wrapper">
             <el-card shadow="hover" class="order-card">
               <!-- Order Header -->
               <div class="order-header">
@@ -271,8 +276,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 import { useCartStore } from '../store/cart'
@@ -281,9 +286,19 @@ import { CreditCard, Location } from '@element-plus/icons-vue'
 
 const { t } = useI18n()
 const router = useRouter()
+const route = useRoute()
 const cartStore = useCartStore()
 
 const activeTab = ref('orders')
+
+// 状态筛选（来自 URL ?status=xxx）
+const statusFilter = ref(route.query.status || '')
+
+// 筛选后的订单
+const filteredOrders = computed(() => {
+  if (!statusFilter.value) return orders.value
+  return orders.value.filter(o => o.status === statusFilter.value)
+})
 
 // My Orders
 const orders = ref([])
@@ -312,6 +327,11 @@ const reviewSubmitting = ref(false)
 
 // Reviewed items tracker: key = "orderId-productId"
 const reviewedMap = reactive({})
+
+function clearStatusFilter() {
+  statusFilter.value = ''
+  router.push({ path: '/orders', query: {} })
+}
 
 onMounted(() => {
   fetchOrders()
@@ -568,6 +588,32 @@ function addToCart(item) {
   font-size: 14px;
   color: #8a8a93;
   margin: 2px 0 0;
+}
+
+/* 状态筛选提示 */
+.filter-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b8860b;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.filter-indicator button {
+  border: none;
+  background: transparent;
+  color: #b8860b;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+}
+.filter-indicator button:hover {
+  text-decoration: underline;
 }
 
 /* Order Card — Numismatic Catalog style */

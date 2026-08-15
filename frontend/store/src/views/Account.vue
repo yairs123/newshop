@@ -21,35 +21,35 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               {{ $t('account.member', '会员') }}
             </span>
-            <span class="badge badge-orders">{{ orderCount || 0 }}{{ $t('account.orderCount', '件') }} {{ $t('account.orders', '订单') }}</span>
+            <span class="badge badge-orders">{{ $t('account.myOrders', '我的订单') }} · {{ orderCount || 0 }}</span>
           </div>
         </div>
       </div>
 
       <!-- Order stats -->
       <div class="stats-row">
-        <div class="stat-card stat-total" @click="$router.push('/orders')">
+        <div class="stat-card stat-total" @click="goOrders('')">
           <span class="stat-icon">&#x1F4CB;</span>
           <div class="stat-body">
             <span class="stat-value">{{ orderCount || 0 }}</span>
             <span class="stat-label">{{ $t('account.allOrders', '全部订单') }}</span>
           </div>
         </div>
-        <div class="stat-card stat-pending" @click="$router.push('/orders')">
+        <div class="stat-card stat-pending" @click="goOrders('PENDING_PAYMENT')">
           <span class="stat-icon">&#x23F3;</span>
           <div class="stat-body">
             <span class="stat-value">{{ pendingCount || 0 }}</span>
             <span class="stat-label">{{ $t('account.unpaidOrders', '待支付') }}</span>
           </div>
         </div>
-        <div class="stat-card stat-paid" @click="$router.push('/orders')">
+        <div class="stat-card stat-paid" @click="goOrders('PAID')">
           <span class="stat-icon">&#x2714;&#xFE0F;</span>
           <div class="stat-body">
             <span class="stat-value">{{ paidCount || 0 }}</span>
             <span class="stat-label">{{ $t('account.paidOrders', '已支付') }}</span>
           </div>
         </div>
-        <div class="stat-card stat-completed" @click="$router.push('/orders')">
+        <div class="stat-card stat-completed" @click="goOrders('COMPLETED')">
           <span class="stat-icon">&#x1F3C1;</span>
           <div class="stat-body">
             <span class="stat-value">{{ completedCount || 0 }}</span>
@@ -140,6 +140,11 @@ const statusLabel = (status) => {
 const statusClass = (status) => {
   const map = { PENDING_PAYMENT: 'status-pending', PAID: 'status-paid', SHIPPED: 'status-shipped', COMPLETED: 'status-done', CANCELLED: 'status-cancel' }
   return map[status] || ''
+}
+
+// 跳转到订单页并按状态筛选
+function goOrders(status) {
+  router.push({ path: '/orders', query: status ? { status } : {} })
 }
 
 onMounted(async () => {
