@@ -49,7 +49,7 @@
                 :class="['thumb-item', { active: i === activeImageIndex }]"
                 @click="activeImageIndex = i"
               >
-                <img :src="img" :alt="'Image ' + (i + 1)" class="thumb-image" loading="lazy" @error="onThumbError(i)" />
+                <img :src="img" :alt="$t('productDetail.imageAlt', { index: i + 1 })" class="thumb-image" loading="lazy" @error="onThumbError(i)" />
               </div>
             </div>
           </div>
@@ -125,8 +125,8 @@
                   @click="toggleFavorite"
                 >
                   <el-icon><StarFilled v-if="isFavorite" /><Star v-else /></el-icon>
-                  <span v-if="isFavorite">Favorited</span>
-                  <span v-else>Favorite</span>
+                  <span v-if="isFavorite">{{ $t('productDetail.favorited') }}</span>
+                  <span v-else>{{ $t('productDetail.favorite') }}</span>
                 </el-button>
               </div>
             </div>

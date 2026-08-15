@@ -94,7 +94,7 @@
             </div>
             <div class="info-row" v-if="order.shippingMethod">
               <span class="info-label">{{ $t('checkout.shippingMethod') }}</span>
-              <span class="info-value">{{ order.shippingMethod }}</span>
+              <span class="info-value">{{ shippingMethodLabel(order.shippingMethod) }}</span>
             </div>
             <div class="info-row" v-if="order.trackingNumber">
               <span class="info-label">{{ $t('account.trackingNumber') }}</span>
@@ -196,6 +196,19 @@ function paymentMethodLabel(method) {
     GRABPAY: 'checkout.payGrabPay',
     PAYNOW: 'checkout.payPayNow',
     BANK_TRANSFER: 'checkout.payBankTransfer'
+  }
+  const key = keyMap[method]
+  return key ? t(key) : method
+}
+
+// 配送方式代码 → 本地化文案
+function shippingMethodLabel(method) {
+  if (!method) return '-'
+  const keyMap = {
+    STANDARD: 'checkout.shipStandard',
+    EXPRESS: 'checkout.shipExpress',
+    PRIORITY: 'checkout.shipPriority',
+    REGISTERED: 'checkout.shipRegistered'
   }
   const key = keyMap[method]
   return key ? t(key) : method

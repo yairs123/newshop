@@ -27,12 +27,12 @@
           <el-form>
             <el-form-item :label="$t('account.needHelp')">
               <el-select v-model="form.ticketType" style="width:100%">
-                <el-option label="General Inquiry" value="GENERAL" />
-                <el-option label="Order Issue" value="ORDER" />
-                <el-option label="Payment" value="PAYMENT" />
-                <el-option label="Shipping" value="SHIPPING" />
-                <el-option label="Return" value="RETURN" />
-                <el-option label="Seller" value="SELLER" />
+                <el-option :label="$t('ticketType.GENERAL')" value="GENERAL" />
+                <el-option :label="$t('ticketType.ORDER')" value="ORDER" />
+                <el-option :label="$t('ticketType.PAYMENT')" value="PAYMENT" />
+                <el-option :label="$t('ticketType.SHIPPING')" value="SHIPPING" />
+                <el-option :label="$t('ticketType.RETURN')" value="RETURN" />
+                <el-option :label="$t('ticketType.SELLER')" value="SELLER" />
               </el-select>
             </el-form-item>
             <el-form-item :label="$t('account.subject')">
@@ -51,26 +51,28 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 import { ElMessage } from 'element-plus'
 
+const { t } = useI18n()
 const submitting = ref(false)
 const form = reactive({ ticketType: 'GENERAL', subject: '', message: '' })
 
 async function submitForm() {
   if (!form.subject || !form.message) {
-    ElMessage.warning('Please fill in all fields')
+    ElMessage.warning(t('common.fillRequiredFields'))
     return
   }
   submitting.value = true
   try {
     await api.post('/contact', form)
-    ElMessage.success('Message sent successfully!')
+    ElMessage.success(t('contact.success'))
     form.ticketType = 'GENERAL'
     form.subject = ''
     form.message = ''
   } catch (e) {
-    ElMessage.error('Failed to send message')
+    ElMessage.error(t('common.failedToSend'))
   }
   submitting.value = false
 }

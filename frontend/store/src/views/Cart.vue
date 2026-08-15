@@ -7,7 +7,7 @@
 
     <div class="cart-header">
       <h2>{{ $t('cart.pageTitle') }}</h2>
-      <span v-if="cartStore.items.length" class="cart-count">{{ cartStore.totalCount }} 件商品</span>
+      <span v-if="cartStore.items.length" class="cart-count">{{ $t('cart.countItems', { count: cartStore.totalCount }) }}</span>
     </div>
 
     <div v-if="cartStore.items.length" class="cart-items">
@@ -42,13 +42,13 @@
             </div>
             <div class="item-actions">
               <el-button size="small" text @click="findSimilar(item)">
-                🔍 类似商品
+                🔍 {{ $t('cart.similarProducts') }}
               </el-button>
               <el-button size="small" text type="primary" @click="saveForLater(item)">
-                💾 稍后购买
+                💾 {{ $t('cart.saveForLater') }}
               </el-button>
               <el-button size="small" text type="danger" @click="confirmRemove(item.id)">
-                🗑️ 删除
+                🗑️ {{ $t('common.remove') }}
               </el-button>
             </div>
           </div>
@@ -63,7 +63,7 @@
     <!-- Footer -->
     <div v-if="cartStore.items.length" class="cart-footer">
       <div class="footer-left">
-        <span class="footer-count">共 {{ cartStore.totalCount }} 件</span>
+        <span class="footer-count">{{ $t('cart.countItems', { count: cartStore.totalCount }) }}</span>
         <span class="footer-divider">|</span>
         <span class="footer-total-label">{{ $t('cartDrawer.total') }}:</span>
         <span class="footer-total">{{ '$' + cartStore.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
@@ -77,19 +77,21 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useCartStore } from '../store/cart'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
 const router = useRouter()
 const cartStore = useCartStore()
+const { t } = useI18n()
 
 function checkout() { router.push('/checkout') }
 
 async function confirmRemove(id) {
   try {
-    await ElMessageBox.confirm('确定要删除该商品吗？', '删除确认')
+    await ElMessageBox.confirm(t('cart.confirmRemove'), t('cart.removeTitle'))
     cartStore.removeItem(id)
-    ElMessage.success('已删除')
+    ElMessage.success(t('cart.removed'))
   } catch (_) {}
 }
 
@@ -106,7 +108,7 @@ function increment(item) {
 }
 
 function saveForLater(item) {
-  ElMessage.info('稍后购买功能开发中')
+  ElMessage.info(t('cart.saveForLaterComingSoon'))
 }
 
 function findSimilar(item) {

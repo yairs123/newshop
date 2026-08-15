@@ -37,7 +37,7 @@
         <div class="section-header">
           <h2>{{ $t('home.featured') }}</h2>
           <div class="header-right">
-            <span class="product-count">共 {{ allProducts.length }} 件商品</span>
+            <span class="product-count">{{ $t('home.itemsCount', { count: allProducts.length }) }}</span>
             <router-link to="/products" class="view-all">{{ $t('home.viewAll') }} →</router-link>
           </div>
         </div>
@@ -57,12 +57,12 @@
               </el-image>
               <div v-else class="image-placeholder"><span>{{ (p.title || '?').charAt(0) }}</span></div>
               <div class="card-badge" v-if="p.ratingGrade">{{ p.ratingCompany }} {{ p.ratingGrade }}</div>
-              <div class="card-stock" v-if="p.stock <= 3 && p.stock > 0">仅剩 {{ p.stock }} 件</div>
+              <div class="card-stock" v-if="p.stock <= 3 && p.stock > 0">{{ $t('home.lowStock', { count: p.stock }) }}</div>
             </div>
             <div class="card-body">
               <h4 class="card-title">{{ p.title }}</h4>
               <div class="card-meta">
-                <span v-if="p.country">{{ p.country }}</span>
+                <span v-if="p.country">{{ $t('countries.' + p.country) || p.country }}</span>
                 <span v-if="p.year">{{ p.year }}</span>
                 <span v-if="p.material">{{ p.material }}</span>
               </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="news-detail" v-loading="loading">
     <div class="detail-inner">
-      <el-button text @click="$router.back()" class="back-link">← Back</el-button>
+      <el-button text @click="$router.back()" class="back-link">{{ $t('news.back') }}</el-button>
       <div v-if="article" class="article">
         <h1 class="article-title">{{ article.title }}</h1>
         <div class="article-meta">

@@ -11,17 +11,17 @@
     <div v-loading="loading">
       <el-empty v-if="methods.length === 0" :description="$t('account.noPaymentMethods')" />
       <el-table v-else :data="methods" border stripe>
-        <el-table-column label="Type" width="140">
+        <el-table-column :label="$t('paymentForm.type')" width="140">
           <template #default="{ row }">
             <span class="pm-type-badge" :class="row.methodType.toLowerCase()">
               {{ $t('paymentMethodTypes.' + row.methodType) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="provider" label="Provider" width="120" />
-        <el-table-column prop="accountLastFour" label="Last 4" width="80" />
+        <el-table-column prop="provider" :label="$t('paymentForm.provider')" width="120" />
+        <el-table-column prop="accountLastFour" :label="$t('paymentForm.lastFour')" width="80" />
         <el-table-column prop="cardholderName" :label="$t('common.fullName')" width="150" />
-        <el-table-column label="Default" width="80">
+        <el-table-column :label="$t('paymentForm.default')" width="80">
           <template #default="{ row }">
             <el-tag v-if="row.isDefault" type="success" size="small">{{ $t('account.defaultPayment') }}</el-tag>
           </template>
@@ -48,13 +48,13 @@
 
         <!-- Credit Card Form -->
         <template v-if="form.methodType === 'CREDIT_CARD'">
-          <el-form-item label="Card Number">
+          <el-form-item :label="$t('paymentForm.cardNumber')">
             <el-input v-model="form.cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" />
           </el-form-item>
-          <el-form-item label="Expiry">
+          <el-form-item :label="$t('paymentForm.expiry')">
             <el-input v-model="form.expiryDate" placeholder="MM/YY" maxlength="5" style="width:140px" />
           </el-form-item>
-          <el-form-item label="CVV">
+          <el-form-item :label="$t('paymentForm.cvv')">
             <el-input v-model="form.cvv" placeholder="123" maxlength="4" style="width:100px" type="password" />
           </el-form-item>
           <el-form-item :label="$t('common.fullName')">
@@ -64,16 +64,16 @@
 
         <!-- Bank Transfer Form -->
         <template v-else-if="form.methodType === 'BANK_TRANSFER'">
-          <el-form-item label="Bank Name">
+          <el-form-item :label="$t('paymentForm.bankName')">
             <el-input v-model="form.provider" />
           </el-form-item>
-          <el-form-item label="Account Number">
+          <el-form-item :label="$t('paymentForm.accountNumber')">
             <el-input v-model="form.accountNumber" />
           </el-form-item>
-          <el-form-item label="Routing Number">
+          <el-form-item :label="$t('paymentForm.routingNumber')">
             <el-input v-model="form.routingNumber" />
           </el-form-item>
-          <el-form-item label="Account Holder">
+          <el-form-item :label="$t('paymentForm.accountHolder')">
             <el-input v-model="form.cardholderName" />
           </el-form-item>
         </template>
@@ -83,10 +83,10 @@
           <div class="wallet-connect">
             <span class="wallet-icon-big">{{ getMethodIcon(form.methodType) }}</span>
             <p>{{ $t('paymentMethodTypes.' + form.methodType) }}</p>
-            <p class="wallet-hint">You will be redirected to authorize this payment method.</p>
+            <p class="wallet-hint">{{ $t('paymentForm.walletHint') }}</p>
             <el-button type="primary" size="large" class="connect-btn">
               <el-icon style="margin-right:6px"><Link /></el-icon>
-              Connect {{ $t('paymentMethodTypes.' + form.methodType) }}
+              {{ $t('paymentForm.connect') }} {{ $t('paymentMethodTypes.' + form.methodType) }}
             </el-button>
           </div>
         </template>
@@ -105,10 +105,12 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Link } from '@element-plus/icons-vue'
 
+const { t } = useI18n()
 const methods = ref([])
 const loading = ref(true)
 const dialogVisible = ref(false)
@@ -172,18 +174,18 @@ async function saveMethod() {
   try {
     await api.post('/payment-methods', payload)
     dialogVisible.value = false
-    ElMessage.success('Success')
+    ElMessage.success(t('common.success'))
     fetchMethods()
   } catch (e) {
-    ElMessage.error('Failed')
+    ElMessage.error(t('common.failed'))
   }
 }
 
 async function deleteMethod(row) {
   try {
-    await ElMessageBox.confirm('Are you sure?')
+    await ElMessageBox.confirm(t('account.confirmDeletePayment'))
     await api.delete(`/payment-methods/${row.id}`)
-    ElMessage.success('Deleted')
+    ElMessage.success(t('common.deleted'))
     fetchMethods()
   } catch (e) {}
 }
@@ -191,7 +193,7 @@ async function deleteMethod(row) {
 async function setDefault(row) {
   try {
     await api.put(`/payment-methods/${row.id}/default`)
-    ElMessage.success('Default set')
+    ElMessage.success(t('common.defaultSet'))
     fetchMethods()
   } catch (e) {}
 }

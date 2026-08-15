@@ -4,7 +4,7 @@
       <template #header><h3>{{ $t('auth.forgotPasswordTitle') }}</h3></template>
       <p style="margin-bottom: 16px; color: #6b7280;">{{ $t('auth.forgotPasswordDesc') }}</p>
       <el-form v-if="!sent" @submit.prevent="submit">
-        <el-form-item label="Email">
+        <el-form-item :label="$t('common.email')">
           <el-input v-model="email" type="email" placeholder="your@email.com" />
         </el-form-item>
         <el-form-item>

@@ -19,8 +19,12 @@
       <el-table v-else :data="tickets" border stripe>
         <el-table-column prop="subject" :label="$t('account.subject')" min-width="200" />
         <el-table-column prop="message" :label="$t('account.describeIssue')" min-width="300" show-overflow-tooltip />
-        <el-table-column prop="ticketType" :label="$t('account.ticketType')" width="120" />
-        <el-table-column prop="status" :label="$t('account.status')" width="100" />
+        <el-table-column :label="$t('account.ticketType')" width="120">
+          <template #default="{ row }">{{ ticketTypeLabel(row.ticketType) }}</template>
+        </el-table-column>
+        <el-table-column :label="$t('account.status')" width="100">
+          <template #default="{ row }">{{ ticketStatusLabel(row.status) }}</template>
+        </el-table-column>
         <el-table-column prop="createdAt" :label="$t('account.createdAt')" width="180" />
       </el-table>
     </div>
@@ -29,8 +33,10 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 
+const { t } = useI18n()
 const tickets = ref([])
 const loading = ref(true)
 const filter = ref('')
@@ -46,6 +52,20 @@ async function fetchTickets() {
     tickets.value = res.data || []
   } catch (e) { tickets.value = [] }
   loading.value = false
+}
+
+function ticketTypeLabel(type) {
+  if (!type) return '-'
+  const key = `ticketType.${type}`
+  const translated = t(key)
+  return translated !== key ? translated : type
+}
+
+function ticketStatusLabel(status) {
+  if (!status) return '-'
+  const key = `ticketStatus.${status}`
+  const translated = t(key)
+  return translated !== key ? translated : status
 }
 </script>
 

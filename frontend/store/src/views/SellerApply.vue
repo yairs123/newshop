@@ -17,11 +17,14 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import { Shop } from '@element-plus/icons-vue'
 
+const { t } = useI18n()
+
 function apply() {
-  ElMessage.info('Seller application feature coming soon')
+  ElMessage.info(t('common.comingSoon'))
 }
 </script>
 

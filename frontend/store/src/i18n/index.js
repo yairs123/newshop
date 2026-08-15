@@ -14,9 +14,10 @@ const messages = {
       'Payment method not found': 'Payment method not found',
       'Invalid or expired reset token': 'Invalid or expired reset token',
       'Reset token has already been used': 'Reset token has already been used',
-      'Reset token has expired': 'Reset token has expired'
-    invoice: { companySubtitle: 'Premium Numismatics', companyAddress: '123 Coin Street, Numismatic City', contact: 'Tel: +1-555-0123 | Email: info@coinmarket.com', website: 'www.coinmarket.com' },
-   },
+      'Reset token has expired': 'Reset token has expired',
+      requestFailed: 'Request failed, please try again',
+    },
+    invoice: { companySubtitle: 'Premium Numismatics', companyAddress: '123 Coin Street, Numismatic City', contact: 'Tel: +1-555-0123 | Email: info [at] coinmarket.com', website: 'www.coinmarket.com' },
     header: { freeShipping: 'Free shipping on orders over $500' },
     nav: { home: 'Home', shop: 'Shop', contact: 'Contact', login: 'Sign In', register: 'Register', myOrders: 'My Orders', logout: 'Logout' },
     hero: { title: 'Discover Certified Coins', subtitle: 'NGC · PCGS · PMG graded coins from trusted sellers worldwide', cta: 'Browse Collection' },
@@ -27,7 +28,7 @@ const messages = {
       shipping: { title: 'Worldwide Shipping', desc: 'Free shipping on orders over $500' }
    },
     home: {
-      featured: 'Featured Products', viewAll: 'View All →', inStock: 'In Stock', sold: 'Sold',
+      featured: 'Featured Products', viewAll: 'View All →', inStock: 'In Stock', sold: 'Sold', itemsCount: '{count} items', lowStock: 'Only {count} left',
       aboutTitle: 'About Us', aboutContent: 'CoinMarket is a leading online marketplace for certified coins. We connect buyers and sellers of NGC, PCGS, and PMG graded coins from around the world. Our platform ensures authenticity, secure transactions, and reliable shipping for every purchase.',
       latestTitle: 'Latest Products',
       newsSectionTitle: 'Latest News', newsViewAll: 'View All →', newsReadMore: 'Read More',
@@ -39,7 +40,7 @@ const messages = {
       sortNewest: 'Newest', sortPriceLow: 'Price: Low to High', sortPriceHigh: 'Price: High to Low',
       productsFound: 'products found', noProducts: 'No products found. Try adjusting your filters.',
       allCategories: 'All', min: 'Min', max: 'Max', of: 'of', prev: 'Prev', next: 'Next', sortLabel: 'Sort:',
-      searchingFor: 'Search:', clearFilters: 'Clear Filters', popular: 'Popular'
+      searchingFor: 'Search:', clearFilters: 'Clear Filters', popular: 'Popular', browseProducts: 'Browse Products', clearSearchAria: 'Clear search', backToTopAria: 'Back to top'
    },
     categories: {
       'ancient-coins': 'Ancient Coins',
@@ -103,12 +104,15 @@ const messages = {
       addedDate: 'Added Date',
       lowStockWarning: 'Only {stock} left in stock — order soon',
       inStock: 'In Stock',
-      outOfStock: 'Out of Stock'
+      outOfStock: 'Out of Stock',
+      favorite: 'Favorite',
+      favorited: 'Favorited',
+      imageAlt: 'Image {index}'
    },
-    common: { search: 'Search', login: 'Login', register: 'Register', submit: 'Submit', cancel: 'Cancel', close: 'Close', review: 'Review', all: 'All', remove: 'Remove', fullName: 'Full Name', phone: 'Phone', address: 'Address', city: 'City', zipCode: 'ZIP Code', country: 'Country' },
+    common: { search: 'Search', login: 'Login', register: 'Register', submit: 'Submit', cancel: 'Cancel', close: 'Close', review: 'Review', all: 'All', remove: 'Remove', fullName: 'Full Name', phone: 'Phone', address: 'Address', city: 'City', zipCode: 'ZIP Code', country: 'Country', username: 'Username / Email', password: 'Password', email: 'Email', next: 'Next', enterPassword: 'Please enter your password', noData: 'No data available', default: 'Default', action: 'Action', success: 'Success', failed: 'Failed', deleted: 'Deleted', defaultSet: 'Default set', fillRequiredFields: 'Please fill in all fields', failedToSend: 'Failed to send message', passwordLengthError: 'Password must be at least 8 characters', passwordMismatch: 'Passwords do not match', resetFailed: 'Reset failed. The link may be expired.', comingSoon: 'This feature is coming soon', confirmDeleteCartItem: 'Are you sure you want to remove this item?', deleteConfirm: 'Confirm', removed: 'Removed', saveForLaterComingSoon: 'Save for later is coming soon' },
     order: { items: 'Items', payment: 'Payment', shipping: 'Shipping', history: 'Order History', by: 'by', placedOn: 'Placed on', paidAt: 'Paid at', subtotal: 'Subtotal', notFound: 'Order not found',  orderTitle: 'Order Details', backToOrders: 'Back to Orders',  PENDING_PAYMENT: 'Pending Payment', PAID: 'Paid', SHIPPED: 'Shipped', COMPLETED: 'Completed', CANCELLED: 'Cancelled', REFUNDED: 'Refunded', UNKNOWN: 'Unknown', orderNo: 'Order No', status: 'Status', totalAmount: 'Total', createdAt: 'Date' },
-    auth: { welcomeBack: 'Welcome back', joinUs: 'Join us', step: 'Step', orContinue: 'or continue with', noAccount: 'Don\'t have an account?', hasAccount: 'Already have an account?', enterUsername: 'Please enter username or email', rememberMe: 'Remember me', twoFactor: 'Two-Factor Authentication', enterCode: 'Enter the code sent to your email', sixDigitCode: '6-digit code', verify: 'Verify', change: 'Change', featureSecure: 'Secure & Encrypted', featureSecureDesc: '256-bit SSL + Two-Factor Auth', featureShipping: 'Worldwide Shipping', featureShippingDesc: 'Safe packaging, tracked delivery', featureAuthentic: '100% Authentic', featureAuthenticDesc: 'All items certified by experts', community: 'Join 10,000+ collectors worldwide', forgotPasswordTitle: 'Forgot Password', forgotPasswordDesc: 'Enter your email address and we\'ll send you a link to reset your password.', forgotPasswordSent: 'If an account with that email exists, a password reset link has been sent.', resetPasswordTitle: 'Reset Password', resetPasswordNewPassword: 'New Password', resetPasswordConfirmPassword: 'Confirm New Password', resetPasswordSuccess: 'Your password has been reset successfully!', backToLogin: 'Back to Login', resetPasswordSend: 'Send Reset Link' },
-    cart: { title: 'Shopping Cart', empty: 'Your cart is empty', checkout: 'Checkout', pageTitle: 'Shopping Cart', colProduct: 'Product', colPrice: 'Price', colQuantity: 'Quantity', colTotal: 'Total', colAction: 'Action' },
+    auth: { welcomeBack: 'Welcome back', joinUs: 'Join us', step: 'Step', orContinue: 'or continue with', noAccount: 'Don\'t have an account?', hasAccount: 'Already have an account?', enterUsername: 'Please enter username or email', rememberMe: 'Remember me', twoFactor: 'Two-Factor Authentication', enterCode: 'Enter the code sent to your email', sixDigitCode: '6-digit code', verify: 'Verify', change: 'Change', forgotPassword: 'Forgot password?', fillAll: 'Please fill in all fields', enterValidCode: 'Please enter the 6-digit code', resendIn: 'Resend code in', featureSecure: 'Secure & Encrypted', featureSecureDesc: '256-bit SSL + Two-Factor Auth', featureShipping: 'Worldwide Shipping', featureShippingDesc: 'Safe packaging, tracked delivery', featureAuthentic: '100% Authentic', featureAuthenticDesc: 'All items certified by experts', community: 'Join 10,000+ collectors worldwide', forgotPasswordTitle: 'Forgot Password', forgotPasswordDesc: 'Enter your email address and we\'ll send you a link to reset your password.', forgotPasswordSent: 'If an account with that email exists, a password reset link has been sent.', resetPasswordTitle: 'Reset Password', resetPasswordNewPassword: 'New Password', resetPasswordConfirmPassword: 'Confirm New Password', resetPasswordSuccess: 'Your password has been reset successfully!', backToLogin: 'Back to Login', resetPasswordSend: 'Send Reset Link' },
+    cart: { title: 'Shopping Cart', empty: 'Your cart is empty', checkout: 'Checkout', pageTitle: 'Shopping Cart', colProduct: 'Product', colPrice: 'Price', colQuantity: 'Quantity', colTotal: 'Total', colAction: 'Action', countItems: '{count} items', similarProducts: 'Similar', saveForLater: 'Save for Later', confirmRemove: 'Are you sure you want to remove this item?', removeTitle: 'Remove Item', removed: 'Item removed', saveForLaterComingSoon: 'Save for later is coming soon' },
     cartDrawer: { title: 'Shopping Cart', empty: 'Your cart is empty', subtotal: 'Subtotal', total: 'Total', checkout: 'Checkout', remove: 'Remove' },
     checkout: {
       orderSummary: 'Order Summary', shippingAddress: 'Shipping Address',
@@ -124,16 +128,17 @@ const messages = {
       freeShipping: 'Free',
       shippingFee: 'Shipping',
       orderTotal: 'Total',
+      searchingZip: 'Searching postal code...',
+      fillRequiredFields: 'Please fill in your name and address',
    },
     account: { invoiceDate: 'Invoice Date', buyer: 'Buyer', paymentMethod: 'Payment Method', itemTotal: 'Total', print: 'Print',  ordersSubtitle: 'View and manage your orders',  paymentInitiated: 'Payment initiated',  paymentFailed: 'Payment failed, please try again', 
       myAccount: 'My Account', addresses: 'Addresses', paymentMethods: 'Payment Methods',
       messages: 'Messages', openStore: 'Open Store', orders: 'My Orders',
-      myOrders: 'My Orders', buyAgain: 'Buy Again', notYetShipped: 'Not Yet Shipped',
-      myOrders: 'My Orders', buyAgain: 'Buy Again', notYetShipped: 'Not Yet Shipped',
+      myOrders: 'My Orders', buyAgain: 'Buy Again', notYetShipped: 'Not Yet Shipped', member: 'Member', pendingPayment: 'Pending Payment', quickActions: 'Quick Actions', recentOrders: 'Recent Orders', carrier: 'Carrier', trackingNumber: 'Tracking Number', noTrackingInfo: 'No tracking information yet', orderCancelled: 'Order cancelled', confirmCancel: 'Are you sure you want to cancel this order?', confirmCancelTitle: 'Cancel Order', confirmYesCancel: 'Yes, cancel', confirmKeepOrder: 'Keep Order', addedToCart: 'Added to cart',
       orderNo: 'Order No', total: 'Total', shipTo: 'Ship To', viewDetails: 'View Details',
       invoice: 'Invoice', trackPackage: 'Track Package', returnItem: 'Return Item',
       share: 'Share', askProduct: 'Ask About Product', rateSeller: 'Rate Seller',
-      writeReview: 'Write Review', addToCart: 'Add to Cart', noOrders: 'No orders yet',
+      writeReview: 'Write Review', addToCart: 'Add to Cart', noOrders: 'No orders yet', reviewed: 'Reviewed', reviewSubmitted: 'Review submitted successfully!', pleaseWriteReview: 'Please write a review', reviewingProduct: 'Reviewing', rating: 'Rating', starsTemplate: '{value} stars', reviewPlaceholder: 'Share your experience with this product...', submitReview: 'Submit Review',
       noBuyAgain: 'No previously purchased items', addAddress: 'Add Address',
       editAddress: 'Edit Address', deleteAddress: 'Delete Address', setDefault: 'Set as Default',
       defaultAddress: 'Default', confirmDelete: 'Are you sure you want to delete this address?',
@@ -158,6 +163,26 @@ const messages = {
       PAYNOW: 'PayNow',
       BANK_TRANSFER: 'Bank Transfer'
    },
+    paymentForm: {
+      type: 'Type', provider: 'Provider', lastFour: 'Last 4', default: 'Default',
+      cardNumber: 'Card Number', expiry: 'Expiry', cvv: 'CVV',
+      bankName: 'Bank Name', accountNumber: 'Account Number', routingNumber: 'Routing Number',
+      accountHolder: 'Account Holder', walletHint: 'You will be redirected to authorize this payment method.', connect: 'Connect'
+   },
+    paymentReturn: {
+      successTitle: 'Payment Successful', successDesc: 'Your payment has been processed successfully.',
+      failedTitle: 'Payment Failed', failedDesc: 'Something went wrong with your payment. Please try again.',
+      tryAgain: 'Try Again', processingTitle: 'Processing Payment',
+      processingDesc: 'Please wait while we confirm your payment...', viewOrder: 'View Order',
+      missingOrderInfo: 'Missing order information.', paymentCancelled: 'Payment was cancelled.'
+   },
+    ticketType: {
+      GENERAL: 'General Inquiry', ORDER: 'Order Issue', PAYMENT: 'Payment', SHIPPING: 'Shipping', RETURN: 'Return', SELLER: 'Seller'
+   },
+    ticketStatus: {
+      OPEN: 'Open', CLOSED: 'Closed', RESOLVED: 'Resolved', REPLIED: 'Replied'
+   },
+    news: { back: '← Back', notFound: 'Article not found' },
     footer: {
       about: 'Your trusted marketplace for certified coins',
       support: 'Customer Support', email: 'support [at] coinmarket.com',
@@ -197,9 +222,10 @@ const messages = {
       'Payment method not found': '支付方式不存在',
       'Invalid or expired reset token': '重置令牌无效或已过期',
       'Reset token has already been used': '重置令牌已被使用',
-      'Reset token has expired': '重置令牌已过期'
-    invoice: { companySubtitle: '精品钱币收藏', companyAddress: '123 钱币街，钱币城', contact: '电话：+1-555-0123 | 邮箱：info@coinmarket.com', website: 'www.coinmarket.com' },
-   },
+      'Reset token has expired': '重置令牌已过期',
+      requestFailed: '请求失败，请重试',
+    },
+    invoice: { companySubtitle: '精品钱币收藏', companyAddress: '123 钱币街，钱币城', contact: '电话：+1-555-0123 | 邮箱：info [at] coinmarket.com', website: 'www.coinmarket.com' },
     header: { freeShipping: '订单满 $500 免运费' },
     nav: { home: '首页', shop: '商城', contact: '联系我们', login: '登录', register: '注册', myOrders: '我的订单', logout: '退出登录' },
     hero: { title: '发现认证钱币', subtitle: '来自全球可信卖家的 NGC · PCGS · PMG 评级钱币', cta: '浏览收藏' },
@@ -210,7 +236,7 @@ const messages = {
       shipping: { title: '全球配送', desc: '订单满 $500 免运费' }
    },
     home: {
-      featured: '推荐商品', viewAll: '查看全部 →', inStock: '有货', sold: '已售',
+      featured: '推荐商品', viewAll: '查看全部 →', inStock: '有货', sold: '已售', itemsCount: '共 {count} 件商品', lowStock: '仅剩 {count} 件',
       aboutTitle: '关于我们', aboutContent: 'CoinMarket 是领先的认证钱币在线交易平台。我们连接全球 NGC、PCGS 和 PMG 评级钱币的买家和卖家。我们的平台确保每笔交易的真实性、安全性和可靠配送。',
       latestTitle: '最新商品',
       newsSectionTitle: '最新资讯', newsViewAll: '查看全部 →', newsReadMore: '阅读更多',
@@ -222,7 +248,7 @@ const messages = {
       sortNewest: '最新', sortPriceLow: '价格从低到高', sortPriceHigh: '价格从高到低',
       productsFound: '件商品', noProducts: '没有找到商品，请调整筛选条件',
       allCategories: '全部分类', min: '最低', max: '最高', of: '共', prev: '上一页', next: '下一页', sortLabel: '排序:',
-      searchingFor: '搜索:', clearFilters: '清除筛选', popular: '热门分类'
+      searchingFor: '搜索:', clearFilters: '清除筛选', popular: '热门分类', browseProducts: '浏览商品', clearSearchAria: '清除搜索', backToTopAria: '返回顶部'
    },
     categories: {
       'ancient-coins': '古钱币',
@@ -286,12 +312,15 @@ const messages = {
       addedDate: '上架日期',
       lowStockWarning: '仅剩 {stock} 件库存 — 请尽快下单',
       inStock: '有货',
-      outOfStock: '缺货'
+      outOfStock: '缺货',
+      favorite: '收藏',
+      favorited: '已收藏',
+      imageAlt: '图片 {index}'
    },
-    common: { search: '搜索', login: '登录', register: '注册', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '删除', fullName: '收件人姓名', phone: '电话', address: '详细地址', city: '城市', zipCode: '邮编', country: '国家' },
+    common: { search: '搜索', login: '登录', register: '注册', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '删除', fullName: '收件人姓名', phone: '电话', address: '详细地址', city: '城市', zipCode: '邮编', country: '国家', username: '用户名/邮箱', password: '密码', email: '邮箱', next: '下一步', enterPassword: '请输入密码', noData: '暂无数据', default: '默认', action: '操作', success: '成功', failed: '失败', deleted: '已删除', defaultSet: '已设为默认', fillRequiredFields: '请填写所有字段', failedToSend: '消息发送失败', passwordLengthError: '密码长度至少为8个字符', passwordMismatch: '两次输入的密码不一致', resetFailed: '重置失败，链接可能已过期', comingSoon: '功能即将上线', confirmDeleteCartItem: '确定要删除该商品吗？', deleteConfirm: '删除确认', removed: '已删除', saveForLaterComingSoon: '稍后购买功能开发中' },
     order: { items: '商品清单', payment: '支付信息', shipping: '配送信息', history: '订单历史', by: '由', placedOn: '下单时间', paidAt: '支付时间', subtotal: '小计', notFound: '订单不存在',  orderTitle: '订单详情', backToOrders: '返回订单列表',  PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已发货', COMPLETED: '已完成', CANCELLED: '已取消', REFUNDED: '已退款', UNKNOWN: '未知', orderNo: '订单号', status: '状态', totalAmount: '金额', createdAt: '时间' },
-    auth: { welcomeBack: '欢迎回来', joinUs: '加入我们', step: '步骤', orContinue: '或继续使用', noAccount: '还没有账号？', hasAccount: '已有账号？', enterUsername: '请输入用户名或邮箱', rememberMe: '记住我', twoFactor: '双因素认证', enterCode: '请输入发送到您邮箱的验证码', sixDigitCode: '6位验证码', verify: '验证', change: '更换', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 双因素认证', featureShipping: '全球配送', featureShippingDesc: '安全包装，追踪保障', featureAuthentic: '正品保证', featureAuthenticDesc: '所有藏品经专业鉴定', community: '加入超过10,000名收藏家的社区', forgotPasswordTitle: '忘记密码', forgotPasswordDesc: '输入您的邮箱地址，我们将向您发送重置密码的链接。', forgotPasswordSent: '如果该邮箱存在对应的账户，密码重置链接已发送。', resetPasswordTitle: '重置密码', resetPasswordNewPassword: '新密码', resetPasswordConfirmPassword: '确认新密码', resetPasswordSuccess: '密码重置成功！', backToLogin: '返回登录', resetPasswordSend: '发送重置链接' },
-    cart: { title: '购物车', empty: '购物车为空', checkout: '去结算', pageTitle: '购物车', colProduct: '商品', colPrice: '单价', colQuantity: '数量', colTotal: '合计', colAction: '操作' },
+    auth: { welcomeBack: '欢迎回来', joinUs: '加入我们', step: '步骤', orContinue: '或继续使用', noAccount: '还没有账号？', hasAccount: '已有账号？', enterUsername: '请输入用户名或邮箱', rememberMe: '记住我', twoFactor: '双因素认证', enterCode: '请输入发送到您邮箱的验证码', sixDigitCode: '6位验证码', verify: '验证', change: '更换', forgotPassword: '忘记密码？', fillAll: '请填写所有字段', enterValidCode: '请输入6位验证码', resendIn: '重新发送', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 双因素认证', featureShipping: '全球配送', featureShippingDesc: '安全包装，追踪保障', featureAuthentic: '正品保证', featureAuthenticDesc: '所有藏品经专业鉴定', community: '加入超过10,000名收藏家的社区', forgotPasswordTitle: '忘记密码', forgotPasswordDesc: '输入您的邮箱地址，我们将向您发送重置密码的链接。', forgotPasswordSent: '如果该邮箱存在对应的账户，密码重置链接已发送。', resetPasswordTitle: '重置密码', resetPasswordNewPassword: '新密码', resetPasswordConfirmPassword: '确认新密码', resetPasswordSuccess: '密码重置成功！', backToLogin: '返回登录', resetPasswordSend: '发送重置链接' },
+    cart: { title: '购物车', empty: '购物车为空', checkout: '去结算', pageTitle: '购物车', colProduct: '商品', colPrice: '单价', colQuantity: '数量', colTotal: '合计', colAction: '操作', countItems: '共 {count} 件', similarProducts: '类似商品', saveForLater: '稍后购买', confirmRemove: '确定要删除该商品吗？', removeTitle: '删除确认', removed: '已删除', saveForLaterComingSoon: '稍后购买功能开发中' },
     cartDrawer: { title: '购物车', empty: '购物车为空', subtotal: '小计', total: '合计', checkout: '去结算', remove: '删除' },
     checkout: {
       orderSummary: '订单摘要', shippingAddress: '收货地址',
@@ -307,15 +336,17 @@ const messages = {
       freeShipping: '免费',
       shippingFee: '运费',
       orderTotal: '合计',
+      searchingZip: '正在查询邮编...',
+      fillRequiredFields: '请填写收货人姓名和详细地址',
    },
     account: { invoiceDate: '发票日期', buyer: '买家', paymentMethod: '支付方式', itemTotal: '小计', print: '打印',  ordersSubtitle: '查看和管理您的订单',  paymentInitiated: '支付已发起',  paymentFailed: '支付失败，请重试', 
       myAccount: '我的账户', addresses: '收货地址', paymentMethods: '支付方式',
       messages: '消息中心', openStore: '我要开店', orders: '我的订单',
-      myOrders: '我的订单', buyAgain: '再次购买', notYetShipped: '尚未配送',
+      myOrders: '我的订单', buyAgain: '再次购买', notYetShipped: '尚未配送', member: '会员', pendingPayment: '待支付', quickActions: '快捷操作', recentOrders: '最近订单', carrier: '承运商', trackingNumber: '运单号', noTrackingInfo: '暂无物流信息', orderCancelled: '订单已取消', confirmCancel: '确定要取消这个订单吗？', confirmCancelTitle: '取消订单', confirmYesCancel: '确认取消', confirmKeepOrder: '保留订单', addedToCart: '已加入购物车',
       orderNo: '订单号', total: '总计', shipTo: '收货人', viewDetails: '查看详情',
       invoice: '开发票', trackPackage: '追踪包裹', returnItem: '退货',
       share: '分享', askProduct: '询问商品问题', rateSeller: '卖家评分',
-      writeReview: '撰写评论', addToCart: '加入购物车', noOrders: '暂无订单',
+      writeReview: '撰写评论', addToCart: '加入购物车', noOrders: '暂无订单', reviewed: '已评价', reviewSubmitted: '评价提交成功！', pleaseWriteReview: '请先填写评价内容', reviewingProduct: '正在评价', rating: '评分', starsTemplate: '{value} 星', reviewPlaceholder: '分享您对这件商品的体验...', submitReview: '提交评价',
       noBuyAgain: '暂无购买过的商品', addAddress: '添加地址',
       editAddress: '编辑地址', deleteAddress: '删除地址', setDefault: '设为默认',
       defaultAddress: '默认地址', confirmDelete: '确定要删除这个地址吗？',
@@ -340,6 +371,26 @@ const messages = {
       PAYNOW: 'PayNow',
       BANK_TRANSFER: '银行转账'
    },
+    paymentForm: {
+      type: '类型', provider: '服务商', lastFour: '后四位', default: '默认',
+      cardNumber: '卡号', expiry: '有效期', cvv: 'CVV',
+      bankName: '银行名称', accountNumber: '账号', routingNumber: '路由号码',
+      accountHolder: '账户持有人', walletHint: '您将被重定向以授权此支付方式。', connect: '连接'
+   },
+    paymentReturn: {
+      successTitle: '支付成功', successDesc: '您的支付已成功处理。',
+      failedTitle: '支付失败', failedDesc: '支付出现问题，请重试。',
+      tryAgain: '重试', processingTitle: '正在处理支付',
+      processingDesc: '正在确认您的支付，请稍候...', viewOrder: '查看订单',
+      missingOrderInfo: '缺少订单信息。', paymentCancelled: '支付已取消。'
+   },
+    ticketType: {
+      GENERAL: '一般咨询', ORDER: '订单问题', PAYMENT: '支付', SHIPPING: '配送', RETURN: '退货', SELLER: '卖家'
+   },
+    ticketStatus: {
+      OPEN: '待处理', CLOSED: '已关闭', RESOLVED: '已解决', REPLIED: '已回复'
+   },
+    news: { back: '← 返回', notFound: '文章不存在' },
     footer: {
       about: '您值得信赖的认证钱币交易平台',
       support: '客服支持', email: 'support [at] coinmarket.com',
@@ -379,9 +430,10 @@ const messages = {
       'Payment method not found': '支付方式不存在',
       'Invalid or expired reset token': '重置令牌無效或已過期',
       'Reset token has already been used': '重置令牌已被使用',
-      'Reset token has expired': '重置令牌已過期'
-    invoice: { companySubtitle: '精品錢幣收藏', companyAddress: '123 錢幣街，錢幣城', contact: '電話：+1-555-0123 | 郵箱：info@coinmarket.com', website: 'www.coinmarket.com' },
-   },
+      'Reset token has expired': '重置令牌已過期',
+      requestFailed: '請求失敗，請重試',
+    },
+    invoice: { companySubtitle: '精品錢幣收藏', companyAddress: '123 錢幣街，錢幣城', contact: '電話：+1-555-0123 | 郵箱：info [at] coinmarket.com', website: 'www.coinmarket.com' },
     header: { freeShipping: '訂單滿 $500 免運費' },
     nav: { home: '首頁', shop: '商城', contact: '聯絡我們', login: '登錄', register: '註冊', myOrders: '我的訂單', logout: '退出登錄' },
     hero: { title: '發現認證錢幣', subtitle: '來自全球可信賣家的 NGC · PCGS · PMG 評級錢幣', cta: '瀏覽收藏' },
@@ -392,7 +444,7 @@ const messages = {
       shipping: { title: '全球配送', desc: '訂單滿 $500 免運費' }
    },
     home: {
-      featured: '推薦商品', viewAll: '查看全部 →', inStock: '有貨', sold: '已售',
+      featured: '推薦商品', viewAll: '查看全部 →', inStock: '有貨', sold: '已售', itemsCount: '共 {count} 件商品', lowStock: '僅剩 {count} 件',
       aboutTitle: '關於我們', aboutContent: 'CoinMarket 是領先的認證錢幣在線交易平台。我們連接全球 NGC、PCGS 和 PMG 評級錢幣的買家和賣家。我們的平台確保每筆交易的真實性、安全性和可靠配送。',
       latestTitle: '最新商品',
       newsSectionTitle: '最新資訊', newsViewAll: '查看全部 →', newsReadMore: '閱讀更多',
@@ -404,7 +456,7 @@ const messages = {
       sortNewest: '最新', sortPriceLow: '價格從低到高', sortPriceHigh: '價格從高到低',
       productsFound: '件商品', noProducts: '沒有找到商品，請調整篩選條件',
       allCategories: '全部分類', min: '最低', max: '最高', of: '共', prev: '上一頁', next: '下一頁', sortLabel: '排序:',
-      searchingFor: '搜索:', clearFilters: '清除篩選', popular: '熱門分類'
+      searchingFor: '搜索:', clearFilters: '清除篩選', popular: '熱門分類', browseProducts: '瀏覽商品', clearSearchAria: '清除搜索', backToTopAria: '返回頂部'
    },
     categories: {
       'ancient-coins': '古錢幣',
@@ -468,12 +520,15 @@ const messages = {
       addedDate: '上架日期',
       lowStockWarning: '僅剩 {stock} 件庫存 — 請盡快下單',
       inStock: '有貨',
-      outOfStock: '缺貨'
+      outOfStock: '缺貨',
+      favorite: '收藏',
+      favorited: '已收藏',
+      imageAlt: '圖片 {index}'
    },
-    common: { search: '搜索', login: '登錄', register: '註冊', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '刪除', fullName: '收件人姓名', phone: '電話', address: '詳細地址', city: '城市', zipCode: '郵編', country: '國家' },
+    common: { search: '搜索', login: '登錄', register: '註冊', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '刪除', fullName: '收件人姓名', phone: '電話', address: '詳細地址', city: '城市', zipCode: '郵編', country: '國家', username: '用戶名/郵箱', password: '密碼', email: '郵箱', next: '下一步', enterPassword: '請輸入密碼', noData: '暫無數據', default: '默認', action: '操作', success: '成功', failed: '失敗', deleted: '已刪除', defaultSet: '已設為默認', fillRequiredFields: '請填寫所有字段', failedToSend: '消息發送失敗', passwordLengthError: '密碼長度至少為8個字符', passwordMismatch: '兩次輸入的密碼不一致', resetFailed: '重置失敗，鏈接可能已過期', comingSoon: '功能即將上線', confirmDeleteCartItem: '確定要刪除該商品嗎？', deleteConfirm: '刪除確認', removed: '已刪除', saveForLaterComingSoon: '稍後購買功能開發中' },
     order: { items: '商品清單', payment: '支付資訊', shipping: '配送資訊', history: '訂單歷史', by: '由', placedOn: '下單時間', paidAt: '支付時間', subtotal: '小計', notFound: '訂單不存在',  orderTitle: '訂單詳情', backToOrders: '返回訂單列表',  PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已發貨', COMPLETED: '已完成', CANCELLED: '已取消', REFUNDED: '已退款', UNKNOWN: '未知', orderNo: '訂單號', status: '狀態', totalAmount: '金額', createdAt: '時間' },
-    auth: { welcomeBack: '歡迎回來', joinUs: '加入我們', step: '步驟', orContinue: '或繼續使用', noAccount: '還沒有帳號？', hasAccount: '已有帳號？', enterUsername: '請輸入用戶名或郵箱', rememberMe: '記住我', twoFactor: '雙因素認證', enterCode: '請輸入發送到您郵箱的驗證碼', sixDigitCode: '6位驗證碼', verify: '驗證', change: '更換', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 雙因素認證', featureShipping: '全球配送', featureShippingDesc: '安全包裝，追蹤保障', featureAuthentic: '正品保證', featureAuthenticDesc: '所有藏品經專業鑑定', community: '加入超過10,000名收藏家的社群', forgotPasswordTitle: '忘記密碼', forgotPasswordDesc: '輸入您的郵箱地址，我們將向您發送重置密碼的鏈接。', forgotPasswordSent: '如果該郵箱存在對應的賬戶，密碼重置鏈接已發送。', resetPasswordTitle: '重置密碼', resetPasswordNewPassword: '新密碼', resetPasswordConfirmPassword: '確認新密碼', resetPasswordSuccess: '密碼重置成功！', backToLogin: '返回登錄', resetPasswordSend: '發送重置鏈接' },
-    cart: { title: '購物車', empty: '購物車為空', checkout: '去結算', pageTitle: '購物車', colProduct: '商品', colPrice: '單價', colQuantity: '數量', colTotal: '合計', colAction: '操作' },
+    auth: { welcomeBack: '歡迎回來', joinUs: '加入我們', step: '步驟', orContinue: '或繼續使用', noAccount: '還沒有帳號？', hasAccount: '已有帳號？', enterUsername: '請輸入用戶名或郵箱', rememberMe: '記住我', twoFactor: '雙因素認證', enterCode: '請輸入發送到您郵箱的驗證碼', sixDigitCode: '6位驗證碼', verify: '驗證', change: '更換', forgotPassword: '忘記密碼？', fillAll: '請填寫所有字段', enterValidCode: '請輸入6位驗證碼', resendIn: '重新發送', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 雙因素認證', featureShipping: '全球配送', featureShippingDesc: '安全包裝，追蹤保障', featureAuthentic: '正品保證', featureAuthenticDesc: '所有藏品經專業鑑定', community: '加入超過10,000名收藏家的社群', forgotPasswordTitle: '忘記密碼', forgotPasswordDesc: '輸入您的郵箱地址，我們將向您發送重置密碼的鏈接。', forgotPasswordSent: '如果該郵箱存在對應的賬戶，密碼重置鏈接已發送。', resetPasswordTitle: '重置密碼', resetPasswordNewPassword: '新密碼', resetPasswordConfirmPassword: '確認新密碼', resetPasswordSuccess: '密碼重置成功！', backToLogin: '返回登錄', resetPasswordSend: '發送重置鏈接' },
+    cart: { title: '購物車', empty: '購物車為空', checkout: '去結算', pageTitle: '購物車', colProduct: '商品', colPrice: '單價', colQuantity: '數量', colTotal: '合計', colAction: '操作', countItems: '共 {count} 件', similarProducts: '類似商品', saveForLater: '稍後購買', confirmRemove: '確定要刪除該商品嗎？', removeTitle: '刪除確認', removed: '已刪除', saveForLaterComingSoon: '稍後購買功能開發中' },
     cartDrawer: { title: '購物車', empty: '購物車為空', subtotal: '小計', total: '合計', checkout: '去結算', remove: '刪除' },
     checkout: {
       orderSummary: '訂單摘要', shippingAddress: '收貨地址',
@@ -489,15 +544,17 @@ const messages = {
       freeShipping: '免費',
       shippingFee: '運費',
       orderTotal: '合計',
+      searchingZip: '正在查詢郵編...',
+      fillRequiredFields: '請填寫收貨人姓名和詳細地址',
    },
     account: { invoiceDate: '發票日期', buyer: '買家', paymentMethod: '支付方式', itemTotal: '小計', print: '打印',  ordersSubtitle: '查看和管理您的訂單',  paymentInitiated: '支付已發起',  paymentFailed: '支付失敗，請重試', 
       myAccount: '我的帳戶', addresses: '收貨地址', paymentMethods: '支付方式',
       messages: '消息中心', openStore: '我要開店', orders: '我的訂單',
-      myOrders: '我的訂單', buyAgain: '再次購買', notYetShipped: '尚未配送',
+      myOrders: '我的訂單', buyAgain: '再次購買', notYetShipped: '尚未配送', member: '會員', pendingPayment: '待支付', quickActions: '快捷操作', recentOrders: '最近訂單', carrier: '承運商', trackingNumber: '運單號', noTrackingInfo: '暫無物流信息', orderCancelled: '訂單已取消', confirmCancel: '確定要取消這個訂單嗎？', confirmCancelTitle: '取消訂單', confirmYesCancel: '確認取消', confirmKeepOrder: '保留訂單', addedToCart: '已加入購物車',
       orderNo: '訂單號', total: '總計', shipTo: '收貨人', viewDetails: '查看詳情',
       invoice: '開發票', trackPackage: '追蹤包裹', returnItem: '退貨',
       share: '分享', askProduct: '詢問商品問題', rateSeller: '賣家評分',
-      writeReview: '撰寫評論', addToCart: '加入購物車', noOrders: '暫無訂單',
+      writeReview: '撰寫評論', addToCart: '加入購物車', noOrders: '暫無訂單', reviewed: '已評價', reviewSubmitted: '評價提交成功！', pleaseWriteReview: '請先填寫評價內容', reviewingProduct: '正在評價', rating: '評分', starsTemplate: '{value} 星', reviewPlaceholder: '分享您對這件商品的體驗...', submitReview: '提交評價',
       noBuyAgain: '暫無購買過的商品', addAddress: '添加地址',
       editAddress: '編輯地址', deleteAddress: '刪除地址', setDefault: '設為默認',
       defaultAddress: '默認地址', confirmDelete: '確定要刪除這個地址嗎？',
@@ -522,6 +579,26 @@ const messages = {
       PAYNOW: 'PayNow',
       BANK_TRANSFER: '銀行轉賬'
    },
+    paymentForm: {
+      type: '類型', provider: '服務商', lastFour: '後四位', default: '默認',
+      cardNumber: '卡號', expiry: '有效期', cvv: 'CVV',
+      bankName: '銀行名稱', accountNumber: '賬號', routingNumber: '路由號碼',
+      accountHolder: '賬戶持有人', walletHint: '您將被重定向以授權此支付方式。', connect: '連接'
+   },
+    paymentReturn: {
+      successTitle: '支付成功', successDesc: '您的支付已成功處理。',
+      failedTitle: '支付失敗', failedDesc: '支付出現問題，請重試。',
+      tryAgain: '重試', processingTitle: '正在處理支付',
+      processingDesc: '正在確認您的支付，請稍候...', viewOrder: '查看訂單',
+      missingOrderInfo: '缺少訂單信息。', paymentCancelled: '支付已取消。'
+   },
+    ticketType: {
+      GENERAL: '一般諮詢', ORDER: '訂單問題', PAYMENT: '支付', SHIPPING: '配送', RETURN: '退貨', SELLER: '賣家'
+   },
+    ticketStatus: {
+      OPEN: '待處理', CLOSED: '已關閉', RESOLVED: '已解決', REPLIED: '已回復'
+   },
+    news: { back: '← 返回', notFound: '文章不存在' },
     footer: {
       about: '您值得信賴的認證錢幣交易平台',
       support: '客服支援', email: 'support [at] coinmarket.com',
@@ -561,9 +638,10 @@ const messages = {
       'Payment method not found': '支払い方法が見つかりません',
       'Invalid or expired reset token': 'リセットトークンが無効または期限切れです',
       'Reset token has already been used': 'リセットトークンは既に使用されています',
-      'Reset token has expired': 'リセットトークンの期限が切れました'
-    invoice: { companySubtitle: 'プレミアム貨幣コレクション', companyAddress: '123 コイン通り、ヌミスマティックシティ', contact: '電話：+1-555-0123 | メール：info@coinmarket.com', website: 'www.coinmarket.com' },
-   },
+      'Reset token has expired': 'リセットトークンの期限が切れました',
+      requestFailed: 'リクエストに失敗しました。もう一度お試しください',
+    },
+    invoice: { companySubtitle: 'プレミアム貨幣コレクション', companyAddress: '123 コイン通り、ヌミスマティックシティ', contact: '電話：+1-555-0123 | メール：info [at] coinmarket.com', website: 'www.coinmarket.com' },
     header: { freeShipping: '$500以上のご注文で送料無料' },
     nav: { home: 'ホーム', shop: 'ショップ', contact: 'お問い合わせ', login: 'ログイン', register: '登録', myOrders: '注文履歴', logout: 'ログアウト' },
     hero: { title: '認証済みコインを見つける', subtitle: 'NGC · PCGS · PMG 鑑定済みコインを世界中の信頼できる売り手から', cta: 'コインを見る' },
@@ -574,7 +652,7 @@ const messages = {
       shipping: { title: '世界配送', desc: '$500以上の注文で送料無料' }
    },
     home: {
-      featured: 'おすすめ商品', viewAll: 'すべて見る →', inStock: '在庫あり', sold: '売り切れ',
+      featured: 'おすすめ商品', viewAll: 'すべて見る →', inStock: '在庫あり', sold: '売り切れ', itemsCount: '全 {count} 点', lowStock: '残り {count} 点',
       aboutTitle: '当社について', aboutContent: 'CoinMarketは認証済みコインの大手オンラインマーケットプレイスです。世界中のNGC、PCGS、PMG鑑定済みコインの買い手と売り手をつなぎます。当プラットフォームは、すべての取引において信頼性、安全性、確実な配送を保証します。',
       latestTitle: '新着商品',
       newsSectionTitle: 'お知らせ', newsViewAll: 'すべて見る →', newsReadMore: '続きを読む',
@@ -586,7 +664,7 @@ const messages = {
       sortNewest: '新着順', sortPriceLow: '価格の安い順', sortPriceHigh: '価格の高い順',
       productsFound: '件の商品', noProducts: '商品が見つかりませんでした。フィルターを調整してください。',
       allCategories: 'すべてのカテゴリー', min: '最低', max: '最高', of: '件中', prev: '前へ', next: '次へ', sortLabel: '並び替え:',
-      searchingFor: '検索:', clearFilters: 'フィルターをクリア', popular: '人気'
+      searchingFor: '検索:', clearFilters: 'フィルターをクリア', popular: '人気', browseProducts: '商品を閲覧', clearSearchAria: '検索をクリア', backToTopAria: 'トップへ戻る'
    },
     categories: {
       'ancient-coins': '古代コイン',
@@ -650,12 +728,15 @@ const messages = {
       addedDate: '掲載日',
       lowStockWarning: '残り {stock} 点 — お早めに',
       inStock: '在庫あり',
-      outOfStock: '在庫切れ'
+      outOfStock: '在庫切れ',
+      favorite: 'お気に入り',
+      favorited: 'お気に入り済み',
+      imageAlt: '画像 {index}'
    },
-    common: { search: '検索', login: 'ログイン', register: '登録', submit: '送信', cancel: 'キャンセル', close: '閉じる', review: 'レビュー', all: 'すべて', remove: '削除', fullName: 'お名前', phone: '電話番号', address: '住所', city: '市区町村', zipCode: '郵便番号', country: '国' },
+    common: { search: '検索', login: 'ログイン', register: '登録', submit: '送信', cancel: 'キャンセル', close: '閉じる', review: 'レビュー', all: 'すべて', remove: '削除', fullName: 'お名前', phone: '電話番号', address: '住所', city: '市区町村', zipCode: '郵便番号', country: '国', username: 'ユーザー名/メールアドレス', password: 'パスワード', email: 'メールアドレス', next: '次へ', enterPassword: 'パスワードを入力してください', noData: 'データがありません', default: 'デフォルト', action: '操作', success: '成功', failed: '失敗', deleted: '削除しました', defaultSet: 'デフォルトに設定しました', fillRequiredFields: 'すべての項目を入力してください', failedToSend: 'メッセージの送信に失敗しました', passwordLengthError: 'パスワードは8文字以上にしてください', passwordMismatch: 'パスワードが一致しません', resetFailed: 'リセットに失敗しました。リンクの有効期限が切れている可能性があります', comingSoon: 'この機能は近日公開予定です', confirmDeleteCartItem: 'この商品を削除してもよろしいですか？', deleteConfirm: '削除確認', removed: '削除しました', saveForLaterComingSoon: '後で購入機能は近日公開予定です' },
     order: { items: '商品一覧', payment: '支払い情報', shipping: '配送情報', history: '注文履歴', by: 'による', placedOn: '注文日時', paidAt: '支払い日時', subtotal: '小計', notFound: '注文が見つかりません',  orderTitle: '注文詳細', backToOrders: '注文一覧に戻る',  PENDING_PAYMENT: '支払い待ち', PAID: '支払い済み', SHIPPED: '発送済み', COMPLETED: '完了', CANCELLED: 'キャンセル', REFUNDED: '返金済み', UNKNOWN: '不明', orderNo: '注文番号', status: 'ステータス', totalAmount: '金額', createdAt: '日時' },
-    auth: { welcomeBack: 'おかえりなさい', joinUs: '参加する', step: 'ステップ', orContinue: 'または次で続ける', noAccount: 'アカウントをお持ちでない方', hasAccount: 'すでにアカウントをお持ちの方', enterUsername: 'ユーザー名またはメールアドレスを入力', rememberMe: 'ログイン状態を保持', twoFactor: '二要素認証', enterCode: 'メールに送信された認証コードを入力', sixDigitCode: '6桁の認証コード', verify: '認証', change: '変更', featureSecure: '安全な取引', featureSecureDesc: '256-bit SSL + 二要素認証', featureShipping: '国際配送', featureShippingDesc: '安全梱包、追跡保証', featureAuthentic: '正品保証', featureAuthenticDesc: '専門家による鑑定済み', community: '10,000人以上のコレクターコミュニティに参加', forgotPasswordTitle: 'パスワードをお忘れの方', forgotPasswordDesc: 'メールアドレスを入力してください。パスワードリセット用のリンクをお送りします。', forgotPasswordSent: 'そのメールアドレスのアカウントが存在する場合、パスワードリセットリンクを送信しました。', resetPasswordTitle: 'パスワードリセット', resetPasswordNewPassword: '新しいパスワード', resetPasswordConfirmPassword: '新しいパスワード（確認）', resetPasswordSuccess: 'パスワードが正常にリセットされました！', backToLogin: 'ログインに戻る', resetPasswordSend: 'リセットリンクを送信' },
-    cart: { title: 'カート', empty: 'カートは空です', checkout: '購入手続きへ', pageTitle: 'カート', colProduct: '商品', colPrice: '価格', colQuantity: '数量', colTotal: '合計', colAction: '操作' },
+    auth: { welcomeBack: 'おかえりなさい', joinUs: '参加する', step: 'ステップ', orContinue: 'または次で続ける', noAccount: 'アカウントをお持ちでない方', hasAccount: 'すでにアカウントをお持ちの方', enterUsername: 'ユーザー名またはメールアドレスを入力', rememberMe: 'ログイン状態を保持', twoFactor: '二要素認証', enterCode: 'メールに送信された認証コードを入力', sixDigitCode: '6桁の認証コード', verify: '認証', change: '変更', forgotPassword: 'パスワードをお忘れの方？', fillAll: 'すべての項目を入力してください', enterValidCode: '6桁の認証コードを入力してください', resendIn: '再送信まで', featureSecure: '安全な取引', featureSecureDesc: '256-bit SSL + 二要素認証', featureShipping: '国際配送', featureShippingDesc: '安全梱包、追跡保証', featureAuthentic: '正品保証', featureAuthenticDesc: '専門家による鑑定済み', community: '10,000人以上のコレクターコミュニティに参加', forgotPasswordTitle: 'パスワードをお忘れの方', forgotPasswordDesc: 'メールアドレスを入力してください。パスワードリセット用のリンクをお送りします。', forgotPasswordSent: 'そのメールアドレスのアカウントが存在する場合、パスワードリセットリンクを送信しました。', resetPasswordTitle: 'パスワードリセット', resetPasswordNewPassword: '新しいパスワード', resetPasswordConfirmPassword: '新しいパスワード（確認）', resetPasswordSuccess: 'パスワードが正常にリセットされました！', backToLogin: 'ログインに戻る', resetPasswordSend: 'リセットリンクを送信' },
+    cart: { title: 'カート', empty: 'カートは空です', checkout: '購入手続きへ', pageTitle: 'カート', colProduct: '商品', colPrice: '価格', colQuantity: '数量', colTotal: '合計', colAction: '操作', countItems: '全 {count} 点', similarProducts: '類似商品', saveForLater: '後で購入', confirmRemove: 'この商品を削除してもよろしいですか？', removeTitle: '削除確認', removed: '削除しました', saveForLaterComingSoon: '後で購入機能は近日公開予定です' },
     cartDrawer: { title: 'カート', empty: 'カートは空です', subtotal: '小計', total: '合計', checkout: '購入手続きへ', remove: '削除' },
     checkout: {
       orderSummary: '注文サマリー', shippingAddress: '配送先住所',
@@ -671,15 +752,17 @@ const messages = {
       freeShipping: '無料',
       shippingFee: '送料',
       orderTotal: '合計',
+      searchingZip: '郵便番号を検索中...',
+      fillRequiredFields: 'お名前とご住所を入力してください',
    },
     account: { invoiceDate: '請求日', buyer: '購入者', paymentMethod: '支払い方法', itemTotal: '小計', print: '印刷',  ordersSubtitle: '注文の確認と管理',  paymentInitiated: '支払いが開始されました',  paymentFailed: '支払い失敗、もう一度お試しください', 
       myAccount: 'マイアカウント', addresses: '住所管理', paymentMethods: '支払い方法',
       messages: 'メッセージ', openStore: '販売者になる', orders: '注文履歴',
-      myOrders: '注文履歴', buyAgain: '再購入', notYetShipped: '未発送',
+      myOrders: '注文履歴', buyAgain: '再購入', notYetShipped: '未発送', member: 'メンバー', pendingPayment: '支払い待ち', quickActions: 'クイック操作', recentOrders: '最近の注文', carrier: '運送会社', trackingNumber: '追跡番号', noTrackingInfo: '追跡情報はまだありません', orderCancelled: '注文がキャンセルされました', confirmCancel: 'この注文をキャンセルしてもよろしいですか？', confirmCancelTitle: '注文をキャンセル', confirmYesCancel: 'はい、キャンセルする', confirmKeepOrder: '注文を維持', addedToCart: 'カートに追加しました',
       orderNo: '注文番号', total: '合計', shipTo: '配送先', viewDetails: '詳細を見る',
       invoice: '請求書', trackPackage: '荷物を追跡', returnItem: '返品',
       share: 'シェア', askProduct: '商品について質問', rateSeller: '販売者を評価',
-      writeReview: 'レビューを書く', addToCart: 'カートに入れる', noOrders: '注文がありません',
+      writeReview: 'レビューを書く', addToCart: 'カートに入れる', noOrders: '注文がありません', reviewed: 'レビュー済み', reviewSubmitted: 'レビューが送信されました！', pleaseWriteReview: 'レビュー内容を入力してください', reviewingProduct: 'レビュー対象', rating: '評価', starsTemplate: '{value} つ星', reviewPlaceholder: 'この商品のご感想を共有してください...', submitReview: 'レビューを送信',
       noBuyAgain: '過去に購入した商品はありません', addAddress: '住所を追加',
       editAddress: '住所を編集', deleteAddress: '住所を削除', setDefault: 'デフォルトに設定',
       defaultAddress: 'デフォルト', confirmDelete: 'この住所を削除してもよろしいですか？',
@@ -704,6 +787,26 @@ const messages = {
       PAYNOW: 'PayNow',
       BANK_TRANSFER: '銀行振込'
    },
+    paymentForm: {
+      type: '種別', provider: 'プロバイダー', lastFour: '下4桁', default: 'デフォルト',
+      cardNumber: 'カード番号', expiry: '有効期限', cvv: 'CVV',
+      bankName: '銀行名', accountNumber: '口座番号', routingNumber: 'ルーティング番号',
+      accountHolder: '口座名義人', walletHint: 'この支払い方法の認証のためリダイレクトされます。', connect: '接続'
+   },
+    paymentReturn: {
+      successTitle: '支払い完了', successDesc: 'お支払いが正常に処理されました。',
+      failedTitle: '支払い失敗', failedDesc: 'お支払いに問題が発生しました。もう一度お試しください。',
+      tryAgain: '再試行', processingTitle: '支払いを処理中',
+      processingDesc: 'お支払いを確認しています。しばらくお待ちください...', viewOrder: '注文を見る',
+      missingOrderInfo: '注文情報がありません。', paymentCancelled: '支払いがキャンセルされました。'
+   },
+    ticketType: {
+      GENERAL: '一般的なお問い合わせ', ORDER: '注文について', PAYMENT: '支払い', SHIPPING: '配送', RETURN: '返品', SELLER: '販売者'
+   },
+    ticketStatus: {
+      OPEN: '未対応', CLOSED: 'クローズ', RESOLVED: '解決済み', REPLIED: '返信済み'
+   },
+    news: { back: '← 戻る', notFound: '記事が見つかりません' },
     footer: {
       about: '信頼できる認証コイン取引プラットフォーム',
       support: 'サポート', email: 'support [at] coinmarket.com',

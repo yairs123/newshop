@@ -16,7 +16,7 @@
           <span v-if="filters.keyword" class="active-search-tag">
             <span class="active-search-label">{{ $t('shop.searchingFor') }}</span>
             <span class="active-search-value">{{ filters.keyword }}</span>
-            <button class="active-search-clear" @click="clearSearch" aria-label="Clear search">×</button>
+            <button class="active-search-clear" @click="clearSearch" :aria-label="$t('shop.clearSearchAria')">×</button>
           </span>
         </div>
         <div class="topbar-right">
@@ -170,7 +170,7 @@
 
     <!-- Back to top button -->
     <transition name="fade">
-      <button v-if="showBackToTop" class="back-to-top" @click="scrollToTop" aria-label="Back to top">
+      <button v-if="showBackToTop" class="back-to-top" @click="scrollToTop" :aria-label="$t('shop.backToTopAria')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
       </button>
     </transition>

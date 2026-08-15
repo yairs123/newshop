@@ -6,7 +6,7 @@ const api = axios.create({ baseURL: '/api', timeout: 15000 })
 
 // 将后端英文错误消息翻译为当前界面语言
 function translateError(msg) {
-  if (!msg) return '请求失败'
+  if (!msg) return i18n.global.t('errors.requestFailed')
   try {
     const locale = i18n.global.locale.value
     const map = i18n.global.getLocaleMessage(locale)?.errors || {}

@@ -100,9 +100,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 
 const router = useRouter()
+const { t } = useI18n()
 
 const username = ref('')
 const email = ref('')
@@ -127,8 +129,10 @@ const menuItems = [
 ]
 
 const statusLabel = (status) => {
-  const map = { PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已发货', COMPLETED: '已完成', CANCELLED: '已取消' }
-  return map[status] || status
+  if (!status) return ''
+  const key = `order.${status}`
+  const translated = t(key)
+  return translated !== key ? translated : status
 }
 
 const statusClass = (status) => {

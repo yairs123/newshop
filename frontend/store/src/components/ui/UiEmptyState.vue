@@ -3,7 +3,7 @@
     <el-icon :size="48"><Search /></el-icon>
     <h3 v-if="title">{{ title }}</h3>
     <p v-if="description">{{ description }}</p>
-    <p v-else>{{ message }}</p>
+    <p v-else>{{ message || $t('common.noData') }}</p>
   </div>
 </template>
 
@@ -15,9 +15,6 @@ const props = defineProps({
   description: { type: String, default: '' },
   message: { type: String, default: '' }
 })
-
-const defaultMessage = 'No results found.'
-const message = props.message || defaultMessage
 </script>
 
 <style scoped>

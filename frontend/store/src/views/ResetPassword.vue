@@ -27,9 +27,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 
 const route = useRoute()
+const { t } = useI18n()
 const token = route.query.token || ''
 const password = ref('')
 const confirm = ref('')
@@ -38,14 +40,14 @@ const done = ref(false)
 const error = ref('')
 
 async function submit() {
-  if (password.value.length < 8) { error.value = 'Password must be at least 8 characters'; return }
-  if (password.value !== confirm.value) { error.value = 'Passwords do not match'; return }
+  if (password.value.length < 8) { error.value = t('common.passwordLengthError'); return }
+  if (password.value !== confirm.value) { error.value = t('common.passwordMismatch'); return }
   loading.value = true; error.value = ''
   try {
     await api.post('/auth/reset-password', { token, newPassword: password.value })
     done.value = true
   } catch (e) {
-    error.value = e.response?.data?.message || 'Reset failed. The link may be expired.'
+    error.value = e.response?.data?.message || t('common.resetFailed')
   } finally {
     loading.value = false
   }

@@ -3,20 +3,20 @@
     <div class="return-container">
       <div v-if="status === 'success'" class="result-card success">
         <div class="result-icon">&#10003;</div>
-        <h2>Payment Successful</h2>
-        <p>Your payment has been processed successfully.</p>
-        <el-button type="primary" size="large" @click="goToOrder">View Order</el-button>
+        <h2>{{ $t('paymentReturn.successTitle') }}</h2>
+        <p>{{ $t('paymentReturn.successDesc') }}</p>
+        <el-button type="primary" size="large" @click="goToOrder">{{ $t('paymentReturn.viewOrder') }}</el-button>
       </div>
       <div v-else-if="status === 'failed'" class="result-card failed">
         <div class="result-icon">&#10007;</div>
-        <h2>Payment Failed</h2>
-        <p>{{ errorMessage || 'Something went wrong with your payment. Please try again.' }}</p>
-        <el-button type="primary" size="large" @click="goToOrder">Try Again</el-button>
+        <h2>{{ $t('paymentReturn.failedTitle') }}</h2>
+        <p>{{ errorMessage || $t('paymentReturn.failedDesc') }}</p>
+        <el-button type="primary" size="large" @click="goToOrder">{{ $t('paymentReturn.tryAgain') }}</el-button>
       </div>
       <div v-else class="result-card pending">
         <div class="result-icon">...</div>
-        <h2>Processing Payment</h2>
-        <p>Please wait while we confirm your payment...</p>
+        <h2>{{ $t('paymentReturn.processingTitle') }}</h2>
+        <p>{{ $t('paymentReturn.processingDesc') }}</p>
       </div>
     </div>
   </div>
@@ -25,11 +25,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
-import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 const loading = ref(true)
 const status = ref('pending')
@@ -48,7 +49,7 @@ onMounted(async () => {
   const orderId = route.query.orderId
   if (!orderId) {
     status.value = 'failed'
-    errorMessage.value = 'Missing order information.'
+    errorMessage.value = t('paymentReturn.missingOrderInfo')
     loading.value = false
     return
   }
@@ -59,7 +60,7 @@ onMounted(async () => {
         status.value = 'success'
       } else if (res.data.status === 'CANCELLED') {
         status.value = 'failed'
-        errorMessage.value = 'Payment was cancelled.'
+        errorMessage.value = t('paymentReturn.paymentCancelled')
       } else {
         status.value = 'success'
       }

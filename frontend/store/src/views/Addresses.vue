@@ -17,12 +17,12 @@
         <el-table-column prop="city" :label="$t('common.city')" width="120" />
         <el-table-column prop="zipCode" :label="$t('common.zipCode')" width="100" />
         <el-table-column prop="country" :label="$t('common.country')" width="120" />
-        <el-table-column label="Default" width="80">
+        <el-table-column :label="$t('common.default')" width="80">
           <template #default="{ row }">
             <el-tag v-if="row.isDefault" type="success" size="small">{{ $t('account.defaultAddress') }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="Action" width="200">
+        <el-table-column :label="$t('common.action')" width="200">
           <template #default="{ row }">
             <el-button size="small" @click="editAddress(row)">{{ $t('account.editAddress') }}</el-button>
             <el-button size="small" type="danger" @click="deleteAddress(row)">{{ $t('account.deleteAddress') }}</el-button>
@@ -66,9 +66,11 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
+const { t } = useI18n()
 const addresses = ref([])
 const loading = ref(true)
 const dialogVisible = ref(false)
@@ -108,18 +110,18 @@ async function saveAddress() {
       await api.post('/addresses', form)
     }
     dialogVisible.value = false
-    ElMessage.success('Success')
+    ElMessage.success(t('common.success'))
     fetchAddresses()
   } catch (e) {
-    ElMessage.error('Failed')
+    ElMessage.error(t('common.failed'))
   }
 }
 
 async function deleteAddress(row) {
   try {
-    await ElMessageBox.confirm('Are you sure you want to delete this address?')
+    await ElMessageBox.confirm(t('account.confirmDelete'))
     await api.delete(`/addresses/${row.id}`)
-    ElMessage.success('Deleted')
+    ElMessage.success(t('common.deleted'))
     fetchAddresses()
   } catch (e) {}
 }
@@ -127,7 +129,7 @@ async function deleteAddress(row) {
 async function setDefault(row) {
   try {
     await api.put(`/addresses/${row.id}/default`)
-    ElMessage.success('Default set')
+    ElMessage.success(t('common.defaultSet'))
     fetchAddresses()
   } catch (e) {}
 }
