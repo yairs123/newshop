@@ -623,11 +623,17 @@ function addToCart(item) {
 }
 
 .order-no {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 18px;
+  font-family: 'SF Mono', 'Courier New', monospace;
+  font-size: 13px;
   color: #1a1a2e;
-  font-weight: 700;
+  font-weight: 600;
+  background: #f0ece6;
+  padding: 2px 8px;
+  border-radius: 5px;
   letter-spacing: 0.02em;
+  word-break: break-all;
+  display: inline-block;
+  max-width: 100%;
 }
 
 .status-tag {

@@ -87,7 +87,7 @@
               <span :class="['recent-status', statusClass(order.status)]">{{ statusLabel(order.status) }}</span>
             </div>
             <div class="recent-right">
-              <span class="recent-amount">{{ order.currency || 'USD' }} {{ order.total || order.amount || '-' }}</span>
+              <span class="recent-amount">{{ order.currency || 'USD' }} {{ order.totalAmount || '-' }}</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
             </div>
           </div>
@@ -145,10 +145,10 @@ onMounted(async () => {
   } catch (e) { /* not logged in */ }
 
   try {
-    const ordersRes = await api.get('/orders', { params: { page: 0, size: 5 } })
-    const orders = ordersRes.data?.content || ordersRes.data || []
+    const ordersRes = await api.get('/orders/buyer')
+    const orders = Array.isArray(ordersRes.data) ? ordersRes.data : []
     recentOrders.value = orders.slice(0, 3)
-    orderCount.value = ordersRes.data?.totalElements || orders.length
+    orderCount.value = orders.length
     pendingCount.value = orders.filter(o => o.status === 'PENDING_PAYMENT').length
   } catch (e) { /* ignore */ }
 })
