@@ -86,25 +86,30 @@
                   </span>
                 </div>
                 <div class="footer-actions">
+                  <!-- 主操作：立即支付 -->
                   <el-button
                     v-if="order.status === 'PENDING_PAYMENT'"
                     type="primary"
                     size="small"
+                    class="btn-pay"
                     @click="payOrder(order.id)"
                   >
                     {{ $t('checkout.payNow') }}
                   </el-button>
+                  <!-- 次要操作：文字链接风格 -->
                   <el-button
                     v-if="order.status === 'PENDING_PAYMENT'"
                     size="small"
+                    text
+                    class="btn-secondary"
                     @click="cancelOrder(order.id)"
                   >
                     {{ $t('common.cancel') }}
                   </el-button>
-                  <el-button size="small" @click="$router.push(`/orders/${order.id}`)">
+                  <el-button size="small" text class="btn-secondary" @click="$router.push(`/orders/${order.id}`)">
                     {{ $t('account.viewDetails') }}
                   </el-button>
-                  <el-button size="small" @click="$router.push(`/orders/${order.id}/invoice`)">
+                  <el-button size="small" text class="btn-secondary" @click="$router.push(`/orders/${order.id}/invoice`)">
                     {{ $t('account.invoice') }}
                   </el-button>
                 </div>
@@ -694,8 +699,20 @@ function addToCart(item) {
 .footer-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   flex-wrap: wrap;
+}
+.footer-actions .btn-pay {
+  margin-right: 8px;
+  padding: 0 16px;
+  height: 28px;
+}
+.footer-actions .btn-secondary {
+  color: #6b7280;
+  font-size: 13px;
+}
+.footer-actions .btn-secondary:hover {
+  color: #f59e0b;
 }
 
 /* Buy Again Grid */

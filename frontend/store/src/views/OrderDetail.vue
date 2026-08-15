@@ -27,14 +27,14 @@
                 {{ statusLabel(order.status) }}
               </el-tag>
               <div class="action-buttons" v-if="order.status === 'PENDING_PAYMENT'">
-                <el-button type="warning" :loading="paying" @click="handlePay" size="large">
+                <el-button type="warning" :loading="paying" @click="handlePay" size="large" class="btn-pay">
                   {{ $t('checkout.payNow') }}
                 </el-button>
-                <el-button type="danger" plain :loading="cancelling" @click="handleCancel" size="large">
+                <el-button :loading="cancelling" @click="handleCancel" size="small" text class="btn-cancel">
                   {{ $t('common.cancel') }}
                 </el-button>
               </div>
-              <el-button type="primary" plain size="large" @click="$router.push('/orders/' + order.id + '/invoice')" class="invoice-btn">
+              <el-button size="small" text class="btn-invoice" @click="$router.push('/orders/' + order.id + '/invoice')">
                 {{ $t('account.invoice') }}
               </el-button>
             </div>
@@ -336,7 +336,19 @@ onMounted(fetchOrder)
 
 .action-buttons {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 4px;
+}
+.action-buttons .btn-pay {
+  margin-right: 8px;
+}
+.action-buttons .btn-cancel,
+.btn-invoice {
+  color: #6b7280;
+}
+.action-buttons .btn-cancel:hover,
+.btn-invoice:hover {
+  color: #f59e0b;
 }
 
 /* Items Table */
