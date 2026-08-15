@@ -15,7 +15,7 @@ const messages = {
       'Invalid or expired reset token': 'Invalid or expired reset token',
       'Reset token has already been used': 'Reset token has already been used',
       'Reset token has expired': 'Reset token has expired'
-    },
+   },
     header: { freeShipping: 'Free shipping on orders over $500' },
     nav: { home: 'Home', shop: 'Shop', contact: 'Contact', login: 'Sign In', register: 'Register', myOrders: 'My Orders', logout: 'Logout' },
     hero: { title: 'Discover Certified Coins', subtitle: 'NGC · PCGS · PMG graded coins from trusted sellers worldwide', cta: 'Browse Collection' },
@@ -24,14 +24,14 @@ const messages = {
       protection: { title: 'Buyer Protection', desc: 'Secure transactions with buyer guarantee' },
       global: { title: 'Global Sellers', desc: 'Connect with trusted coin dealers worldwide' },
       shipping: { title: 'Worldwide Shipping', desc: 'Free shipping on orders over $500' }
-    },
+   },
     home: {
       featured: 'Featured Products', viewAll: 'View All →', inStock: 'In Stock', sold: 'Sold',
       aboutTitle: 'About Us', aboutContent: 'CoinMarket is a leading online marketplace for certified coins. We connect buyers and sellers of NGC, PCGS, and PMG graded coins from around the world. Our platform ensures authenticity, secure transactions, and reliable shipping for every purchase.',
       latestTitle: 'Latest Products',
       newsSectionTitle: 'Latest News', newsViewAll: 'View All →', newsReadMore: 'Read More',
       partnerTitle: 'Partner With Us', partnerContent: 'Join our growing network of trusted coin dealers. Reach collectors worldwide with your inventory.', partnerCta: 'Contact Us'
-    },
+   },
     shop: {
       title: 'Shop', searchPlaceholder: 'Search coins...', categories: 'Categories', ratingCompany: 'Rating Company',
       priceRange: 'Price Range', country: 'Country', apply: 'Apply',
@@ -39,7 +39,7 @@ const messages = {
       productsFound: 'products found', noProducts: 'No products found. Try adjusting your filters.',
       allCategories: 'All', min: 'Min', max: 'Max', of: 'of', prev: 'Prev', next: 'Next', sortLabel: 'Sort:',
       searchingFor: 'Search:', clearFilters: 'Clear Filters', popular: 'Popular'
-    },
+   },
     categories: {
       'ancient-coins': 'Ancient Coins',
       'gold-coins': 'Gold Coins',
@@ -57,7 +57,7 @@ const messages = {
       'medal': 'Medal',
       'banknotes': 'Banknotes',
       'accessories-numismatic': 'Accessories Numismatic'
-    },
+   },
     countries: {
       'USA': 'USA',
       'China': 'China',
@@ -77,7 +77,7 @@ const messages = {
       'Egypt': 'Egypt',
       'Mexico': 'Mexico',
       'Luxembourg': 'Luxembourg'
-    },
+   },
     product: {
       search: 'Search', category: 'Category', allCategories: 'All', ratingCompany: 'Rating Company',
       ratingInfo: 'Rating Information', ratingNumber: 'Cert #', ratingGrade: 'Grade',
@@ -85,7 +85,7 @@ const messages = {
       stock: 'Stock', description: 'Description', searchPlaceholder: 'Keyword...',
       quantity: 'Quantity', soldBy: 'Sold by', soldOut: 'Sold Out', inStockWithQty: 'In Stock ({stock} available)',
       lowStock: 'Only {stock} left'
-    },
+   },
     productDetail: {
       specifications: 'Product Specifications',
       relatedProducts: 'Related Products',
@@ -103,9 +103,9 @@ const messages = {
       lowStockWarning: 'Only {stock} left in stock — order soon',
       inStock: 'In Stock',
       outOfStock: 'Out of Stock'
-    },
+   },
     common: { search: 'Search', login: 'Login', register: 'Register', submit: 'Submit', cancel: 'Cancel', close: 'Close', review: 'Review', all: 'All', remove: 'Remove', fullName: 'Full Name', phone: 'Phone', address: 'Address', city: 'City', zipCode: 'ZIP Code', country: 'Country' },
-    order: { orderNo: 'Order No', status: 'Status', totalAmount: 'Total', createdAt: 'Date' },
+    order: { PENDING_PAYMENT: 'Pending Payment', PAID: 'Paid', SHIPPED: 'Shipped', COMPLETED: 'Completed', CANCELLED: 'Cancelled', REFUNDED: 'Refunded', UNKNOWN: 'Unknown', orderNo: 'Order No', status: 'Status', totalAmount: 'Total', createdAt: 'Date' },
     auth: { welcomeBack: 'Welcome back', joinUs: 'Join us', step: 'Step', orContinue: 'or continue with', noAccount: 'Don\'t have an account?', hasAccount: 'Already have an account?', enterUsername: 'Please enter username or email', rememberMe: 'Remember me', twoFactor: 'Two-Factor Authentication', enterCode: 'Enter the code sent to your email', sixDigitCode: '6-digit code', verify: 'Verify', change: 'Change', featureSecure: 'Secure & Encrypted', featureSecureDesc: '256-bit SSL + Two-Factor Auth', featureShipping: 'Worldwide Shipping', featureShippingDesc: 'Safe packaging, tracked delivery', featureAuthentic: '100% Authentic', featureAuthenticDesc: 'All items certified by experts', community: 'Join 10,000+ collectors worldwide', forgotPasswordTitle: 'Forgot Password', forgotPasswordDesc: 'Enter your email address and we\'ll send you a link to reset your password.', forgotPasswordSent: 'If an account with that email exists, a password reset link has been sent.', resetPasswordTitle: 'Reset Password', resetPasswordNewPassword: 'New Password', resetPasswordConfirmPassword: 'Confirm New Password', resetPasswordSuccess: 'Your password has been reset successfully!', backToLogin: 'Back to Login', resetPasswordSend: 'Send Reset Link' },
     cart: { title: 'Shopping Cart', empty: 'Your cart is empty', checkout: 'Checkout', pageTitle: 'Shopping Cart', colProduct: 'Product', colPrice: 'Price', colQuantity: 'Quantity', colTotal: 'Total', colAction: 'Action' },
     cartDrawer: { title: 'Shopping Cart', empty: 'Your cart is empty', subtotal: 'Subtotal', total: 'Total', checkout: 'Checkout', remove: 'Remove' },
@@ -113,7 +113,7 @@ const messages = {
       orderSummary: 'Order Summary', shippingAddress: 'Shipping Address',
       paymentMethod: 'Payment Method', shippingMethod: 'Shipping Method',
       placeOrder: 'Place Order', orderPlaced: 'Order placed!', buyerNote: 'Note',
-      payCreditCard: 'Credit Card', payPaypal: 'PayPal', payAlipay: 'Alipay',
+      payNow: 'Pay Now',       payCreditCard: 'Credit Card', payPaypal: 'PayPal', payAlipay: 'Alipay',
       payWechat: 'WeChat Pay', payGrabPay: 'GrabPay', payPayNow: 'PayNow',
       payBankTransfer: 'Bank Transfer',
       shipStandard: 'Standard Shipping (5-10 business days)',
@@ -123,7 +123,7 @@ const messages = {
       freeShipping: 'Free',
       shippingFee: 'Shipping',
       orderTotal: 'Total',
-    },
+   },
     account: {
       myAccount: 'My Account', addresses: 'Addresses', paymentMethods: 'Payment Methods',
       messages: 'Messages', openStore: 'Open Store', orders: 'My Orders',
@@ -147,7 +147,7 @@ const messages = {
       submit: 'Submit', openStoreTitle: 'Become a Seller',
       openStoreDesc: 'Start selling your certified coins to collectors worldwide',
       applyNow: 'Apply Now'
-    },
+   },
     paymentMethodTypes: {
       CREDIT_CARD: 'Credit Card',
       PAYPAL: 'PayPal',
@@ -156,7 +156,7 @@ const messages = {
       GRABPAY: 'GrabPay',
       PAYNOW: 'PayNow',
       BANK_TRANSFER: 'Bank Transfer'
-    },
+   },
     footer: {
       about: 'Your trusted marketplace for certified coins',
       support: 'Customer Support', email: 'support [at] coinmarket.com',
@@ -165,14 +165,14 @@ const messages = {
       refund: 'Refund Policy', shipping: 'Shipping Policy', contact: 'Contact Us',
       legalTitle: 'Legal',
       copyright: '© 2026 CoinMarket. All rights reserved.'
-    },
+   },
     contact: {
       title: 'Contact Us', subtitle: "We'd love to hear from you",
       name: 'Name', email: 'Email', message: 'Message', send: 'Send Message',
       success: 'Message sent successfully!', address: 'Address', phone: 'Phone',
       addressLine: '123 Coin Street, Numismatic City, NC 10001', phoneLine: '+1 (555) 123-4567',
       emailLine: 'support [at] coinmarket.com'
-    },
+   },
     legal: {
       termsTitle: 'Terms of Service', privacyTitle: 'Privacy Policy', cookieTitle: 'Cookie Policy',
       refundTitle: 'Refund Policy', shippingTitle: 'Shipping Policy', lastUpdated: 'Last updated: May 2026',
@@ -182,7 +182,7 @@ const messages = {
       refundContent: '<h2>1. Return Period</h2><p>You may return items within 14 days of receipt for a full refund, provided the items are in their original condition.</p><h2>2. Eligibility</h2><p>Items must be returned with all original packaging and grading certificates. Custom or personalized items may not be eligible.</p><h2>3. Return Process</h2><p>Contact us to initiate a return. We will provide a return authorization and shipping instructions.</p><h2>4. Refund Processing</h2><p>Refunds are processed within 5-10 business days after we receive the returned item. Refunds are issued to the original payment method.</p><h2>5. Shipping Costs</h2><p>Return shipping costs are the responsibility of the buyer unless the item was incorrectly described.</p>',
       shippingContent: '<h2>1. Processing Time</h2><p>Orders are processed within 1-3 business days after payment confirmation.</p><h2>2. Shipping Methods</h2><p>We offer standard (5-10 business days) and express (2-3 business days) shipping options. Tracking is provided for all orders.</p><h2>3. International Shipping</h2><p>International orders may be subject to customs duties and taxes. These charges are the responsibility of the buyer.</p><h2>4. Free Shipping</h2><p>Orders over $500 qualify for free standard shipping worldwide.</p><h2>5. Lost or Damaged Items</h2><p>We are not responsible for items lost or damaged during transit. Insurance is recommended for high-value items.</p><h2>6. Address Accuracy</h2><p>Please ensure your shipping address is correct. We are not responsible for deliveries to incorrect addresses provided by the buyer.</p>'
     }
-  },
+ },
   'zh-CN': {
     errors: {
       'Invalid credentials': '用户名或密码错误',
@@ -197,7 +197,7 @@ const messages = {
       'Invalid or expired reset token': '重置令牌无效或已过期',
       'Reset token has already been used': '重置令牌已被使用',
       'Reset token has expired': '重置令牌已过期'
-    },
+   },
     header: { freeShipping: '订单满 $500 免运费' },
     nav: { home: '首页', shop: '商城', contact: '联系我们', login: '登录', register: '注册', myOrders: '我的订单', logout: '退出登录' },
     hero: { title: '发现认证钱币', subtitle: '来自全球可信卖家的 NGC · PCGS · PMG 评级钱币', cta: '浏览收藏' },
@@ -206,14 +206,14 @@ const messages = {
       protection: { title: '买家保护', desc: '安全交易，买家保障' },
       global: { title: '全球卖家', desc: '连接全球可信赖的钱币经销商' },
       shipping: { title: '全球配送', desc: '订单满 $500 免运费' }
-    },
+   },
     home: {
       featured: '推荐商品', viewAll: '查看全部 →', inStock: '有货', sold: '已售',
       aboutTitle: '关于我们', aboutContent: 'CoinMarket 是领先的认证钱币在线交易平台。我们连接全球 NGC、PCGS 和 PMG 评级钱币的买家和卖家。我们的平台确保每笔交易的真实性、安全性和可靠配送。',
       latestTitle: '最新商品',
       newsSectionTitle: '最新资讯', newsViewAll: '查看全部 →', newsReadMore: '阅读更多',
       partnerTitle: '合作加盟', partnerContent: '加入我们不断壮大的可信钱币经销商网络，将您的藏品展示给全球收藏家。', partnerCta: '联系我们'
-    },
+   },
     shop: {
       title: '商城', searchPlaceholder: '搜索钱币...', categories: '分类', ratingCompany: '评级公司',
       priceRange: '价格范围', country: '国家', apply: '应用',
@@ -221,7 +221,7 @@ const messages = {
       productsFound: '件商品', noProducts: '没有找到商品，请调整筛选条件',
       allCategories: '全部分类', min: '最低', max: '最高', of: '共', prev: '上一页', next: '下一页', sortLabel: '排序:',
       searchingFor: '搜索:', clearFilters: '清除筛选', popular: '热门分类'
-    },
+   },
     categories: {
       'ancient-coins': '古钱币',
       'gold-coins': '金币',
@@ -239,7 +239,7 @@ const messages = {
       'medal': '纪念章',
       'banknotes': '纸币',
       'accessories-numismatic': '钱币配件'
-    },
+   },
     countries: {
       'USA': '美国',
       'China': '中国',
@@ -259,7 +259,7 @@ const messages = {
       'Egypt': '埃及',
       'Mexico': '墨西哥',
       'Luxembourg': '卢森堡'
-    },
+   },
     product: {
       search: '搜索', category: '分类', allCategories: '全部分类', ratingCompany: '评级公司',
       ratingInfo: '评级信息', ratingNumber: '证书编号', ratingGrade: '评分等级',
@@ -267,7 +267,7 @@ const messages = {
       stock: '库存', description: '描述', searchPlaceholder: '关键词...',
       quantity: '数量', soldBy: '卖家', soldOut: '已售罄', inStockWithQty: '库存 {stock} 件',
       lowStock: '仅剩 {stock} 件'
-    },
+   },
     productDetail: {
       specifications: '商品规格',
       relatedProducts: '相关商品',
@@ -285,9 +285,9 @@ const messages = {
       lowStockWarning: '仅剩 {stock} 件库存 — 请尽快下单',
       inStock: '有货',
       outOfStock: '缺货'
-    },
+   },
     common: { search: '搜索', login: '登录', register: '注册', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '删除', fullName: '收件人姓名', phone: '电话', address: '详细地址', city: '城市', zipCode: '邮编', country: '国家' },
-    order: { orderNo: '订单号', status: '状态', totalAmount: '金额', createdAt: '时间' },
+    order: { PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已发货', COMPLETED: '已完成', CANCELLED: '已取消', REFUNDED: '已退款', UNKNOWN: '未知', orderNo: '订单号', status: '状态', totalAmount: '金额', createdAt: '时间' },
     auth: { welcomeBack: '欢迎回来', joinUs: '加入我们', step: '步骤', orContinue: '或继续使用', noAccount: '还没有账号？', hasAccount: '已有账号？', enterUsername: '请输入用户名或邮箱', rememberMe: '记住我', twoFactor: '双因素认证', enterCode: '请输入发送到您邮箱的验证码', sixDigitCode: '6位验证码', verify: '验证', change: '更换', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 双因素认证', featureShipping: '全球配送', featureShippingDesc: '安全包装，追踪保障', featureAuthentic: '正品保证', featureAuthenticDesc: '所有藏品经专业鉴定', community: '加入超过10,000名收藏家的社区', forgotPasswordTitle: '忘记密码', forgotPasswordDesc: '输入您的邮箱地址，我们将向您发送重置密码的链接。', forgotPasswordSent: '如果该邮箱存在对应的账户，密码重置链接已发送。', resetPasswordTitle: '重置密码', resetPasswordNewPassword: '新密码', resetPasswordConfirmPassword: '确认新密码', resetPasswordSuccess: '密码重置成功！', backToLogin: '返回登录', resetPasswordSend: '发送重置链接' },
     cart: { title: '购物车', empty: '购物车为空', checkout: '去结算', pageTitle: '购物车', colProduct: '商品', colPrice: '单价', colQuantity: '数量', colTotal: '合计', colAction: '操作' },
     cartDrawer: { title: '购物车', empty: '购物车为空', subtotal: '小计', total: '合计', checkout: '去结算', remove: '删除' },
@@ -295,7 +295,7 @@ const messages = {
       orderSummary: '订单摘要', shippingAddress: '收货地址',
       paymentMethod: '支付方式', shippingMethod: '配送方式',
       placeOrder: '提交订单', orderPlaced: '订单已提交！', buyerNote: '备注',
-      payCreditCard: '信用卡', payPaypal: 'PayPal', payAlipay: '支付宝',
+      payNow: '立即支付',       payCreditCard: '信用卡', payPaypal: 'PayPal', payAlipay: '支付宝',
       payWechat: '微信支付', payGrabPay: 'GrabPay', payPayNow: 'PayNow',
       payBankTransfer: '银行转账',
       shipStandard: '标准配送（5-10个工作日）',
@@ -305,7 +305,7 @@ const messages = {
       freeShipping: '免费',
       shippingFee: '运费',
       orderTotal: '合计',
-    },
+   },
     account: {
       myAccount: '我的账户', addresses: '收货地址', paymentMethods: '支付方式',
       messages: '消息中心', openStore: '我要开店', orders: '我的订单',
@@ -328,7 +328,7 @@ const messages = {
       submit: '提交', openStoreTitle: '成为卖家',
       openStoreDesc: '开始向全球收藏家销售您的认证钱币',
       applyNow: '立即申请'
-    },
+   },
     paymentMethodTypes: {
       CREDIT_CARD: '信用卡',
       PAYPAL: 'PayPal',
@@ -337,7 +337,7 @@ const messages = {
       GRABPAY: 'GrabPay',
       PAYNOW: 'PayNow',
       BANK_TRANSFER: '银行转账'
-    },
+   },
     footer: {
       about: '您值得信赖的认证钱币交易平台',
       support: '客服支持', email: 'support [at] coinmarket.com',
@@ -346,14 +346,14 @@ const messages = {
       refund: '退款政策', shipping: '运输政策', contact: '联系我们',
       legalTitle: '法律条款',
       copyright: '© 2026 CoinMarket. 保留所有权利.'
-    },
+   },
     contact: {
       title: '联系我们', subtitle: '期待您的来信',
       name: '姓名', email: '邮箱', message: '留言', send: '发送消息',
       success: '消息发送成功！', address: '地址', phone: '电话',
       addressLine: '钱币街123号，钱币之城，NC 10001', phoneLine: '+1 (555) 123-4567',
       emailLine: 'support [at] coinmarket.com'
-    },
+   },
     legal: {
       termsTitle: '服务条款', privacyTitle: '隐私政策', cookieTitle: 'Cookie 政策',
       refundTitle: '退款政策', shippingTitle: '运输政策', lastUpdated: '最后更新：2026年5月',
@@ -363,7 +363,7 @@ const messages = {
       refundContent: '<h2>1. 退货期限</h2><p>您可以在收到商品后 14 天内退货并获得全额退款，前提是商品保持原状。</p><h2>2. 退货条件</h2><p>商品必须连同所有原始包装和评级证书一并退回。定制商品可能不符合退货条件。</p><h2>3. 退货流程</h2><p>联系我们发起退货。我们将提供退货授权和运输说明。</p><h2>4. 退款处理</h2><p>我们在收到退回商品后 5-10 个工作日内处理退款。退款将原路返还。</p><h2>5. 退货运费</h2><p>除非商品描述有误，退货运费由买家承担。</p>',
       shippingContent: '<h2>1. 处理时间</h2><p>订单在付款确认后 1-3 个工作日内处理。</p><h2>2. 运输方式</h2><p>我们提供标准运输（5-10 个工作日）和快递（2-3 个工作日）。所有订单均提供跟踪服务。</p><h2>3. 国际运输</h2><p>国际订单可能需缴纳关税和税费，由买家承担。</p><h2>4. 免运费</h2><p>订单满 $500 可享受全球免费标准运输。</p><h2>5. 丢失或损坏</h2><p>我们对运输途中丢失或损坏的商品不承担责任。高价值商品建议投保。</p><h2>6. 地址准确性</h2><p>请确保收货地址正确。因买家提供的地址错误导致配送失败，我方不承担责任。</p>'
     }
-  },
+ },
   'zh-TW': {
     errors: {
       'Invalid credentials': '用戶名或密碼錯誤',
@@ -378,7 +378,7 @@ const messages = {
       'Invalid or expired reset token': '重置令牌無效或已過期',
       'Reset token has already been used': '重置令牌已被使用',
       'Reset token has expired': '重置令牌已過期'
-    },
+   },
     header: { freeShipping: '訂單滿 $500 免運費' },
     nav: { home: '首頁', shop: '商城', contact: '聯絡我們', login: '登錄', register: '註冊', myOrders: '我的訂單', logout: '退出登錄' },
     hero: { title: '發現認證錢幣', subtitle: '來自全球可信賣家的 NGC · PCGS · PMG 評級錢幣', cta: '瀏覽收藏' },
@@ -387,14 +387,14 @@ const messages = {
       protection: { title: '買家保護', desc: '安全交易，買家保障' },
       global: { title: '全球賣家', desc: '連接全球可信賴的錢幣經銷商' },
       shipping: { title: '全球配送', desc: '訂單滿 $500 免運費' }
-    },
+   },
     home: {
       featured: '推薦商品', viewAll: '查看全部 →', inStock: '有貨', sold: '已售',
       aboutTitle: '關於我們', aboutContent: 'CoinMarket 是領先的認證錢幣在線交易平台。我們連接全球 NGC、PCGS 和 PMG 評級錢幣的買家和賣家。我們的平台確保每筆交易的真實性、安全性和可靠配送。',
       latestTitle: '最新商品',
       newsSectionTitle: '最新資訊', newsViewAll: '查看全部 →', newsReadMore: '閱讀更多',
       partnerTitle: '合作加盟', partnerContent: '加入我們不斷壯大的可信錢幣經銷商網絡，將您的藏品展示給全球收藏家。', partnerCta: '聯絡我們'
-    },
+   },
     shop: {
       title: '商城', searchPlaceholder: '搜索錢幣...', categories: '分類', ratingCompany: '評級公司',
       priceRange: '價格範圍', country: '國家', apply: '應用',
@@ -402,7 +402,7 @@ const messages = {
       productsFound: '件商品', noProducts: '沒有找到商品，請調整篩選條件',
       allCategories: '全部分類', min: '最低', max: '最高', of: '共', prev: '上一頁', next: '下一頁', sortLabel: '排序:',
       searchingFor: '搜索:', clearFilters: '清除篩選', popular: '熱門分類'
-    },
+   },
     categories: {
       'ancient-coins': '古錢幣',
       'gold-coins': '金幣',
@@ -420,7 +420,7 @@ const messages = {
       'medal': '紀念章',
       'banknotes': '紙幣',
       'accessories-numismatic': '錢幣配件'
-    },
+   },
     countries: {
       'USA': '美國',
       'China': '中國',
@@ -440,7 +440,7 @@ const messages = {
       'Egypt': '埃及',
       'Mexico': '墨西哥',
       'Luxembourg': '盧森堡'
-    },
+   },
     product: {
       search: '搜索', category: '分類', allCategories: '全部分類', ratingCompany: '評級公司',
       ratingInfo: '評級信息', ratingNumber: '證書編號', ratingGrade: '評級等級',
@@ -448,7 +448,7 @@ const messages = {
       stock: '庫存', description: '描述', searchPlaceholder: '關鍵詞...',
       quantity: '數量', soldBy: '賣家', soldOut: '已售罄', inStockWithQty: '庫存 {stock} 件',
       lowStock: '僅剩 {stock} 件'
-    },
+   },
     productDetail: {
       specifications: '商品規格',
       relatedProducts: '相關商品',
@@ -466,9 +466,9 @@ const messages = {
       lowStockWarning: '僅剩 {stock} 件庫存 — 請盡快下單',
       inStock: '有貨',
       outOfStock: '缺貨'
-    },
+   },
     common: { search: '搜索', login: '登錄', register: '註冊', submit: '提交', cancel: '取消', close: '关闭', review: '评价', all: '全部', remove: '刪除', fullName: '收件人姓名', phone: '電話', address: '詳細地址', city: '城市', zipCode: '郵編', country: '國家' },
-    order: { orderNo: '訂單號', status: '狀態', totalAmount: '金額', createdAt: '時間' },
+    order: { PENDING_PAYMENT: '待支付', PAID: '已支付', SHIPPED: '已發貨', COMPLETED: '已完成', CANCELLED: '已取消', REFUNDED: '已退款', UNKNOWN: '未知', orderNo: '訂單號', status: '狀態', totalAmount: '金額', createdAt: '時間' },
     auth: { welcomeBack: '歡迎回來', joinUs: '加入我們', step: '步驟', orContinue: '或繼續使用', noAccount: '還沒有帳號？', hasAccount: '已有帳號？', enterUsername: '請輸入用戶名或郵箱', rememberMe: '記住我', twoFactor: '雙因素認證', enterCode: '請輸入發送到您郵箱的驗證碼', sixDigitCode: '6位驗證碼', verify: '驗證', change: '更換', featureSecure: '安全加密交易', featureSecureDesc: '256-bit SSL + 雙因素認證', featureShipping: '全球配送', featureShippingDesc: '安全包裝，追蹤保障', featureAuthentic: '正品保證', featureAuthenticDesc: '所有藏品經專業鑑定', community: '加入超過10,000名收藏家的社群', forgotPasswordTitle: '忘記密碼', forgotPasswordDesc: '輸入您的郵箱地址，我們將向您發送重置密碼的鏈接。', forgotPasswordSent: '如果該郵箱存在對應的賬戶，密碼重置鏈接已發送。', resetPasswordTitle: '重置密碼', resetPasswordNewPassword: '新密碼', resetPasswordConfirmPassword: '確認新密碼', resetPasswordSuccess: '密碼重置成功！', backToLogin: '返回登錄', resetPasswordSend: '發送重置鏈接' },
     cart: { title: '購物車', empty: '購物車為空', checkout: '去結算', pageTitle: '購物車', colProduct: '商品', colPrice: '單價', colQuantity: '數量', colTotal: '合計', colAction: '操作' },
     cartDrawer: { title: '購物車', empty: '購物車為空', subtotal: '小計', total: '合計', checkout: '去結算', remove: '刪除' },
@@ -476,7 +476,7 @@ const messages = {
       orderSummary: '訂單摘要', shippingAddress: '收貨地址',
       paymentMethod: '支付方式', shippingMethod: '配送方式',
       placeOrder: '提交訂單', orderPlaced: '訂單已提交！', buyerNote: '備註',
-      payCreditCard: '信用卡', payPaypal: 'PayPal', payAlipay: '支付寶',
+      payNow: '立即支付',       payCreditCard: '信用卡', payPaypal: 'PayPal', payAlipay: '支付寶',
       payWechat: '微信支付', payGrabPay: 'GrabPay', payPayNow: 'PayNow',
       payBankTransfer: '銀行轉賬',
       shipStandard: '標準配送（5-10個工作日）',
@@ -486,7 +486,7 @@ const messages = {
       freeShipping: '免費',
       shippingFee: '運費',
       orderTotal: '合計',
-    },
+   },
     account: {
       myAccount: '我的帳戶', addresses: '收貨地址', paymentMethods: '支付方式',
       messages: '消息中心', openStore: '我要開店', orders: '我的訂單',
@@ -509,7 +509,7 @@ const messages = {
       submit: '提交', openStoreTitle: '成為賣家',
       openStoreDesc: '開始向全球收藏家銷售您的認證錢幣',
       applyNow: '立即申請'
-    },
+   },
     paymentMethodTypes: {
       CREDIT_CARD: '信用卡',
       PAYPAL: 'PayPal',
@@ -518,7 +518,7 @@ const messages = {
       GRABPAY: 'GrabPay',
       PAYNOW: 'PayNow',
       BANK_TRANSFER: '銀行轉賬'
-    },
+   },
     footer: {
       about: '您值得信賴的認證錢幣交易平台',
       support: '客服支援', email: 'support [at] coinmarket.com',
@@ -527,14 +527,14 @@ const messages = {
       refund: '退款政策', shipping: '運輸政策', contact: '聯繫我們',
       legalTitle: '法律條款',
       copyright: '© 2026 CoinMarket. 保留所有權利.'
-    },
+   },
     contact: {
       title: '聯繫我們', subtitle: '期待您的來信',
       name: '姓名', email: '郵箱', message: '留言', send: '發送消息',
       success: '消息發送成功！', address: '地址', phone: '電話',
       addressLine: '錢幣街123號，錢幣之城，NC 10001', phoneLine: '+1 (555) 123-4567',
       emailLine: 'support [at] coinmarket.com'
-    },
+   },
     legal: {
       termsTitle: '服務條款', privacyTitle: '隱私政策', cookieTitle: 'Cookie 政策',
       refundTitle: '退款政策', shippingTitle: '運輸政策', lastUpdated: '最後更新：2026年5月',
@@ -544,7 +544,7 @@ const messages = {
       refundContent: '<h2>1. 退貨期限</h2><p>您可以在收到商品後 14 天內退貨並獲得全額退款，前提是商品保持原狀。</p><h2>2. 退貨條件</h2><p>商品必須連同所有原始包裝和評級證書一併退回。定製商品可能不符合退貨條件。</p><h2>3. 退貨流程</h2><p>聯繫我們發起退貨。我們將提供退貨授權和運輸說明。</p><h2>4. 退款處理</h2><p>我們在收到退回商品後 5-10 個工作日內處理退款。退款將原路返還。</p><h2>5. 退貨運費</h2><p>除非商品描述有誤，退貨運費由買家承擔。</p>',
       shippingContent: '<h2>1. 處理時間</h2><p>訂單在付款確認後 1-3 個工作日內處理。</p><h2>2. 運輸方式</h2><p>我們提供標準運輸（5-10 個工作日）和快遞（2-3 個工作日）。所有訂單均提供追蹤服務。</p><h2>3. 國際運輸</h2><p>國際訂單可能需繳納關稅和稅費，由買家承擔。</p><h2>4. 免運費</h2><p>訂單滿 $500 可享受全球免費標準運輸。</p><h2>5. 丟失或損壞</h2><p>我們對運輸途中丟失或損壞的商品不承擔責任。高價值商品建議投保。</p><h2>6. 地址準確性</h2><p>請確保收貨地址正確。因買家提供的地址錯誤導致配送失敗，我方不承擔責任。</p>'
     }
-  },
+ },
   ja: {
     errors: {
       'Invalid credentials': 'ユーザー名またはパスワードが正しくありません',
@@ -559,7 +559,7 @@ const messages = {
       'Invalid or expired reset token': 'リセットトークンが無効または期限切れです',
       'Reset token has already been used': 'リセットトークンは既に使用されています',
       'Reset token has expired': 'リセットトークンの期限が切れました'
-    },
+   },
     header: { freeShipping: '$500以上のご注文で送料無料' },
     nav: { home: 'ホーム', shop: 'ショップ', contact: 'お問い合わせ', login: 'ログイン', register: '登録', myOrders: '注文履歴', logout: 'ログアウト' },
     hero: { title: '認証済みコインを見つける', subtitle: 'NGC · PCGS · PMG 鑑定済みコインを世界中の信頼できる売り手から', cta: 'コインを見る' },
@@ -568,14 +568,14 @@ const messages = {
       protection: { title: 'バイヤー保護', desc: '安全な取引と買い手保証' },
       global: { title: '世界中の売り手', desc: '信頼できるディーラーとつながる' },
       shipping: { title: '世界配送', desc: '$500以上の注文で送料無料' }
-    },
+   },
     home: {
       featured: 'おすすめ商品', viewAll: 'すべて見る →', inStock: '在庫あり', sold: '売り切れ',
       aboutTitle: '当社について', aboutContent: 'CoinMarketは認証済みコインの大手オンラインマーケットプレイスです。世界中のNGC、PCGS、PMG鑑定済みコインの買い手と売り手をつなぎます。当プラットフォームは、すべての取引において信頼性、安全性、確実な配送を保証します。',
       latestTitle: '新着商品',
       newsSectionTitle: 'お知らせ', newsViewAll: 'すべて見る →', newsReadMore: '続きを読む',
       partnerTitle: 'パートナー募集', partnerContent: '成長を続ける信頼できるコインディーラーのネットワークに加盟し、世界中のコレクターにあなたの在庫を紹介しましょう。', partnerCta: 'お問い合わせ'
-    },
+   },
     shop: {
       title: 'ショップ', searchPlaceholder: 'コインを検索...', categories: 'カテゴリー', ratingCompany: '鑑定会社',
       priceRange: '価格帯', country: '国', apply: '適用',
@@ -583,7 +583,7 @@ const messages = {
       productsFound: '件の商品', noProducts: '商品が見つかりませんでした。フィルターを調整してください。',
       allCategories: 'すべてのカテゴリー', min: '最低', max: '最高', of: '件中', prev: '前へ', next: '次へ', sortLabel: '並び替え:',
       searchingFor: '検索:', clearFilters: 'フィルターをクリア', popular: '人気'
-    },
+   },
     categories: {
       'ancient-coins': '古代コイン',
       'gold-coins': '金貨',
@@ -601,7 +601,7 @@ const messages = {
       'medal': 'メダル',
       'banknotes': '紙幣',
       'accessories-numismatic': 'コインアクセサリー'
-    },
+   },
     countries: {
       'USA': 'アメリカ',
       'China': '中国',
@@ -621,7 +621,7 @@ const messages = {
       'Egypt': 'エジプト',
       'Mexico': 'メキシコ',
       'Luxembourg': 'ルクセンブルク'
-    },
+   },
     product: {
       search: '検索', category: 'カテゴリー', allCategories: 'すべて', ratingCompany: '鑑定会社',
       ratingInfo: '鑑定情報', ratingNumber: '証明書番号', ratingGrade: '等級',
@@ -629,7 +629,7 @@ const messages = {
       stock: '在庫', description: '説明', searchPlaceholder: 'キーワード...',
       quantity: '数量', soldBy: '販売元', soldOut: '売り切れ', inStockWithQty: '在庫 {stock} 点',
       lowStock: '残り {stock} 点のみ'
-    },
+   },
     productDetail: {
       specifications: '商品仕様',
       relatedProducts: '関連商品',
@@ -647,9 +647,9 @@ const messages = {
       lowStockWarning: '残り {stock} 点 — お早めに',
       inStock: '在庫あり',
       outOfStock: '在庫切れ'
-    },
+   },
     common: { search: '検索', login: 'ログイン', register: '登録', submit: '送信', cancel: 'キャンセル', close: '閉じる', review: 'レビュー', all: 'すべて', remove: '削除', fullName: 'お名前', phone: '電話番号', address: '住所', city: '市区町村', zipCode: '郵便番号', country: '国' },
-    order: { orderNo: '注文番号', status: 'ステータス', totalAmount: '金額', createdAt: '日時' },
+    order: { PENDING_PAYMENT: '支払い待ち', PAID: '支払い済み', SHIPPED: '発送済み', COMPLETED: '完了', CANCELLED: 'キャンセル', REFUNDED: '返金済み', UNKNOWN: '不明', orderNo: '注文番号', status: 'ステータス', totalAmount: '金額', createdAt: '日時' },
     auth: { welcomeBack: 'おかえりなさい', joinUs: '参加する', step: 'ステップ', orContinue: 'または次で続ける', noAccount: 'アカウントをお持ちでない方', hasAccount: 'すでにアカウントをお持ちの方', enterUsername: 'ユーザー名またはメールアドレスを入力', rememberMe: 'ログイン状態を保持', twoFactor: '二要素認証', enterCode: 'メールに送信された認証コードを入力', sixDigitCode: '6桁の認証コード', verify: '認証', change: '変更', featureSecure: '安全な取引', featureSecureDesc: '256-bit SSL + 二要素認証', featureShipping: '国際配送', featureShippingDesc: '安全梱包、追跡保証', featureAuthentic: '正品保証', featureAuthenticDesc: '専門家による鑑定済み', community: '10,000人以上のコレクターコミュニティに参加', forgotPasswordTitle: 'パスワードをお忘れの方', forgotPasswordDesc: 'メールアドレスを入力してください。パスワードリセット用のリンクをお送りします。', forgotPasswordSent: 'そのメールアドレスのアカウントが存在する場合、パスワードリセットリンクを送信しました。', resetPasswordTitle: 'パスワードリセット', resetPasswordNewPassword: '新しいパスワード', resetPasswordConfirmPassword: '新しいパスワード（確認）', resetPasswordSuccess: 'パスワードが正常にリセットされました！', backToLogin: 'ログインに戻る', resetPasswordSend: 'リセットリンクを送信' },
     cart: { title: 'カート', empty: 'カートは空です', checkout: '購入手続きへ', pageTitle: 'カート', colProduct: '商品', colPrice: '価格', colQuantity: '数量', colTotal: '合計', colAction: '操作' },
     cartDrawer: { title: 'カート', empty: 'カートは空です', subtotal: '小計', total: '合計', checkout: '購入手続きへ', remove: '削除' },
@@ -657,7 +657,7 @@ const messages = {
       orderSummary: '注文サマリー', shippingAddress: '配送先住所',
       paymentMethod: 'お支払い方法', shippingMethod: '配送方法',
       placeOrder: '注文する', orderPlaced: 'ご注文が完了しました！', buyerNote: '備考',
-      payCreditCard: 'クレジットカード', payPaypal: 'PayPal', payAlipay: 'Alipay',
+      payNow: '今すぐ支払う',       payCreditCard: 'クレジットカード', payPaypal: 'PayPal', payAlipay: 'Alipay',
       payWechat: 'WeChat Pay', payGrabPay: 'GrabPay', payPayNow: 'PayNow',
       payBankTransfer: '銀行振込',
       shipStandard: '標準配送（5-10営業日）',
@@ -667,7 +667,7 @@ const messages = {
       freeShipping: '無料',
       shippingFee: '送料',
       orderTotal: '合計',
-    },
+   },
     account: {
       myAccount: 'マイアカウント', addresses: '住所管理', paymentMethods: '支払い方法',
       messages: 'メッセージ', openStore: '販売者になる', orders: '注文履歴',
@@ -690,7 +690,7 @@ const messages = {
       submit: '送信', openStoreTitle: '販売者になる',
       openStoreDesc: '世界中のコレクターに認定コインを販売しましょう',
       applyNow: '今すぐ申し込む'
-    },
+   },
     paymentMethodTypes: {
       CREDIT_CARD: 'クレジットカード',
       PAYPAL: 'PayPal',
@@ -699,7 +699,7 @@ const messages = {
       GRABPAY: 'GrabPay',
       PAYNOW: 'PayNow',
       BANK_TRANSFER: '銀行振込'
-    },
+   },
     footer: {
       about: '信頼できる認証コイン取引プラットフォーム',
       support: 'サポート', email: 'support [at] coinmarket.com',
@@ -708,14 +708,14 @@ const messages = {
       refund: '返金ポリシー', shipping: '配送ポリシー', contact: 'お問い合わせ',
       legalTitle: '法的情報',
       copyright: '© 2026 CoinMarket. All rights reserved.'
-    },
+   },
     contact: {
       title: 'お問い合わせ', subtitle: 'ご連絡をお待ちしております',
       name: 'お名前', email: 'メールアドレス', message: 'メッセージ', send: '送信',
       success: 'メッセージが送信されました！', address: '住所', phone: '電話番号',
       addressLine: '123 Coin Street, Numismatic City, NC 10001', phoneLine: '+1 (555) 123-4567',
       emailLine: 'support [at] coinmarket.com'
-    },
+   },
     legal: {
       termsTitle: '利用規約', privacyTitle: 'プライバシーポリシー', cookieTitle: 'Cookie ポリシー',
       refundTitle: '返金ポリシー', shippingTitle: '配送ポリシー', lastUpdated: '最終更新：2026年5月',
