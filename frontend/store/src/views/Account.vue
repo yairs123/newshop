@@ -178,12 +178,14 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 20px;
-  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #3a2f14 100%);
   border-radius: 16px;
-  padding: 28px 32px;
+  padding: 32px;
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(184, 134, 11, 0.2);
+  box-shadow: 0 4px 20px rgba(26, 26, 46, 0.15);
 }
 
 .profile-header::after {
