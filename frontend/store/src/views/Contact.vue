@@ -115,6 +115,7 @@ const msgContainer = ref(null)
 const showForm = ref(false)
 const submitting = ref(false)
 const form = reactive({ subject: '', message: '' })
+const greetingIndex = ref(null)
 
 // 快捷问题随语言切换响应式更新
 const quickQuestions = computed(() => getQuickQuestions(locale.value))
@@ -179,7 +180,15 @@ async function submitForm() {
   submitting.value = false
 }
 
+// 语言切换时，把开场白更新为新语言
+watch(locale, (newLocale) => {
+  if (greetingIndex.value !== null && messages.value[greetingIndex.value]) {
+    messages.value[greetingIndex.value].text = getGreeting(newLocale)
+  }
+})
+
 onMounted(() => {
+  greetingIndex.value = messages.value.length
   pushMsg('bot', getGreeting(locale.value))
 })
 </script>
