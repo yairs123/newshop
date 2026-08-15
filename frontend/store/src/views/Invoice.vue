@@ -150,7 +150,7 @@ onMounted(async () => {
 
 // 支付方式代码 → 本地化文案
 function paymentMethodLabel(method) {
-  if (!method) return '-'
+  if (!method) return t('checkout.noPaymentMethod')
   const keyMap = {
     CREDIT_CARD: 'checkout.payCreditCard',
     PAYPAL: 'checkout.payPaypal',
