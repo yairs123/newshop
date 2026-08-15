@@ -193,6 +193,7 @@ const messages = {
       copyright: '© 2026 CoinMarket. All rights reserved.'
    },
     contact: {
+      aiAssistant: 'AI Assistant', online24h: 'Online 24/7', typeQuestion: 'Type your question...', needHuman: 'Need human help? Leave us a message',
       title: 'Contact Us', subtitle: "We'd love to hear from you",
       name: 'Name', email: 'Email', message: 'Message', send: 'Send Message',
       success: 'Message sent successfully!', address: 'Address', phone: 'Phone',
@@ -401,6 +402,7 @@ const messages = {
       copyright: '© 2026 CoinMarket. 保留所有权利.'
    },
     contact: {
+      aiAssistant: '智能客服', online24h: '24 小时在线', typeQuestion: '输入您的问题...', needHuman: '需要人工帮助？留言给我们',
       title: '联系我们', subtitle: '期待您的来信',
       name: '姓名', email: '邮箱', message: '留言', send: '发送消息',
       success: '消息发送成功！', address: '地址', phone: '电话',
@@ -609,6 +611,7 @@ const messages = {
       copyright: '© 2026 CoinMarket. 保留所有權利.'
    },
     contact: {
+      aiAssistant: '智能客服', online24h: '24 小時在線', typeQuestion: '輸入您的問題...', needHuman: '需要人工幫助？留言給我們',
       title: '聯繫我們', subtitle: '期待您的來信',
       name: '姓名', email: '郵箱', message: '留言', send: '發送消息',
       success: '消息發送成功！', address: '地址', phone: '電話',
@@ -817,6 +820,7 @@ const messages = {
       copyright: '© 2026 CoinMarket. All rights reserved.'
    },
     contact: {
+      aiAssistant: 'AIカスタマーサービス', online24h: '24時間オンライン', typeQuestion: '質問を入力...', needHuman: '有人対応が必要ですか？メッセージを送る',
       title: 'お問い合わせ', subtitle: 'ご連絡をお待ちしております',
       name: 'お名前', email: 'メールアドレス', message: 'メッセージ', send: '送信',
       success: 'メッセージが送信されました！', address: '住所', phone: '電話番号',
