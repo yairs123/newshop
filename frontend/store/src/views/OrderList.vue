@@ -1,9 +1,14 @@
 <template>
   <div class="order-list">
-    <el-breadcrumb separator="/" style="margin-bottom: 16px;">
+    <el-breadcrumb separator="/" style="margin-bottom: 12px;">
       <el-breadcrumb-item :to="{ path: '/' }">{{ $t('nav.home') }}</el-breadcrumb-item>
       <el-breadcrumb-item>{{ $t('account.orders') }}</el-breadcrumb-item>
     </el-breadcrumb>
+
+    <div class="page-title">
+      <h1>{{ $t('account.myOrders') }}</h1>
+      <p class="page-subtitle">{{ $t('account.ordersSubtitle', '查看和管理您的订单') }}</p>
+    </div>
 
     <el-tabs v-model="activeTab" class="order-tabs">
       <!-- My Orders Tab -->
@@ -78,7 +83,7 @@
                   <span class="footer-total">{{ $t('account.total') }}: <strong>${{ order.totalAmount }}</strong></span>
                   <span v-if="order.paymentMethod" class="footer-meta">
                     <el-icon style="margin-right: 2px; vertical-align: middle;"><CreditCard /></el-icon>
-                    {{ order.paymentMethod }}
+                    {{ paymentMethodLabel(order.paymentMethod) }}
                   </span>
                   <span v-if="order.shippingAddress" class="footer-meta">
                     <el-icon style="margin-right: 2px; vertical-align: middle;"><Location /></el-icon>
@@ -499,6 +504,23 @@ function statusLabel(status) {
   return translated !== key ? translated : status || t('order.UNKNOWN')
 }
 
+// 支付方式代码 → 本地化文案
+function paymentMethodLabel(method) {
+  if (!method) return ''
+  const keyMap = {
+    CREDIT_CARD: 'checkout.payCreditCard',
+    PAYPAL: 'checkout.payPaypal',
+    ALIPAY: 'checkout.payAlipay',
+    WECHAT_PAY: 'checkout.payWechat',
+    GRABPAY: 'checkout.payGrabPay',
+    PAYNOW: 'checkout.payPayNow',
+    BANK_TRANSFER: 'checkout.payBankTransfer'
+  }
+  const key = keyMap[method]
+  if (!key) return method
+  return t(key)
+}
+
 function addToCart(item) {
   cartStore.addItem({
     id: item.productId,
@@ -512,23 +534,64 @@ function addToCart(item) {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap');
+
 .order-list {
   max-width: 1000px;
   margin: 0 auto;
   padding: 24px;
+  font-family: 'DM Sans', -apple-system, sans-serif;
 }
 
 .order-tabs {
   margin-bottom: 24px;
 }
+.order-tabs :deep(.el-tabs__item) {
+  font-size: 14px;
+  font-weight: 500;
+}
+.order-tabs :deep(.el-tabs__active-bar) {
+  background-color: #b8860b;
+}
 
-/* Order Card */
+/* Page title */
+.page-title {
+  margin-bottom: 20px;
+}
+.page-title h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+}
+.page-subtitle {
+  font-size: 14px;
+  color: #8a8a93;
+  margin: 2px 0 0;
+}
+
+/* Order Card — Numismatic Catalog style */
 .order-card-wrapper {
   margin-bottom: 16px;
 }
 
 .order-card {
-  border-radius: 8px;
+  border-radius: 12px !important;
+  border: 1px solid #ece7e0 !important;
+  box-shadow: 0 1px 3px rgba(26, 26, 46, 0.04) !important;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.order-card:hover {
+  box-shadow: 0 6px 20px rgba(26, 26, 46, 0.08) !important;
+  transform: translateY(-1px);
+}
+.order-card::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, #b8860b, #d4a843, #b8860b);
 }
 
 .order-card :deep(.el-card__body) {
@@ -540,10 +603,10 @@ function addToCart(item) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  border-radius: 8px 8px 0 0;
+  padding: 16px 22px;
+  background: #faf8f5;
+  border-bottom: 1px solid #ece7e0;
+  border-radius: 12px 12px 0 0;
   flex-wrap: wrap;
   gap: 8px;
 }
@@ -560,20 +623,24 @@ function addToCart(item) {
 }
 
 .order-no {
-  font-size: 14px;
-  color: #3b82f6;
-  font-weight: 600;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  color: #1a1a2e;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .status-tag {
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+  border-radius: 20px;
+  padding: 0 12px;
+  border: none;
 }
 
 .order-date {
   font-size: 13px;
-  color: #6b7280;
+  color: #8a8a93;
+  font-weight: 500;
 }
 
 /* Order Body */
@@ -604,14 +671,15 @@ function addToCart(item) {
 }
 
 .item-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #d4a843, #b8860b);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .item-avatar-letter {
@@ -662,10 +730,10 @@ function addToCart(item) {
 
 /* Order Footer */
 .order-footer {
-  padding: 12px 20px;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
-  border-radius: 0 0 8px 8px;
+  padding: 14px 22px;
+  background: #faf8f5;
+  border-top: 1px solid #ece7e0;
+  border-radius: 0 0 12px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -74,7 +74,7 @@
           <div class="info-grid">
             <div class="info-row">
               <span class="info-label">{{ $t('checkout.paymentMethod') }}</span>
-              <span class="info-value">{{ order.paymentMethod }}</span>
+              <span class="info-value">{{ paymentMethodLabel(order.paymentMethod) }}</span>
             </div>
             <div class="info-row" v-if="order.paidAt">
               <span class="info-label">{{ $t('order.paidAt') }}</span>
@@ -184,6 +184,22 @@ function statusLabel(status) {
   return t('order.' + status)
 }
 
+// 支付方式代码 → 本地化文案
+function paymentMethodLabel(method) {
+  if (!method) return ''
+  const keyMap = {
+    CREDIT_CARD: 'checkout.payCreditCard',
+    PAYPAL: 'checkout.payPaypal',
+    ALIPAY: 'checkout.payAlipay',
+    WECHAT_PAY: 'checkout.payWechat',
+    GRABPAY: 'checkout.payGrabPay',
+    PAYNOW: 'checkout.payPayNow',
+    BANK_TRANSFER: 'checkout.payBankTransfer'
+  }
+  const key = keyMap[method]
+  return key ? t(key) : method
+}
+
 function formatDate(dateStr) {
   if (!dateStr) return ''
   const d = new Date(dateStr)
@@ -275,16 +291,20 @@ onMounted(fetchOrder)
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap');
+
 .detail-container {
   max-width: 900px;
   margin: 0 auto;
   padding: 24px;
+  font-family: 'DM Sans', -apple-system, sans-serif;
 }
 
 .detail-card {
   margin-bottom: 16px;
   border-radius: 12px;
-  border: 1px solid #ebeef5;
+  border: 1px solid #ece7e0;
+  box-shadow: 0 1px 3px rgba(26, 26, 46, 0.04);
 }
 
 .section-title {
@@ -298,7 +318,8 @@ onMounted(fetchOrder)
 
 /* Header Card */
 .header-card {
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #faf8f5 0%, #ffffff 100%);
+  border-top: 3px solid #b8860b;
 }
 
 .header-row {
@@ -309,15 +330,16 @@ onMounted(fetchOrder)
 }
 
 .order-title {
-  font-size: 20px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 24px;
   font-weight: 700;
-  color: #1d1d1f;
+  color: #1a1a2e;
   margin: 0 0 4px 0;
 }
 
 .order-date {
   font-size: 13px;
-  color: #86868b;
+  color: #8a8a93;
   margin: 0;
 }
 
@@ -332,6 +354,9 @@ onMounted(fetchOrder)
 .status-tag {
   font-size: 14px;
   padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  font-weight: 600;
 }
 
 .action-buttons {
