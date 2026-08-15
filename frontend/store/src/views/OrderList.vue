@@ -91,15 +91,14 @@
                   </span>
                 </div>
                 <div class="footer-actions">
-                  <!-- 主操作：立即支付 -->
+                  <!-- 主操作：立即支付（金色） -->
                   <el-button
                     v-if="order.status === 'PENDING_PAYMENT'"
-                    type="primary"
                     size="small"
                     class="btn-pay"
                     @click="payOrder(order.id)"
                   >
-                    {{ $t('checkout.payNow') }}
+                    💳 {{ $t('checkout.payNow') }}
                   </el-button>
                   <!-- 次要操作：文字链接风格 -->
                   <el-button
@@ -779,14 +778,32 @@ function addToCart(item) {
 .footer-actions .btn-pay {
   margin-right: 8px;
   padding: 0 16px;
-  height: 28px;
+  height: 30px;
+  background: linear-gradient(135deg, #b8860b, #d4a843);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(184, 134, 11, 0.3);
+}
+.footer-actions .btn-pay:hover {
+  opacity: 0.92;
+  box-shadow: 0 3px 10px rgba(184, 134, 11, 0.4);
+  transform: translateY(-1px);
 }
 .footer-actions .btn-secondary {
   color: #6b7280;
   font-size: 13px;
+  border: 1px solid #e5e0d6;
+  border-radius: 8px;
+  height: 30px;
+  padding: 0 12px;
+  background: #fff;
 }
 .footer-actions .btn-secondary:hover {
-  color: #f59e0b;
+  color: #b8860b;
+  border-color: #b8860b;
+  background: #faf8f5;
 }
 
 /* Buy Again Grid */

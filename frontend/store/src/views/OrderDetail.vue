@@ -400,6 +400,16 @@ onMounted(fetchOrder)
   border-radius: 10px;
   height: 40px;
   font-weight: 500;
+  background: #fff;
+  border: 1px solid #e5e0d6;
+  color: #6b7280;
+  padding: 0 16px;
+}
+.action-bar .btn-cancel:hover,
+.action-bar .btn-invoice:hover {
+  color: #b8860b;
+  border-color: #b8860b;
+  background: #faf8f5;
 }
 
 /* Items Table */
