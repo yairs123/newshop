@@ -237,5 +237,39 @@ h1 { font-size: 32px; font-weight: 700; color: #1a1a2e; }
 .fallback-toggle:hover { color: #b8860b; }
 .message-form { padding: 16px 20px 20px; }
 
-@media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) {
+  .contact-page { min-height: 100dvh; }
+  .page-inner { padding: 16px; }
+  .contact-grid { grid-template-columns: 1fr; gap: 16px; }
+
+  /* 联系信息紧凑横排 */
+  .contact-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .info-card { margin-bottom: 0; padding: 12px; }
+  .info-card h4 { font-size: 12px; }
+  .info-card p { font-size: 11px; }
+  /* 第一张（智能客服）跨两列 */
+  .info-card:first-child { grid-column: 1 / -1; }
+
+  /* 聊天窗口全屏高度 */
+  .chat-window { border-radius: 12px; height: calc(100dvh - 260px); display: flex; flex-direction: column; min-height: 400px; }
+  .chat-messages { flex: 1; height: auto; min-height: 0; padding: 14px; }
+  .msg-row { max-width: 92%; }
+  .msg-bubble { font-size: 13px; padding: 8px 12px; }
+  .msg-avatar { width: 26px; height: 26px; font-size: 13px; }
+
+  /* 快捷问题横向滚动 */
+  .quick-questions { flex-wrap: nowrap; overflow-x: auto; padding: 10px 12px; -webkit-overflow-scrolling: touch; }
+  .quick-questions button { flex-shrink: 0; white-space: nowrap; }
+
+  /* 输入框固定底部 */
+  .chat-input { padding: 10px 12px; }
+  .chat-input input { font-size: 16px; } /* 避免 iOS 缩放 */
+  .chat-input button { padding: 0 16px; }
+}
+
+@media (max-width: 480px) {
+  .contact-info { grid-template-columns: 1fr; }
+  .chat-window { height: calc(100dvh - 230px); }
+  h1 { font-size: 24px; }
+}
 </style>
