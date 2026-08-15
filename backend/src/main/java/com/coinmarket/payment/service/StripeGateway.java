@@ -36,6 +36,15 @@ public class StripeGateway implements PaymentGateway {
 
     @Override
     public PaymentResponse createPayment(PaymentRequest request) {
+        // 演示模式：未配置 Stripe API key 时，与 PayPal/支付宝网关一致，返回模拟支付链接
+        if (secretKey == null || secretKey.isEmpty()) {
+            log.info("Stripe demo mode for order: {}", request.getOrderNo());
+            return PaymentResponse.builder()
+                    .transactionNo("CC" + System.currentTimeMillis())
+                    .paymentUrl("https://checkout.stripe.com/demo-placeholder")
+                    .status("PENDING")
+                    .build();
+        }
         try {
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)

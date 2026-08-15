@@ -124,7 +124,7 @@ const messages = {
       shippingFee: 'Shipping',
       orderTotal: 'Total',
    },
-    account: {
+    account: { paymentFailed: 'Payment failed, please try again', 
       myAccount: 'My Account', addresses: 'Addresses', paymentMethods: 'Payment Methods',
       messages: 'Messages', openStore: 'Open Store', orders: 'My Orders',
       myOrders: 'My Orders', buyAgain: 'Buy Again', notYetShipped: 'Not Yet Shipped',
@@ -306,7 +306,7 @@ const messages = {
       shippingFee: '运费',
       orderTotal: '合计',
    },
-    account: {
+    account: { paymentFailed: '支付失败，请重试', 
       myAccount: '我的账户', addresses: '收货地址', paymentMethods: '支付方式',
       messages: '消息中心', openStore: '我要开店', orders: '我的订单',
       myOrders: '我的订单', buyAgain: '再次购买', notYetShipped: '尚未配送',
@@ -487,7 +487,7 @@ const messages = {
       shippingFee: '運費',
       orderTotal: '合計',
    },
-    account: {
+    account: { paymentFailed: '支付失敗，請重試', 
       myAccount: '我的帳戶', addresses: '收貨地址', paymentMethods: '支付方式',
       messages: '消息中心', openStore: '我要開店', orders: '我的訂單',
       myOrders: '我的訂單', buyAgain: '再次購買', notYetShipped: '尚未配送',
@@ -668,7 +668,7 @@ const messages = {
       shippingFee: '送料',
       orderTotal: '合計',
    },
-    account: {
+    account: { paymentFailed: '支払い失敗、もう一度お試しください', 
       myAccount: 'マイアカウント', addresses: '住所管理', paymentMethods: '支払い方法',
       messages: 'メッセージ', openStore: '販売者になる', orders: '注文履歴',
       myOrders: '注文履歴', buyAgain: '再購入', notYetShipped: '未発送',

@@ -226,8 +226,16 @@ async function handlePay() {
       returnUrl,
       cancelUrl,
     })
-    if (res.data && res.data.paymentUrl) {
-      window.location.href = res.data.paymentUrl
+    const pay = res.data || {}
+    // 支付失败：显示错误，不误报成功
+    if (pay.status === 'FAILED') {
+      ElMessage.error(pay.errorMessage || t('account.paymentFailed', '支付失败，请重试'))
+      await fetchOrder()
+      return
+    }
+    // 有支付链接：跳转支付
+    if (pay.paymentUrl) {
+      window.location.href = pay.paymentUrl
     } else {
       ElMessage.success(t('account.paymentInitiated'))
       await fetchOrder()
