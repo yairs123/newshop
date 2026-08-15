@@ -32,12 +32,12 @@
               </svg>
               <div>
                 <h1>CoinMarket</h1>
-                <p class="company-sub">Premium Numismatics</p>
+                <p class="company-sub">{{ $t('invoice.companySubtitle') }}</p>
               </div>
             </div>
             <div class="company-address">
-              <p>123 Coin Street, Numismatic City</p>
-              <p>Tel: +1-555-0123 | Email: info@coinmarket.com</p>
+              <p>{{ $t('invoice.companyAddress') }}</p>
+              <p>{{ $t('invoice.contact') }}</p>
             </div>
           </div>
         </div>
@@ -62,8 +62,8 @@
           </div>
           <div class="payment-info">
             <h4>{{ $t('account.paymentMethod') }}</h4>
-            <p>{{ order.paymentMethod || '-' }}</p>
-            <p v-if="order.paidAt">{{ $t('order.createdAt') }}: {{ formatDate(order.paidAt) }}</p>
+            <p>{{ paymentMethodLabel(order.paymentMethod) }}</p>
+            <p v-if="order.paidAt">{{ $t('order.paidAt') }}: {{ formatDate(order.paidAt) }}</p>
           </div>
         </div>
 
@@ -114,7 +114,7 @@
         <!-- 页脚 -->
         <div class="invoice-footer">
           <p>{{ $t('footer.copyright') }}</p>
-          <p class="footer-small">{{ $t('footer.email') }} | www.coinmarket.com</p>
+          <p class="footer-small">{{ $t('footer.email') }} | {{ $t('invoice.website') }}</p>
         </div>
       </div>
     </div>
@@ -124,9 +124,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Printer } from '@element-plus/icons-vue'
 import { api } from '../api'
 
+const { t } = useI18n()
 const route = useRoute()
 const orderId = route.params.id
 const order = ref(null)
@@ -145,6 +147,22 @@ onMounted(async () => {
   } catch (e) { /* ignore */ }
   loading.value = false
 })
+
+// 支付方式代码 → 本地化文案
+function paymentMethodLabel(method) {
+  if (!method) return '-'
+  const keyMap = {
+    CREDIT_CARD: 'checkout.payCreditCard',
+    PAYPAL: 'checkout.payPaypal',
+    ALIPAY: 'checkout.payAlipay',
+    WECHAT_PAY: 'checkout.payWechat',
+    GRABPAY: 'checkout.payGrabPay',
+    PAYNOW: 'checkout.payPayNow',
+    BANK_TRANSFER: 'checkout.payBankTransfer'
+  }
+  const key = keyMap[method]
+  return key ? t(key) : method
+}
 
 function formatDate(d) {
   if (!d) return '-'
