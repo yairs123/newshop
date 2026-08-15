@@ -101,7 +101,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, nextTick, onMounted } from 'vue'
+import { ref, reactive, computed, nextTick, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../api'
 import { ElMessage } from 'element-plus'
@@ -116,7 +116,8 @@ const showForm = ref(false)
 const submitting = ref(false)
 const form = reactive({ subject: '', message: '' })
 
-const quickQuestions = getQuickQuestions(locale.value)
+// 快捷问题随语言切换响应式更新
+const quickQuestions = computed(() => getQuickQuestions(locale.value))
 
 function formatMsg(text) {
   // 把 \n 转成 <br>
